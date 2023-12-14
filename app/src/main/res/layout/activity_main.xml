@@ -19,6 +19,7 @@
         android:id="@+id/imageView"
         android:layout_width="match_parent"
         android:layout_height="428dp"
+        android:layout_margin="10dp"
         android:src="@tools:sample/avatars" />
 
     <LinearLayout
@@ -41,9 +42,8 @@
     <EditText
         android:id="@+id/nombre"
         android:layout_width="match_parent"
-        android:layout_height="62dp"
-        android:text="@string/nombre"
-        />
+        android:layout_height="50dp"
+        android:text="@string/nombre" />
 
     <Spinner
         android:id="@+id/spinner3"
