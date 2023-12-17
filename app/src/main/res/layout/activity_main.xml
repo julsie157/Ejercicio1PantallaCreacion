@@ -16,7 +16,7 @@
         android:theme="?attr/actionBarTheme" />
 
     <ImageView
-        android:id="@+id/imageView"
+        android:id="@+id/Imagen"
         android:layout_width="match_parent"
         android:layout_height="400dp"
         android:layout_margin="10dp"
@@ -33,25 +33,26 @@
             android:layout_height="50dp" />
 
         <Spinner
-            android:id="@+id/spinner2"
+            android:id="@+id/spinnerClase"
             android:layout_width="match_parent"
             android:layout_height="50dp" />
 
     </LinearLayout>
 
     <EditText
-        android:id="@+id/nombre"
+        android:id="@+id/Nombre"
         android:layout_width="match_parent"
-        android:layout_height="50dp"
-        android:text="@string/nombre" />
+        android:layout_height="wrap_content"
+        android:hint="Nombre del personaje" />
+
 
     <Spinner
-        android:id="@+id/spinner3"
+        android:id="@+id/spinnerEstadoVital"
         android:layout_width="match_parent"
         android:layout_height="50dp" />
 
     <Button
-        android:id="@+id/button"
+        android:id="@+id/Continuar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Button" />
