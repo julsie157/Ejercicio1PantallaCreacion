@@ -1,5 +1,6 @@
 package com.example.personaje
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import android.widget.ArrayAdapter
@@ -7,7 +8,7 @@ import android.widget.EditText
 import android.widget.Spinner
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
-
+import com.example.personaje.Personaje
 class MainActivity : AppCompatActivity() {
 
     private lateinit var imagen: ImageView
@@ -21,6 +22,7 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+
 
         imagen = findViewById(R.id.Imagen)
         spinnerRaza = findViewById(R.id.spinnerRaza)
@@ -62,8 +64,24 @@ class MainActivity : AppCompatActivity() {
         imagen.setImageResource(R.drawable.gnomopocho)
 
 
+
         continuarButton.setOnClickListener {
+            // Obtener valores seleccionados
+            val nombre = nombreEditText.text.toString()
+            val raza = spinnerRaza.selectedItem.toString()
+            val estadoVital = spinnerEstadoVital.selectedItem.toString()
+            val pesoMochila = 15.0 // Ajusta el valor predeterminado según tus necesidades
+
+            // Crear el objeto Personaje
+            val personaje = Personaje(raza, nombre, estadoVital, pesoMochila)
+
+            // Crear Intent y pasar el objeto Personaje a MainActivity2
+            val intent = Intent(this, MainActivity2::class.java)
+            intent.putExtra("personaje", personaje)
+            intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+            startActivity(intent)
         }
+
     }
 
     private fun llenarMapaDeImagenes() {
@@ -133,4 +151,5 @@ class MainActivity : AppCompatActivity() {
             imagen.setImageResource(imagenId)
         }
     }
+
 }
