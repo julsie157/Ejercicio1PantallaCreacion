@@ -15,7 +15,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var spinnerClase: Spinner
     private lateinit var spinnerEstadoVital: Spinner
 
-    // Define un mapa que asocie cada combinación de raza, clase y estado con su imagen correspondiente.
+    // Define un mapa
     private val imagenes = mutableMapOf<String, Int>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -30,7 +30,7 @@ class MainActivity : AppCompatActivity() {
         val nombreEditText = findViewById<EditText>(R.id.Nombre)
         val continuarButton = findViewById<Button>(R.id.Continuar)
 
-        // Configura los adaptadores de los spinners
+        // Configura spinners
         val razaAdapter = ArrayAdapter(this, android.R.layout.simple_spinner_item, arrayOf("Seleccionar Raza", "Enano", "Humano", "Elfo", "Maldito"))
         val claseAdapter = ArrayAdapter(this, android.R.layout.simple_spinner_item, arrayOf("Seleccionar Clase", "Mago", "Brujo", "Guerrero"))
         val estadoVitalAdapter = ArrayAdapter(this, android.R.layout.simple_spinner_item, arrayOf("Seleccionar Estado", "Joven", "Adulto", "Anciano"))
@@ -46,7 +46,6 @@ class MainActivity : AppCompatActivity() {
                 if (position != 0) {
                     actualizarImagen()
                 } else {
-                    // Si se selecciona la opción por defecto, no actualices la imagen
                     imagen.setImageResource(R.drawable.gnomopocho)
                 }
             }
@@ -59,13 +58,11 @@ class MainActivity : AppCompatActivity() {
         spinnerClase.onItemSelectedListener = spinnerListener
         spinnerEstadoVital.onItemSelectedListener = spinnerListener
 
-        // Configura la imagen predeterminada en el ImageView al iniciar la app
+
         imagen.setImageResource(R.drawable.gnomopocho)
 
-        // Aquí puedes realizar otras acciones cuando se presiona el botón "Continuar"
+
         continuarButton.setOnClickListener {
-            val nombre = nombreEditText.text.toString()
-            // Realiza acciones con el nombre ingresado
         }
     }
 
