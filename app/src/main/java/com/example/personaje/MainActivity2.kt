@@ -34,10 +34,10 @@ class MainActivity2 : AppCompatActivity() {
             val estadoVitalTextView: TextView = findViewById(R.id.estadoVitalTextView)
             val pesoMochilaTextView: TextView = findViewById(R.id.pesoMochilaTextView)
 
-            nombreTextView.text = "Nombre: ${personaje.nombre}"
-            razaTextView.text = "Raza: ${personaje.raza}"
-            estadoVitalTextView.text = "Estado Vital: ${personaje.estadoVital}"
-            pesoMochilaTextView.text = "Peso de Mochila: ${personaje.pesoMochila}"
+            nombreTextView.text = "Nombre: ${personaje.getNombre()}"
+            razaTextView.text = "Raza: ${personaje.getRaza()}"
+            estadoVitalTextView.text = "Estado Vital: ${personaje.getEstadoVital()}"
+            pesoMochilaTextView.text = "Peso de Mochila: ${personaje.getPesoMochila()}"
         }
 
         val botonComenzarAventura: Button = findViewById(R.id.botonComenzarAventura)

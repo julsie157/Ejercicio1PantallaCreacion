@@ -4,10 +4,10 @@ import android.os.Parcel
 import android.os.Parcelable
 
 class Personaje(
-    val raza: String,
-    val nombre: String,
-    val estadoVital: String,
-    val pesoMochila: Double
+   private val raza: String,
+    private val nombre: String,
+    private val estadoVital: String,
+    private val pesoMochila: Double
 ) : Parcelable {
     constructor(parcel: Parcel) : this(
         parcel.readString() ?: "",
@@ -35,5 +35,20 @@ class Personaje(
         override fun newArray(size: Int): Array<Personaje?> {
             return arrayOfNulls(size)
         }
+    }
+    fun getNombre(): String? {
+        return nombre
+    }
+
+    fun getRaza(): String? {
+        return raza
+    }
+
+    fun getEstadoVital(): String? {
+        return estadoVital
+    }
+
+    fun getPesoMochila(): Double {
+        return pesoMochila
     }
 }
