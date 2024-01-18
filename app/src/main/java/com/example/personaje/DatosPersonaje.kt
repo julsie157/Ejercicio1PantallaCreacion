@@ -6,7 +6,7 @@ import android.widget.Button
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 
-class MainActivity2 : AppCompatActivity() {
+class DatosPersonaje : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -17,7 +17,7 @@ class MainActivity2 : AppCompatActivity() {
 
         botonVolver.setOnClickListener {
             // Crear Intent para ir a MainActivity
-            val intent = Intent(this, MainActivity::class.java)
+            val intent = Intent(this, Inicio::class.java)
             intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
             // Iniciar la actividad
             startActivity(intent)

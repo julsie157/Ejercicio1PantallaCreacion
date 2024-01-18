@@ -8,8 +8,8 @@ import android.widget.EditText
 import android.widget.Spinner
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
-import com.example.personaje.Personaje
-class MainActivity : AppCompatActivity() {
+
+class Inicio : AppCompatActivity() {
 
     private lateinit var imagen: ImageView
     private lateinit var spinnerRaza: Spinner
@@ -76,7 +76,7 @@ class MainActivity : AppCompatActivity() {
             val personaje = Personaje(raza, nombre, estadoVital, pesoMochila)
 
             // Crear Intent y pasar el objeto Personaje a MainActivity2
-            val intent = Intent(this, MainActivity2::class.java)
+            val intent = Intent(this, DatosPersonaje::class.java)
             intent.putExtra("personaje", personaje)
             intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
             startActivity(intent)
