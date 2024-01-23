@@ -10,7 +10,7 @@ class DatosPersonaje : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_dos)
+        setContentView(R.layout.layout_informacion)
 
 
         val botonVolver: Button = findViewById(R.id.botonVolver)
@@ -42,8 +42,8 @@ class DatosPersonaje : AppCompatActivity() {
 
         val botonComenzarAventura: Button = findViewById(R.id.botonComenzarAventura)
         botonComenzarAventura.setOnClickListener {
-            // Crear Intent y pasar a MainActivity3 sin datos adicionales
-            val intent = Intent(this, MainActivity3::class.java)
+            // Crear Intent y pasar a pantalla del dado
+            val intent = Intent(this, PantallaDado::class.java)
             startActivity(intent)
         }
     }

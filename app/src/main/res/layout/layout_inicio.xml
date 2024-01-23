@@ -9,7 +9,7 @@
     android:background="@color/black">
 
     <androidx.appcompat.widget.Toolbar
-        android:id="@+id/toolbar"
+        android:id="@+id/toolbarenemigo"
         android:layout_width="match_parent"
         android:layout_height="38dp"
         android:background="?attr/colorPrimary"

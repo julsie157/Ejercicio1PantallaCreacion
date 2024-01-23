@@ -21,7 +21,7 @@ class Inicio : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
+        setContentView(R.layout.layout_inicio)
 
 
         imagen = findViewById(R.id.Imagen)

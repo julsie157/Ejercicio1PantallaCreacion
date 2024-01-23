@@ -27,15 +27,25 @@
         <activity
             android:name=".DatosPersonaje"
             tools:ignore="WrongManifestParent">
+        </activity>
+
+        <activity android:name=".PantallaDado">
+
+        </activity>
+
+        <activity android:name=".CiudadActivity">
+
+        </activity>
+
+        <activity android:name=".ObjetoActivity">
+
+        </activity>
+
+        <activity android:name=".EnemigoActivity">
 
         </activity>
 
 
-        <activity
-            android:name=".MainActivity3"
-            tools:ignore="WrongManifestParent">
-
-        </activity>
 
     </application>
 
