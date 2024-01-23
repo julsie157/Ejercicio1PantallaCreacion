@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:layout_width="802dp"
+        android:layout_height="80dp"
+        android:background="?attr/colorPrimary"
+        android:minHeight="?attr/actionBarSize"
+        android:theme="?attr/actionBarTheme"
+        app:title="MERCADER"
+        tools:ignore="MissingConstraints" />
+
+    <ImageView
+        android:id="@+id/Imagen"
+        android:layout_width="786dp"
+        android:layout_height="670dp"
+        android:layout_margin="10dp"
+        android:src="@drawable/mercader"
+        tools:ignore="MissingConstraints"
+        tools:layout_editor_absoluteX="10dp"
+        tools:layout_editor_absoluteY="52dp" />
+
+    <LinearLayout
+        android:layout_width="708dp"
+        android:layout_height="234dp"
+        android:orientation="horizontal"
+        tools:ignore="MissingConstraints"
+        tools:layout_editor_absoluteX="152dp"
+        tools:layout_editor_absoluteY="842dp">
+
+        <Button
+            android:id="@+id/botonComerciar"
+            android:layout_width="210dp"
+            android:layout_height="80dp"
+            android:text="Comerciar"
+            android:textSize="25dp" />
+
+        <Button
+            android:id="@+id/botonContinuarmercader"
+            android:layout_width="210dp"
+            android:layout_height="80dp"
+            android:text="Continuar"
+            android:textSize="25dp"
+            android:translationX="80dp" />
+
+
+    </LinearLayout>
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>
