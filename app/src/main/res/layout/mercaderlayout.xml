@@ -31,8 +31,8 @@
         android:layout_height="234dp"
         android:orientation="horizontal"
         tools:ignore="MissingConstraints"
-        tools:layout_editor_absoluteX="152dp"
-        tools:layout_editor_absoluteY="842dp">
+        tools:layout_editor_absoluteX="156dp"
+        tools:layout_editor_absoluteY="816dp">
 
         <Button
             android:id="@+id/botonComerciar"

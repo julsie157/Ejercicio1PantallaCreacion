@@ -1,10 +1,13 @@
 package com.example.personaje
 
+import android.R
 import android.content.Intent
 import android.os.Bundle
+import android.view.View
 import android.widget.Button
-import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
+
+
 class MercaderActivity : AppCompatActivity(){
 
 
@@ -19,5 +22,19 @@ class MercaderActivity : AppCompatActivity(){
             val intent = Intent(this, Maincontinuarmercader::class.java)
             startActivity(intent)
         }
+
+
+
+
+        val botoncomerciarmercader: Button = findViewById(R.id)
+        playButton.setVisibility(View.VISIBLE)
+        playButton.setOnClickListener(object : OnClickListener() {
+            fun onClick(v: View?) {
+                //when play is clicked show stop button and hide play button
+                playButton.setVisibility(View.GONE)
+                stopButton.setVisibility(View.VISIBLE)
+            }
+        })
+
     }
 }
