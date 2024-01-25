@@ -1,9 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:orientation="vertical">
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/toolbarmercader"
@@ -14,27 +13,29 @@
         android:theme="@style/ThemeOverlay.AppCompat.ActionBar"
         app:title="Mercader" />
 
-
     <ImageView
         android:id="@+id/Mercader"
         android:layout_width="wrap_content"
         android:layout_height="347dp"
-        android:src="@drawable/mercader" />
-
+        android:src="@drawable/mercader"
+        android:layout_below="@id/toolbarmercader"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="16dp" />
 
     <LinearLayout
+        android:id="@+id/botoneraInicial"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:gravity="center">
-
+        android:gravity="center"
+        android:layout_below="@id/Mercader"
+        android:layout_marginTop="16dp">
 
         <Button
             android:id="@+id/Botoncomerciar"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Comerciar" />
-
 
         <Button
             android:id="@+id/Botoncontmercader"
@@ -43,4 +44,33 @@
             android:text="Continuar" />
 
     </LinearLayout>
-</LinearLayout>
+    <LinearLayout
+        android:id="@+id/botonComprarVender"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center"
+        android:layout_below="@id/Mercader"
+        android:layout_marginTop="16dp"
+        android:visibility="gone">
+
+        <Button
+            android:id="@+id/BotonComprar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Comprar" />
+
+        <Button
+            android:id="@+id/BotonVender"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Vender" />
+
+        <Button
+            android:id="@+id/BotonCancelar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Cancelar" />
+
+    </LinearLayout>
+</RelativeLayout>
