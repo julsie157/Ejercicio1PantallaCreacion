@@ -19,7 +19,7 @@
         android:id="@+id/Objeto"
         android:layout_width="wrap_content"
         android:layout_height="347dp"
-        android:src="@drawable/objeto" />
+        android:src="@drawable/cofre" />
 
 
     <LinearLayout

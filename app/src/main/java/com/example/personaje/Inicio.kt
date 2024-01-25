@@ -70,7 +70,7 @@ class Inicio : AppCompatActivity() {
             val nombre = nombreEditText.text.toString()
             val raza = spinnerRaza.selectedItem.toString()
             val estadoVital = spinnerEstadoVital.selectedItem.toString()
-            val pesoMochila = 15.0
+            val pesoMochila = 100.0
 
             // Crear el objeto Personaje
             val personaje = Personaje(raza, nombre, estadoVital, pesoMochila)
