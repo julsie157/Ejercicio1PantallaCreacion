@@ -73,13 +73,33 @@ class MercaderActivity : AppCompatActivity() {
     }
 
     private fun cambiarImagenObjetoMercader() {
-        //aqui van las fotos de los objetos
-        // mercaderImageView.setImageResource(R.drawable.nueva_imagen_objeto_mercader)
+        mercaderImageView.setImageResource(R.drawable.espada)
+        mercaderImageView.setImageResource(R.drawable.objeto)
+        mercaderImageView.setImageResource(R.drawable.daga)
+        mercaderImageView.setImageResource(R.drawable.martillo)
+        mercaderImageView.setImageResource(R.drawable.baston)
+        mercaderImageView.setImageResource(R.drawable.moneda)
+        mercaderImageView.setImageResource(R.drawable.escudo)
+        mercaderImageView.setImageResource(R.drawable.armadura)
+        mercaderImageView.setImageResource(R.drawable.ira)
+        mercaderImageView.setImageResource(R.drawable.pocion)
     }
 
     private fun cambiarImagenMochila() {
-        //aqui van las fotos de los objetos
-        // mercaderImageView.setImageResource(R.drawable.imagen_mochila)
+        mercaderImageView.setImageResource(R.drawable.mochila)
+
+
+        mercaderImageView.setImageResource(R.drawable.espada)
+        mercaderImageView.setImageResource(R.drawable.objeto)
+        mercaderImageView.setImageResource(R.drawable.daga)
+        mercaderImageView.setImageResource(R.drawable.martillo)
+        mercaderImageView.setImageResource(R.drawable.baston)
+        mercaderImageView.setImageResource(R.drawable.moneda)
+        mercaderImageView.setImageResource(R.drawable.escudo)
+        mercaderImageView.setImageResource(R.drawable.armadura)
+        mercaderImageView.setImageResource(R.drawable.ira)
+        mercaderImageView.setImageResource(R.drawable.pocion)
+
     }
 
 
@@ -101,7 +121,7 @@ class MercaderDatabaseHelper(context: Context) :
         private const val COLUMN_PESO = "peso"
         private const val COLUMN_URL_IMAGEN = "url_imagen"
         private const val COLUMN_UNIDADES_DISPONIBLES = "unidades_disponibles"
-        // Agregar columna Precio
+        // Columna opRecio
         private const val COLUMN_PRECIO = "precio"
     }
 
@@ -117,7 +137,7 @@ class MercaderDatabaseHelper(context: Context) :
                     "$COLUMN_PRECIO INTEGER)"
         db.execSQL(createTableQuery)
 
-        // Insertar 10 objetos precargados
+        // Insert 10 objetos
         insertObjeto(db, "ObjetoMercader1", "TipoMercader1", 1, "urlMercader1", 20, 10)
         insertObjeto(db, "ObjetoMercader2", "TipoMercader2", 2, "urlMercader2", 2, 12)
         insertObjeto(db, "ObjetoMercader3", "TipoMercader3", 1, "urlMercader3", 10, 15)

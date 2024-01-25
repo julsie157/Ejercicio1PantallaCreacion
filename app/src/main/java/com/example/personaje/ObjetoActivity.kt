@@ -14,7 +14,7 @@ import androidx.appcompat.app.AppCompatActivity
 
 class ObjetoActivity : AppCompatActivity() {
     private lateinit var objetoActual: Objeto
-    private var espacioMochilaDisponible: Int = 100 // Capacidad máxima de la mochila (ajusta según tus necesidades)
+    private var espacioMochilaDisponible: Int = 100 // Capacidad máxima de la mochila
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -38,24 +38,15 @@ class ObjetoActivity : AppCompatActivity() {
         val dbHelper = ObjetoDatabaseHelper(this)
         val db = dbHelper.writableDatabase
 
-        // Verificar si hay espacio en la mochila
         if (espacioMochilaDisponible > 0) {
-            // Actualizar la base de datos (restar una unidad al objeto)
             if (actualizarObjetoEnBaseDeDatos(db, objetoActual)) {
                 // Reducir el espacio disponible en la mochila
                 espacioMochilaDisponible--
-
-                // Puedes realizar otras acciones aquí, como mostrar un mensaje de éxito, etc.
-                // Por ejemplo, mostrar un mensaje de recogida exitosa
                 Toast.makeText(this, "Objeto recogido exitosamente", Toast.LENGTH_SHORT).show()
             } else {
-                // Manejar el caso en que no se pueda actualizar la base de datos
-                // Por ejemplo, mostrar un mensaje de error
                 Toast.makeText(this, "No se pudo recoger el objeto", Toast.LENGTH_SHORT).show()
             }
         } else {
-            // Manejar el caso en que no hay espacio en la mochila
-            // Por ejemplo, mostrar un mensaje de mochila llena
             Toast.makeText(this, "La mochila está llena", Toast.LENGTH_SHORT).show()
         }
 
@@ -124,7 +115,7 @@ class ObjetoDatabaseHelper(context: Context) :
                     "$COLUMN_PRECIO INTEGER)"
         db.execSQL(createTableQuery)
 
-        // Insertar 10 objetos precargados
+        // Insert de los objetos
         insertObjeto(db, "Objeto1", "Tipo1", 1, "url1", 20, 10)
         insertObjeto(db, "Objeto2", "Tipo2", 2, "url2", 2, 12)
         insertObjeto(db, "Objeto3", "Tipo3", 1, "url3", 10, 15)
@@ -138,8 +129,6 @@ class ObjetoDatabaseHelper(context: Context) :
     }
 
     override fun onUpgrade(db: SQLiteDatabase, oldVersion: Int, newVersion: Int) {
-        // Puedes implementar lógica de actualización si es necesario
-        // Por ejemplo, eliminar la tabla existente y crear una nueva versión
         db.execSQL("DROP TABLE IF EXISTS $TABLE_NAME")
         onCreate(db)
     }
