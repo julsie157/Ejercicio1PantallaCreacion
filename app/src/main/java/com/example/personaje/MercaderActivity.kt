@@ -57,8 +57,8 @@ class MercaderActivity : AppCompatActivity() {
     }
 
     private fun mostrarBotonesComprarVender() {
-        botonComerciar.visibility = View.GONE
-        botonContinuar.visibility = View.GONE
+        botonComerciar.visibility = View.INVISIBLE
+        botonContinuar.visibility = View.INVISIBLE
         botonComprar.visibility = View.VISIBLE
         botonVender.visibility = View.VISIBLE
         botonCancelar.visibility = View.VISIBLE
@@ -67,23 +67,28 @@ class MercaderActivity : AppCompatActivity() {
     private fun ocultarBotonesComprarVender() {
         botonComerciar.visibility = View.VISIBLE
         botonContinuar.visibility = View.VISIBLE
-        botonComprar.visibility = View.GONE
-        botonVender.visibility = View.GONE
-        botonCancelar.visibility = View.GONE
+        botonComprar.visibility = View.INVISIBLE
+        botonVender.visibility = View.INVISIBLE
+        botonCancelar.visibility = View.INVISIBLE
     }
 
     private fun cambiarImagenObjetoMercader() {
-        mercaderImageView.setImageResource(R.drawable.espada)
-        mercaderImageView.setImageResource(R.drawable.objeto)
-        mercaderImageView.setImageResource(R.drawable.daga)
-        mercaderImageView.setImageResource(R.drawable.martillo)
-        mercaderImageView.setImageResource(R.drawable.baston)
-        mercaderImageView.setImageResource(R.drawable.moneda)
-        mercaderImageView.setImageResource(R.drawable.escudo)
-        mercaderImageView.setImageResource(R.drawable.armadura)
-        mercaderImageView.setImageResource(R.drawable.ira)
-        mercaderImageView.setImageResource(R.drawable.pocion)
+        val imagenes = arrayOf(
+            R.drawable.espada,
+            R.drawable.objeto,
+            R.drawable.daga,
+            R.drawable.martillo,
+            R.drawable.baston,
+            R.drawable.moneda,
+            R.drawable.escudo,
+            R.drawable.armadura,
+            R.drawable.ira,
+            R.drawable.pocion
+        )
+        val i = imagenes.indices.random()
+        mercaderImageView.setImageResource(imagenes[i])
     }
+
 
     private fun cambiarImagenMochila() {
         mercaderImageView.setImageResource(R.drawable.mochila)
