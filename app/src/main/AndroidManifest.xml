@@ -48,6 +48,9 @@
         <activity android:name=".MercaderActivity">
 
         </activity>
+        <activity android:name=".MercaderActivity">
+
+        </activity>
 
 
 

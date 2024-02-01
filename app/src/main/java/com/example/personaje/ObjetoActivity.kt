@@ -35,7 +35,7 @@ class ObjetoActivity : AppCompatActivity() {
 
     private fun recogerObjeto() {
 
-        val dbHelper = ObjetoDatabaseHelper(this)
+        val dbHelper = DBHelper(this)
         val db = dbHelper.writableDatabase
 
         if (espacioMochilaDisponible > 0) {
@@ -86,13 +86,12 @@ class ObjetoActivity : AppCompatActivity() {
 
 
 
-class ObjetoDatabaseHelper(context: Context) :
+/*class ObjetoDatabaseHelper(context: Context) :
     SQLiteOpenHelper(context, DATABASE_NAME, null, DATABASE_VERSION) {
 
     companion object {
         private const val DATABASE_VERSION = 1
         private const val DATABASE_NAME = "objetos_aleatorios.db"
-
         private const val TABLE_NAME = "OBJETOS_ALEATORIOS"
         private const val COLUMN_ID = "_id"
         private const val COLUMN_NOMBRE = "nombre"
@@ -155,6 +154,6 @@ class ObjetoDatabaseHelper(context: Context) :
     }
 }
 
-
+*/
 
 
