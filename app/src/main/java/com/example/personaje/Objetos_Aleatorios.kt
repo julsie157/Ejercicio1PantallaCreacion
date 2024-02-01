@@ -6,7 +6,7 @@ import android.content.Context
 import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteOpenHelper
 
-class DBHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME, null, DATABASE_VERSION) {
+class Objetos_Aleatorios(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME, null, DATABASE_VERSION) {
     companion object {
         private const val DATABASE_VERSION = 1
         private const val DATABASE_NAME = "ObjetosAleatoriosDB"
@@ -32,7 +32,7 @@ class DBHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME, null
     }
 
     private fun insertarDatos(db: SQLiteDatabase) {
-        //10 objetos random
+        //10 objetos
         addArticulo(db, "MONEDA", "ORO", 0, 1, 10, 15)
         addArticulo(db, "ESPADA", "ARMA", 15, 2, 3, 20)
         addArticulo(db, "MARTILLO", "ARMA", 12, 3, 1, 50)
