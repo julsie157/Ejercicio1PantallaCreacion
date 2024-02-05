@@ -11,6 +11,8 @@ import androidx.appcompat.app.AppCompatActivity
 
 class Inicio : AppCompatActivity() {
 
+
+
     private lateinit var imagen: ImageView
     private lateinit var spinnerRaza: Spinner
     private lateinit var spinnerClase: Spinner

@@ -40,6 +40,7 @@ class Objetos_mercader(context: Context) : SQLiteOpenHelper(context, DATABASE_NA
 
     private fun insertarDatos(db: SQLiteDatabase) {
 
+
         addArticulo(db, "MONEDA", "ORO", 0, 1, 10, 15)
         addArticulo(db, "ESPADA", "ARMA", 20, 2, 10, 20)
         addArticulo(db, "MARTILLO", "ARMA", 12, 3, 10, 35)

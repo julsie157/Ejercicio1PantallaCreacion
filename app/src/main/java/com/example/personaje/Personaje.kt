@@ -4,7 +4,7 @@ import android.os.Parcel
 import android.os.Parcelable
 
 class Personaje(
-   private val raza: String,
+    private val raza: String,
     private val nombre: String,
     private val estadoVital: String,
     private val pesoMochila: Double

@@ -16,19 +16,19 @@ class DatosPersonaje : AppCompatActivity() {
         val botonVolver: Button = findViewById(R.id.botonVolver)
 
         botonVolver.setOnClickListener {
-            // Crear Intent para ir a MainActivity
+
             val intent = Intent(this, Inicio::class.java)
             intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-            // Iniciar la actividad
+
             startActivity(intent)
         }
 
-        // Obtener el objeto Personaje del Intent
+
         val personaje = intent.getParcelableExtra<Personaje>("personaje")
 
-        // Verificar si el objeto Personaje no es nulo
+
         if (personaje != null) {
-            // Mostrar los valores en TextViews
+
             val nombreTextView: TextView = findViewById(R.id.nombreTextView)
             val razaTextView: TextView = findViewById(R.id.razaTextView)
             val estadoVitalTextView: TextView = findViewById(R.id.estadoVitalTextView)
@@ -42,7 +42,7 @@ class DatosPersonaje : AppCompatActivity() {
 
         val botonComenzarAventura: Button = findViewById(R.id.botonComenzarAventura)
         botonComenzarAventura.setOnClickListener {
-            // Crear Intent y pasar a pantalla del dado
+
             val intent = Intent(this, PantallaDado::class.java)
             startActivity(intent)
         }
