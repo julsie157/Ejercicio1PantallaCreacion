@@ -26,7 +26,7 @@ class PantallaDado : AppCompatActivity() {
     }
 
     private fun randomEncounter(): String {
-        val encounters = arrayOf("Objeto", "Mercader", "Mercader", "Objeto")
+        val encounters = arrayOf("Mercader", "Mercader", "Mercader", "Mercader")
         return encounters.random()
     }
 }

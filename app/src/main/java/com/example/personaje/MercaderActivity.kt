@@ -1,14 +1,21 @@
 package com.example.personaje
 
 
+import android.annotation.SuppressLint
 import android.content.ContentValues
 import android.content.Context
 import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteOpenHelper
 import android.os.Bundle
 import android.view.View
+import android.widget.ArrayAdapter
 import android.widget.Button
 import android.widget.ImageView
+import android.widget.LinearLayout
+import android.widget.NumberPicker
+import android.widget.TextView
+import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 
 
@@ -16,168 +23,144 @@ class MercaderActivity : AppCompatActivity() {
 
     private lateinit var botonComerciar: Button
     private lateinit var botonContinuar: Button
+    private lateinit var panelComercio: LinearLayout
     private lateinit var botonComprar: Button
     private lateinit var botonVender: Button
     private lateinit var botonCancelar: Button
     private lateinit var mercaderImageView: ImageView
 
+    private lateinit var dbObjetosMercader: Objetos_mercader
+
+
+    @SuppressLint("Range")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.layout_mercader)
 
+        dbObjetosMercader = Objetos_mercader(this)
+
         botonComerciar = findViewById(R.id.Botoncomerciar)
         botonContinuar = findViewById(R.id.Botoncontmercader)
-        botonComprar = findViewById(R.id.BotonComprar)
-        botonVender = findViewById(R.id.BotonVender)
-        botonCancelar = findViewById(R.id.BotonCancelar)
         mercaderImageView = findViewById(R.id.Mercader)
+        panelComercio = findViewById(R.id.panelComercio)
+        botonComprar = findViewById(R.id.botonComprar)
+        botonVender = findViewById(R.id.botonVender)
+        botonCancelar = findViewById(R.id.botonCancelar)
+
+        val precioTextView = findViewById<TextView>(R.id.precioTextView)
+        val botonConfirmarCompra = findViewById<Button>(R.id.botonConfirmarCompra)
+        val botonCancelarCompra = findViewById<Button>(R.id.botonCancelarCompra)
 
         botonComerciar.setOnClickListener {
-            mostrarBotonesComprarVender()
+            botonComerciar.visibility = View.GONE
+            botonContinuar.visibility = View.GONE
+            panelComercio.visibility = View.VISIBLE
         }
 
         botonContinuar.setOnClickListener {
             finish()
         }
 
-        botonComprar.setOnClickListener {
-            cambiarImagenObjetoMercader()
+        botonCancelar.setOnClickListener {
+            botonComerciar.visibility = View.VISIBLE
+            botonContinuar.visibility = View.VISIBLE
+            panelComercio.visibility = View.GONE
+            resetearVista()
+        }
 
+        botonComprar.setOnClickListener {
+            val cursor = dbObjetosMercader.MostrarObjetosDisponibles()
+            val items = ArrayList<String>()
+            val precios = ArrayList<Int>()
+            val itemIds = ArrayList<Int>()
+            while (cursor.moveToNext()) {
+                val nombre = cursor.getString(cursor.getColumnIndex("nombre"))
+                val precio = cursor.getInt(cursor.getColumnIndex(Objetos_mercader.getColumnPrecio()))
+                val imagenId = cursor.getInt(cursor.getColumnIndex(Objetos_mercader.getColumnImagen()))
+                items.add(nombre)
+                precios.add(precio)
+                itemIds.add(imagenId)
+            }
+            cursor.close()
+
+            botonComprar.visibility = View.GONE
+            botonVender.visibility = View.GONE
+            botonCancelar.visibility = View.GONE
+
+            val adapter = ArrayAdapter(this, android.R.layout.select_dialog_singlechoice, items)
+            AlertDialog.Builder(this)
+                .setTitle("Selecciona un objeto para comprar")
+                .setAdapter(adapter) { dialog, which ->
+
+                    val imagenId = itemIds[which]
+                    val resourceId = obtenerIdImagenPorNumero(imagenId)
+                    mercaderImageView.setImageResource(resourceId)
+
+
+                    precioTextView.text = "Precio: ${precios[which]}"
+                    precioTextView.visibility = View.VISIBLE
+
+
+                    botonConfirmarCompra.visibility = View.VISIBLE
+                    botonCancelarCompra.visibility = View.VISIBLE
+
+
+                    botonConfirmarCompra.setOnClickListener {
+                        precioTextView.visibility = View.GONE
+                        botonConfirmarCompra.visibility = View.GONE
+                        botonCancelarCompra.visibility = View.GONE
+
+                        resetearVista()
+
+                    }
+
+                    botonCancelarCompra.setOnClickListener {
+
+                        precioTextView.visibility = View.GONE
+                        botonConfirmarCompra.visibility = View.GONE
+                        botonCancelarCompra.visibility = View.GONE
+                        resetearVista()
+
+                    }
+
+                }
+                .show()
         }
 
         botonVender.setOnClickListener {
-            cambiarImagenMochila()
+            mercaderImageView.setImageResource(R.drawable.mochila)
 
         }
 
-        botonCancelar.setOnClickListener {
-            ocultarBotonesComprarVender()
 
+
+    }
+
+    private fun resetearVista() {
+            mercaderImageView.setImageResource(R.drawable.mercader)
+            botonComprar.visibility = View.VISIBLE
+            botonVender.visibility = View.VISIBLE
+            botonCancelar.visibility = View.VISIBLE
         }
     }
 
-    private fun mostrarBotonesComprarVender() {
-        botonComerciar.visibility = View.INVISIBLE
-        botonContinuar.visibility = View.INVISIBLE
-        botonComprar.visibility = View.VISIBLE
-        botonVender.visibility = View.VISIBLE
-        botonCancelar.visibility = View.VISIBLE
-    }
-
-    private fun ocultarBotonesComprarVender() {
-        botonComerciar.visibility = View.VISIBLE
-        botonContinuar.visibility = View.VISIBLE
-        botonComprar.visibility = View.INVISIBLE
-        botonVender.visibility = View.INVISIBLE
-        botonCancelar.visibility = View.INVISIBLE
-    }
-
-    private fun cambiarImagenObjetoMercader() {
-        val imagenes = arrayOf(
-            R.drawable.espada,
-            R.drawable.objeto,
-            R.drawable.daga,
-            R.drawable.martillo,
-            R.drawable.baston,
-            R.drawable.moneda,
-            R.drawable.escudo,
-            R.drawable.armadura,
-            R.drawable.ira,
-            R.drawable.pocion
-        )
-        val i = imagenes.indices.random()
-        mercaderImageView.setImageResource(imagenes[i])
-    }
-
-
-    private fun cambiarImagenMochila() {
-        mercaderImageView.setImageResource(R.drawable.mochila)
-
-
-        mercaderImageView.setImageResource(R.drawable.espada)
-        mercaderImageView.setImageResource(R.drawable.objeto)
-        mercaderImageView.setImageResource(R.drawable.daga)
-        mercaderImageView.setImageResource(R.drawable.martillo)
-        mercaderImageView.setImageResource(R.drawable.baston)
-        mercaderImageView.setImageResource(R.drawable.moneda)
-        mercaderImageView.setImageResource(R.drawable.escudo)
-        mercaderImageView.setImageResource(R.drawable.armadura)
-        mercaderImageView.setImageResource(R.drawable.ira)
-        mercaderImageView.setImageResource(R.drawable.pocion)
-
-    }
-
-
-}
 
 
 
-class MercaderDatabaseHelper(context: Context) :
-    SQLiteOpenHelper(context, DATABASE_NAME, null, DATABASE_VERSION) {
-
-    companion object {
-        private const val DATABASE_VERSION = 1
-        private const val DATABASE_NAME = "objetos_mercader.db"
-
-        private const val TABLE_NAME = "OBJETOS_MERCADER"
-        private const val COLUMN_ID = "_id"
-        private const val COLUMN_NOMBRE = "nombre"
-        private const val COLUMN_TIPO = "tipo"
-        private const val COLUMN_PESO = "peso"
-        private const val COLUMN_URL_IMAGEN = "url_imagen"
-        private const val COLUMN_UNIDADES_DISPONIBLES = "unidades_disponibles"
-        // Columna opRecio
-        private const val COLUMN_PRECIO = "precio"
-    }
-
-    override fun onCreate(db: SQLiteDatabase) {
-        val createTableQuery =
-            "CREATE TABLE $TABLE_NAME (" +
-                    "$COLUMN_ID INTEGER PRIMARY KEY AUTOINCREMENT, " +
-                    "$COLUMN_NOMBRE TEXT, " +
-                    "$COLUMN_TIPO TEXT, " +
-                    "$COLUMN_PESO REAL, " +
-                    "$COLUMN_URL_IMAGEN TEXT, " +
-                    "$COLUMN_UNIDADES_DISPONIBLES INTEGER, " +
-                    "$COLUMN_PRECIO INTEGER)"
-        db.execSQL(createTableQuery)
-
-        // Insert 10 objetos
-        insertObjeto(db, "ObjetoMercader1", "TipoMercader1", 1, "urlMercader1", 20, 10)
-        insertObjeto(db, "ObjetoMercader2", "TipoMercader2", 2, "urlMercader2", 2, 12)
-        insertObjeto(db, "ObjetoMercader3", "TipoMercader3", 1, "urlMercader3", 10, 15)
-        insertObjeto(db, "ObjetoMercader4", "TipoMercader4", 5, "urlMercader4", 9, 5)
-        insertObjeto(db, "ObjetoMercader5", "TipoMercader5", 3, "urlMercader5", 8, 1)
-        insertObjeto(db, "ObjetoMercader6", "TipoMercader6", 1, "urlMercader6", 4, 10)
-        insertObjeto(db, "ObjetoMercader7", "TipoMercader7", 4, "urlMercader7", 17, 22)
-        insertObjeto(db, "ObjetoMercader8", "TipoMercader8", 5, "urlMercader8", 15, 11)
-        insertObjeto(db, "ObjetoMercader9", "TipoMercader9", 1, "urlMercader9", 22, 3)
-        insertObjeto(db, "ObjetoMercader10", "TipoMercader10", 2, "urlMercader10", 12, 7)
-    }
-
-    override fun onUpgrade(db: SQLiteDatabase, oldVersion: Int, newVersion: Int) {
-        db.execSQL("DROP TABLE IF EXISTS $TABLE_NAME")
-        onCreate(db)
-    }
-
-    private fun insertObjeto(
-        db: SQLiteDatabase,
-        nombre: String,
-        tipo: String,
-        peso: Int,
-        urlImagen: String,
-        unidadesDisponibles: Int,
-        precio: Int
-    ) {
-        val values = ContentValues().apply {
-            put(COLUMN_NOMBRE, nombre)
-            put(COLUMN_TIPO, tipo)
-            put(COLUMN_PESO, peso)
-            put(COLUMN_URL_IMAGEN, urlImagen)
-            put(COLUMN_UNIDADES_DISPONIBLES, unidadesDisponibles)
-            put(COLUMN_PRECIO, precio)
+    private fun obtenerIdImagenPorNumero(numero: Int): Int {
+        return when (numero) {
+            1 -> R.drawable.moneda
+            2 -> R.drawable.espada
+            3 -> R.drawable.martillo
+            4 -> R.drawable.objeto
+            5 -> R.drawable.baston
+            6 -> R.drawable.pocion
+            7 -> R.drawable.ira
+            8 -> R.drawable.escudo
+            9 -> R.drawable.armadura
+            10 -> R.drawable.daga
+            else -> R.drawable.cofre
         }
-
-        db.insert(TABLE_NAME, null, values)
     }
-}
+
+

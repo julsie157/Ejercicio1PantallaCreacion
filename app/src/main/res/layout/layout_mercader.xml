@@ -49,37 +49,60 @@
         </LinearLayout>
 
         <LinearLayout
-            android:id="@+id/botonComprarVender"
-            android:layout_width="346dp"
+            android:id="@+id/panelComercio"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginStart="20dp"
             android:layout_marginTop="16dp"
-            android:layout_marginEnd="45dp"
             android:gravity="center"
             android:orientation="horizontal"
-            android:visibility="invisible"
-            tools:visibility="visible">
+            android:visibility="gone"> <!-- Este panel está oculto inicialmente -->
 
             <Button
-                android:id="@+id/BotonComprar"
+                android:id="@+id/botonComprar"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Comprar" />
 
             <Button
-                android:id="@+id/BotonVender"
+                android:id="@+id/botonVender"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Vender" />
 
             <Button
-                android:id="@+id/BotonCancelar"
+                android:id="@+id/botonCancelar"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Cancelar" />
-
         </LinearLayout>
 
+        <TextView
+            android:id="@+id/precioTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Precio: $0"
+            android:visibility="gone" />
+
+        <Button
+            android:id="@+id/botonConfirmarCompra"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Confirmar Compra"
+            android:visibility="gone" />
+
+        <Button
+            android:id="@+id/botonCancelarCompra"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Cancelar Compra"
+            android:visibility="gone" />
+
+
+
     </LinearLayout>
+
+
+
+
 
 </RelativeLayout>
