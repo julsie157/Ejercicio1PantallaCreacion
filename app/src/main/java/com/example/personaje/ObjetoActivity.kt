@@ -1,25 +1,28 @@
 package com.example.personaje
-import android.annotation.SuppressLint
-import android.content.ContentValues
-import android.content.Context
-import android.database.sqlite.SQLiteDatabase
-import android.database.sqlite.SQLiteOpenHelper
 
+import android.annotation.SuppressLint
+import android.content.Context
 import android.os.Bundle
-import android.os.Parcel
-import android.os.Parcelable
+import android.os.Handler
+import android.os.Looper
 import android.widget.Button
+import android.widget.ImageView
+import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 
-class ObjetoActivity : AppCompatActivity() {
-    private lateinit var objetoActual: Objeto
-    private var espacioMochilaDisponible: Int = 100 // Capacidad máxima de la mochila
 
+    class ObjetoActivity : AppCompatActivity() {
+        private var espacioMochilaDisponible: Int = 100
+        private lateinit var dbObjetosAleatorios: Objetos_Aleatorios
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.layout_objeto)
+
+        dbObjetosAleatorios = Objetos_Aleatorios(this)
+
+        espacioMochilaDisponible = cargarPesoDisponible()
 
         val recogerButton = findViewById<Button>(R.id.Botonrecoger)
         recogerButton.setOnClickListener {
@@ -31,129 +34,74 @@ class ObjetoActivity : AppCompatActivity() {
             finish()
         }
     }
+        private fun obtenerIdImagenPorNumero(numero: Int): Int {
+            return when (numero) {
+                1 -> R.drawable.moneda
+                2 -> R.drawable.espada
+                3 -> R.drawable.martillo
+                4 -> R.drawable.objeto
+                5 -> R.drawable.baston
+                6 -> R.drawable.pocion
+                7 -> R.drawable.ira
+                8 -> R.drawable.escudo
+                9 -> R.drawable.armadura
+                10 -> R.drawable.daga
+                else -> R.drawable.cofre
+            }
+        }
+        private fun guardarPesoDisponible(peso: Int) {
+            val sharedPreferences = getSharedPreferences("PreferenciasMochila", Context.MODE_PRIVATE)
+            val editor = sharedPreferences.edit()
+            editor.putInt("PesoDisponible", peso)
+            editor.apply()
+        }
 
+        private fun cargarPesoDisponible(): Int {
+            val sharedPreferences = getSharedPreferences("PreferenciasMochila", Context.MODE_PRIVATE)
+            return sharedPreferences.getInt("PesoDisponible", 100)
+        }
 
+    @SuppressLint("Range")
     private fun recogerObjeto() {
+        val cursor = dbObjetosAleatorios.obtenerObjetoAleatorio()
+        if (cursor != null && cursor.moveToFirst()) {
+            val nombre = cursor.getString(cursor.getColumnIndex(Objetos_Aleatorios.getColumnNombre()))
+            val peso = cursor.getInt(cursor.getColumnIndex(Objetos_Aleatorios.getColumnPeso()))
+            val idImagen = cursor.getInt(cursor.getColumnIndex(Objetos_Aleatorios.getColumnImagen()))
+            val resourceId = obtenerIdImagenPorNumero(idImagen)
 
-        val dbHelper = DBHelper(this)
-        val db = dbHelper.writableDatabase
+            cursor.close()
 
-        if (espacioMochilaDisponible > 0) {
-            if (actualizarObjetoEnBaseDeDatos(db, objetoActual)) {
-                // Reducir el espacio disponible en la mochila
-                espacioMochilaDisponible--
-                Toast.makeText(this, "Objeto recogido exitosamente", Toast.LENGTH_SHORT).show()
+            if (peso <= espacioMochilaDisponible) {
+                espacioMochilaDisponible -= peso
+
+
+                val inflater = layoutInflater
+                val layout = inflater.inflate(R.layout.toast_layout, null)
+                val image = layout.findViewById<ImageView>(R.id.toast_image)
+                val text = layout.findViewById<TextView>(R.id.toast_text)
+
+                image.setImageResource(resourceId)
+                text.text = "Has recogido: $nombre. Espacio restante: $espacioMochilaDisponible"
+
+                with(Toast(applicationContext)) {
+                    duration = Toast.LENGTH_SHORT
+                    view = layout
+                    show()
+                }
+                Handler(Looper.getMainLooper()).postDelayed({
+                    finish()
+                }, 1600)
+
+                guardarPesoDisponible(espacioMochilaDisponible)
             } else {
-                Toast.makeText(this, "No se pudo recoger el objeto", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, "El objeto $nombre es demasiado pesado. Espacio disponible: $espacioMochilaDisponible", Toast.LENGTH_SHORT).show()
             }
         } else {
-            Toast.makeText(this, "La mochila está llena", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, "No se pudo recoger un objeto.", Toast.LENGTH_SHORT).show()
         }
 
-        dbHelper.close()
-    }
-    private fun actualizarObjetoEnBaseDeDatos(db: SQLiteDatabase, objeto: Objeto): Boolean {
-        val unidadesActuales = objeto.unidadesDisponibles
-
-        if (unidadesActuales > 0) {
-            val nuevasUnidades = unidadesActuales - 1
-
-            val contentValues = ContentValues().apply {
-                put("unidades_disponibles", nuevasUnidades)
-            }
-
-            val whereClause = "_id = ?"
-            val whereArgs = arrayOf(objeto.id.toString())
-
-            val rowsAffected = db.update("OBJETOS_ALEATORIOS", contentValues, whereClause, whereArgs)
-
-            return rowsAffected > 0
-        }
-
-        return false
-    }
-}
-
- class Objeto(
-    val id: Int,
-    val nombre: String,
-    val tipo: String,
-    val peso: Double,
-    val urlImagen: String,
-    val unidadesDisponibles: Int,
-    val precio: Int
-)
-
-
-
-/*class ObjetoDatabaseHelper(context: Context) :
-    SQLiteOpenHelper(context, DATABASE_NAME, null, DATABASE_VERSION) {
-
-    companion object {
-        private const val DATABASE_VERSION = 1
-        private const val DATABASE_NAME = "objetos_aleatorios.db"
-        private const val TABLE_NAME = "OBJETOS_ALEATORIOS"
-        private const val COLUMN_ID = "_id"
-        private const val COLUMN_NOMBRE = "nombre"
-        private const val COLUMN_TIPO = "tipo"
-        private const val COLUMN_PESO = "peso"
-        private const val COLUMN_URL_IMAGEN = "url_imagen"
-        private const val COLUMN_UNIDADES_DISPONIBLES = "unidades_disponibles"
-        private const val COLUMN_PRECIO = "precio"
     }
 
-    override fun onCreate(db: SQLiteDatabase) {
-        val createTableQuery =
-            "CREATE TABLE $TABLE_NAME (" +
-                    "$COLUMN_ID INTEGER PRIMARY KEY AUTOINCREMENT, " +
-                    "$COLUMN_NOMBRE TEXT, " +
-                    "$COLUMN_TIPO TEXT, " +
-                    "$COLUMN_PESO REAL, " +
-                    "$COLUMN_URL_IMAGEN TEXT, " +
-                    "$COLUMN_UNIDADES_DISPONIBLES INTEGER, " +
-                    "$COLUMN_PRECIO INTEGER)"
-        db.execSQL(createTableQuery)
 
-        // Insert de los objetos
-        insertObjeto(db, "Objeto1", "Tipo1", 1, "url1", 20, 10)
-        insertObjeto(db, "Objeto2", "Tipo2", 2, "url2", 2, 12)
-        insertObjeto(db, "Objeto3", "Tipo3", 1, "url3", 10, 15)
-        insertObjeto(db, "Objeto4", "Tipo4", 5, "url4", 9, 5)
-        insertObjeto(db, "Objeto5", "Tipo5", 3, "url5", 8, 1)
-        insertObjeto(db, "Objeto6", "Tipo6", 1, "url6", 4, 10)
-        insertObjeto(db, "Objeto7", "Tipo7", 4, "url7", 17, 22)
-        insertObjeto(db, "Objeto8", "Tipo8", 5, "url8", 15, 11)
-        insertObjeto(db, "Objeto9", "Tipo9", 1, "url9", 22, 3)
-        insertObjeto(db, "Objeto10", "Tipo10", 2, "url10", 12, 7)
     }
-
-    override fun onUpgrade(db: SQLiteDatabase, oldVersion: Int, newVersion: Int) {
-        db.execSQL("DROP TABLE IF EXISTS $TABLE_NAME")
-        onCreate(db)
-    }
-
-    private fun insertObjeto(
-        db: SQLiteDatabase,
-        nombre: String,
-        tipo: String,
-        peso: Int,
-        urlImagen: String,
-        unidadesDisponibles: Int,
-        precio: Int
-    ) {
-        val values = ContentValues().apply {
-            put(COLUMN_NOMBRE, nombre)
-            put(COLUMN_TIPO, tipo)
-            put(COLUMN_PESO, peso)
-            put(COLUMN_URL_IMAGEN, urlImagen)
-            put(COLUMN_UNIDADES_DISPONIBLES, unidadesDisponibles)
-            put(COLUMN_PRECIO, precio)
-        }
-
-        db.insert(TABLE_NAME, null, values)
-    }
-}
-
-*/
-
-
