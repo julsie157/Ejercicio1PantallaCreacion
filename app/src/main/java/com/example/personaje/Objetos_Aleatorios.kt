@@ -1,5 +1,7 @@
-package com.example.personaje
 
+
+package com.example.personaje
+/*
 import android.annotation.SuppressLint
 import android.content.ContentValues
 import android.content.Context
@@ -84,4 +86,4 @@ class Objetos_Aleatorios(context: Context) : SQLiteOpenHelper(context, DATABASE_
 
 
 }
-
+*/

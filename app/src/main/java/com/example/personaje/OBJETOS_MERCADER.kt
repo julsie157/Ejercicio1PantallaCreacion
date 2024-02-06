@@ -1,5 +1,7 @@
 package com.example.personaje
 
+/*
+
 
 import android.content.ContentValues
 import android.content.Context
@@ -88,3 +90,4 @@ class Objetos_mercader(context: Context) : SQLiteOpenHelper(context, DATABASE_NA
 
 }
 
+ */

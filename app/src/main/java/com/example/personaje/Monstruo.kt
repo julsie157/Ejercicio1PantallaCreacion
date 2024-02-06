@@ -1,3 +1,5 @@
+package com.example.personaje
+
 class Monstruo(
     private var nombre: String,
     private var nivel: Int

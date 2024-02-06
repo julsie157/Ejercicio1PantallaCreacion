@@ -3,87 +3,76 @@ package com.example.personaje
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
+import android.widget.AdapterView
 import android.widget.ArrayAdapter
+import android.widget.Button
 import android.widget.EditText
+import android.widget.ImageView
 import android.widget.Spinner
-import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 
 class Inicio : AppCompatActivity() {
 
-
-
-    private lateinit var imagen: ImageView
     private lateinit var spinnerRaza: Spinner
     private lateinit var spinnerClase: Spinner
     private lateinit var spinnerEstadoVital: Spinner
+    private lateinit var nombreEditText: EditText
+    private lateinit var continuarButton: Button
+    private lateinit var imagen: ImageView
 
-    // Define un mapa
     private val imagenes = mutableMapOf<String, Int>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.layout_inicio)
 
-
-        imagen = findViewById(R.id.Imagen)
         spinnerRaza = findViewById(R.id.spinnerRaza)
         spinnerClase = findViewById(R.id.spinnerClase)
         spinnerEstadoVital = findViewById(R.id.spinnerEstadoVital)
+        nombreEditText = findViewById(R.id.Nombre)
+        continuarButton = findViewById(R.id.Continuar)
+        imagen = findViewById(R.id.Imagen)
 
-        val nombreEditText = findViewById<EditText>(R.id.Nombre)
-        val continuarButton = findViewById<Button>(R.id.Continuar)
-
-        // Configura spinners
-        val razaAdapter = ArrayAdapter(this, android.R.layout.simple_spinner_item, arrayOf("Seleccionar Raza", "Enano", "Humano", "Elfo", "Maldito"))
-        val claseAdapter = ArrayAdapter(this, android.R.layout.simple_spinner_item, arrayOf("Seleccionar Clase", "Mago", "Brujo", "Guerrero"))
-        val estadoVitalAdapter = ArrayAdapter(this, android.R.layout.simple_spinner_item, arrayOf("Seleccionar Estado", "Joven", "Adulto", "Anciano"))
-
-        spinnerRaza.adapter = razaAdapter
-        spinnerClase.adapter = claseAdapter
-        spinnerEstadoVital.adapter = estadoVitalAdapter
-
+        setupSpinners()
         llenarMapaDeImagenes()
 
         val spinnerListener = object : AdapterView.OnItemSelectedListener {
             override fun onItemSelected(parent: AdapterView<*>, view: View?, position: Int, id: Long) {
-                if (position != 0) {
-                    actualizarImagen()
-                } else {
-                    imagen.setImageResource(R.drawable.gnomopocho)
-                }
+                actualizarImagen()
             }
 
-            override fun onNothingSelected(parent: AdapterView<*>) {
-            }
+            override fun onNothingSelected(parent: AdapterView<*>) {}
         }
 
         spinnerRaza.onItemSelectedListener = spinnerListener
         spinnerClase.onItemSelectedListener = spinnerListener
         spinnerEstadoVital.onItemSelectedListener = spinnerListener
 
-
-        imagen.setImageResource(R.drawable.gnomopocho)
-
-
-
         continuarButton.setOnClickListener {
-            // Obtener valores seleccionados
             val nombre = nombreEditText.text.toString()
             val raza = spinnerRaza.selectedItem.toString()
+            val clase = spinnerClase.selectedItem.toString()
             val estadoVital = spinnerEstadoVital.selectedItem.toString()
-            val pesoMochila = 100.0
 
-            // Crear el objeto Personaje
-            val personaje = Personaje(raza, nombre, estadoVital, pesoMochila)
-
-            // Crear Intent y pasar el objeto Personaje a MainActivity2
-            val intent = Intent(this, DatosPersonaje::class.java)
-            intent.putExtra("personaje", personaje)
-            intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+            val intent = Intent(this, DatosPersonaje::class.java).apply {
+                putExtra("nombre_personaje", nombre)
+                putExtra("raza_personaje", raza)
+                putExtra("clase_personaje", clase)
+                putExtra("estado_vital_personaje", estadoVital)
+            }
             startActivity(intent)
         }
+    }
 
+    private fun actualizarImagen() {
+        val selectedRaza = spinnerRaza.selectedItem.toString()
+        val selectedClase = spinnerClase.selectedItem.toString()
+        val selectedEstado = spinnerEstadoVital.selectedItem.toString()
+
+        val key = "$selectedRaza, $selectedClase, $selectedEstado"
+        val imagenId = imagenes[key]
+
+        imagen.setImageResource(imagenId ?: R.drawable.gnomopocho)
     }
 
     private fun llenarMapaDeImagenes() {
@@ -141,16 +130,35 @@ class Inicio : AppCompatActivity() {
 
     }
 
-    private fun actualizarImagen() {
-        val selectedRaza = spinnerRaza.selectedItem.toString()
-        val selectedClase = spinnerClase.selectedItem.toString()
-        val selectedEstado = spinnerEstadoVital.selectedItem.toString()
+    private fun setupSpinners() {
 
-        val key = "$selectedRaza, $selectedClase, $selectedEstado"
-        val imagenId = imagenes[key]
+        ArrayAdapter.createFromResource(
+            this,
+            R.array.razas_array,
+            android.R.layout.simple_spinner_item
+        ).also { adapter ->
+            adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+            spinnerRaza.adapter = adapter
+        }
 
-        if (imagenId != null) {
-            imagen.setImageResource(imagenId)
+
+        ArrayAdapter.createFromResource(
+            this,
+            R.array.clases_array,
+            android.R.layout.simple_spinner_item
+        ).also { adapter ->
+            adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+            spinnerClase.adapter = adapter
+        }
+
+
+        ArrayAdapter.createFromResource(
+            this,
+            R.array.estados_vitales_array,
+            android.R.layout.simple_spinner_item
+        ).also { adapter ->
+            adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+            spinnerEstadoVital.adapter = adapter
         }
     }
 

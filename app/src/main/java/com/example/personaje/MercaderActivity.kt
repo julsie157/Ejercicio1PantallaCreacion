@@ -20,7 +20,7 @@ import androidx.appcompat.app.AppCompatActivity
 
 
 class MercaderActivity : AppCompatActivity() {
-
+/*
     private lateinit var botonComerciar: Button
     private lateinit var botonContinuar: Button
     private lateinit var panelComercio: LinearLayout
@@ -29,7 +29,7 @@ class MercaderActivity : AppCompatActivity() {
     private lateinit var botonCancelar: Button
     private lateinit var mercaderImageView: ImageView
 
-    private lateinit var dbObjetosMercader: Objetos_mercader
+    //private lateinit var dbObjetosMercader: Objetos_mercader
 
 
     @SuppressLint("Range")
@@ -37,7 +37,7 @@ class MercaderActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.layout_mercader)
 
-        dbObjetosMercader = Objetos_mercader(this)
+        //dbObjetosMercader = Objetos_mercader(this)
 
         botonComerciar = findViewById(R.id.Botoncomerciar)
         botonContinuar = findViewById(R.id.Botoncontmercader)
@@ -163,4 +163,5 @@ class MercaderActivity : AppCompatActivity() {
         }
     }
 
-
+ */
+}

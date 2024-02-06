@@ -1,4 +1,26 @@
 <resources>
     <string name="app_name">Personaje</string>
     <string name="nombre">Nombre</string>
+
+    <string-array name="razas_array">
+        <item>Seleciona</item>
+        <item>Humano</item>
+        <item>Elfo</item>
+        <item>Enano</item>
+        <item>Maldito</item>
+    </string-array>
+
+    <string-array name="clases_array">
+        <item>Seleciona</item>
+        <item>Brujo</item>
+        <item>Mago</item>
+        <item>Guerrero</item>
+    </string-array>
+
+    <string-array name="estados_vitales_array">
+        <item>Seleciona</item>
+        <item>Anciano</item>
+        <item>Joven</item>
+        <item>Adulto</item>
+    </string-array>
 </resources>
