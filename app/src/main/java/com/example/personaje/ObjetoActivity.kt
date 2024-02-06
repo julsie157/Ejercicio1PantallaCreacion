@@ -1,5 +1,5 @@
 package com.example.personaje
-/*
+
 import android.annotation.SuppressLint
 import android.os.Bundle
 import android.os.Handler
@@ -11,7 +11,7 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 
 class ObjetoActivity : AppCompatActivity() {
-
+/*
     private lateinit var botonRecoger: Button
     private lateinit var botonContinuar: Button
     private lateinit var imagenObjeto: ImageView
@@ -88,7 +88,11 @@ class ObjetoActivity : AppCompatActivity() {
             Toast.makeText(this, "No se pudo recoger un objeto.", Toast.LENGTH_SHORT).show()
         }
     }
-}
-
 
  */
+
+    }
+
+
+
+
