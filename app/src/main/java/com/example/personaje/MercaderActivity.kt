@@ -21,6 +21,7 @@ import androidx.appcompat.app.AppCompatActivity
 
 class MercaderActivity : AppCompatActivity() {
 /*
+aaaa
     private lateinit var botonComerciar: Button
     private lateinit var botonContinuar: Button
     private lateinit var panelComercio: LinearLayout

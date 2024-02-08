@@ -12,6 +12,7 @@ import androidx.appcompat.app.AppCompatActivity
 
 class ObjetoActivity : AppCompatActivity() {
 /*
+aa
     private lateinit var botonRecoger: Button
     private lateinit var botonContinuar: Button
     private lateinit var imagenObjeto: ImageView
