@@ -44,6 +44,20 @@ class Personaje(
     fun setNombre(nuevoNombre: String) {
         nombre = nuevoNombre
     }
+    fun setDefensa(nuevaDefensa: Int) {
+        defensa = nuevaDefensa
+    }
+
+    fun setNivel(nuevoNivel: Int) {
+        nivel = nuevoNivel
+        calcularSalud()
+        calcularAtaque()
+        calcularDefensa()
+    }
+
+    fun setSuerte(nuevaSuerte: Int) {
+        suerte = nuevaSuerte
+    }
     fun getRaza(): Raza {
         return raza
     }

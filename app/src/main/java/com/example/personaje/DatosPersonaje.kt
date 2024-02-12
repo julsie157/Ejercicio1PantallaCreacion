@@ -5,24 +5,33 @@ import android.content.Intent
 import android.os.Bundle
 import android.widget.Button
 import android.widget.TextView
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 
 
-
 class DatosPersonaje : AppCompatActivity() {
+
+    private lateinit var dbGeneral: BaseDeDatosGeneral // Asegúrate de inicializarlo
     private lateinit var playButton: Button
+    private lateinit var nombreTextView: TextView
+    private lateinit var razaTextView: TextView
+    private lateinit var claseTextView: TextView
+    private lateinit var estadoVitalTextView: TextView
+    private lateinit var botonVolver: Button
+    private lateinit var botonComenzarAventura: Button
+
+
     @SuppressLint("MissingInflatedId")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.layout_informacion)
 
-
+        dbGeneral = BaseDeDatosGeneral(this)
 
         MusicPlayer.init(this)
         playButton = findViewById<Button>(R.id.play_button)
 
         MusicPlayer.init(this)
-
         updatePlayButton()
 
         playButton.setOnClickListener {
@@ -34,40 +43,60 @@ class DatosPersonaje : AppCompatActivity() {
             updatePlayButton()
         }
 
+        inicializarUI()
+        configurarBotones()
 
+        // Obtiene el ID del personaje pasado a través del Intent
 
-        val nombreTextView: TextView = findViewById(R.id.nombreTextView)
-        val razaTextView: TextView = findViewById(R.id.razaTextView)
-        val claseTextView: TextView = findViewById(R.id.claseTextView)
-        val estadoVitalTextView: TextView = findViewById(R.id.estadoVitalTextView)
-        val botonVolver: Button = findViewById(R.id.botonVolver)
-        val botonComenzarAventura: Button = findViewById(R.id.botonComenzarAventura)
+        val idPersonaje = intent.getLongExtra("id_personaje", -1L) // Asegúrate de que el valor predeterminado coincide
 
+        if (idPersonaje != -1L) {
+            cargarDetallesPersonaje(idPersonaje)
+        } else {
+            Toast.makeText(this, "Error al cargar el personaje", Toast.LENGTH_SHORT).show()
+            finish()
+        }
+    }
 
-        val nombre = intent.getStringExtra("nombre_personaje")
-        val raza = intent.getStringExtra("raza_personaje")
-        val clase = intent.getStringExtra("clase_personaje")
-        val estadoVital = intent.getStringExtra("estado_vital_personaje")
+    private fun inicializarUI() {
+        nombreTextView = findViewById(R.id.nombreTextView)
+        razaTextView = findViewById(R.id.razaTextView)
+        claseTextView = findViewById(R.id.claseTextView)
+        estadoVitalTextView = findViewById(R.id.estadoVitalTextView)
+        botonVolver = findViewById(R.id.botonVolver)
+        botonComenzarAventura = findViewById(R.id.botonComenzarAventura)
+        playButton = findViewById(R.id.play_button)
+    }
 
-
-        nombreTextView.text = "Nombre: $nombre"
-        razaTextView.text = "Raza: $raza"
-        claseTextView.text = "Clase: $clase"
-        estadoVitalTextView.text = "Estado Vital: $estadoVital"
-
-
+    private fun configurarBotones() {
         botonVolver.setOnClickListener {
             val intentVolver = Intent(this, Inicio::class.java)
             intentVolver.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
             startActivity(intentVolver)
         }
 
-
         botonComenzarAventura.setOnClickListener {
-            val intentAventura = Intent(this, PantallaDado::class.java)
+
+            val idPersonaje = intent.getLongExtra("id_personaje", -1L)
+
+
+            val intentAventura = Intent(this, PantallaDado::class.java).apply {
+                putExtra("id_personaje", idPersonaje)
+            }
             startActivity(intentAventura)
         }
+    }
 
+    private fun cargarDetallesPersonaje(idPersonaje: Long) {
+        val personaje = dbGeneral.obtenerPersonajePorId(idPersonaje)
+        if (personaje != null) {
+            nombreTextView.text = "Nombre: ${personaje.getNombre()}"
+            razaTextView.text = "Raza: ${personaje.getRaza()}"
+            claseTextView.text = "Clase: ${personaje.getClase()}"
+            estadoVitalTextView.text = "Estado Vital: ${personaje.getEstadoVital()}"
+        } else {
+            Toast.makeText(this, "Personaje no encontrado.", Toast.LENGTH_SHORT).show()
+        }
     }
 
     override fun onPause() {

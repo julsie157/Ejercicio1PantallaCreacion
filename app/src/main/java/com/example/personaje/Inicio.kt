@@ -13,10 +13,12 @@ import android.widget.EditText
 import android.widget.ImageView
 import android.widget.SeekBar
 import android.widget.Spinner
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 
 class Inicio : AppCompatActivity() {
 
+    private lateinit var dbGeneral: BaseDeDatosGeneral
     private lateinit var mediaPlayer: MediaPlayer
     private lateinit var playButton: Button
     private lateinit var seekBar: SeekBar
@@ -34,6 +36,8 @@ class Inicio : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.layout_inicio)
+
+        dbGeneral = BaseDeDatosGeneral(this)
 
         mediaPlayer = MediaPlayer.create(this, R.raw.temita)
 
@@ -85,14 +89,21 @@ class Inicio : AppCompatActivity() {
             val clase = spinnerClase.selectedItem.toString()
             val estadoVital = spinnerEstadoVital.selectedItem.toString()
 
-            val intent = Intent(this, DatosPersonaje::class.java).apply {
-                putExtra("nombre_personaje", nombre)
-                putExtra("raza_personaje", raza)
-                putExtra("clase_personaje", clase)
-                putExtra("estado_vital_personaje", estadoVital)
+
+            val idPersonajeNuevo = dbGeneral.insertarPersonaje(nombre, raza, clase, estadoVital, 100, 10, 5, 0, 1, (1..10).random())
+
+            if(idPersonajeNuevo > 0) {
+                dbGeneral.insertarMochila(idPersonajeNuevo.toInt())
+                val intent = Intent(this, DatosPersonaje::class.java).apply {
+                    putExtra("id_personaje", idPersonajeNuevo)
+                }
+                startActivity(intent)
+            } else {
+                Toast.makeText(this, "Error al crear el personaje. Inténtalo de nuevo.", Toast.LENGTH_SHORT).show()
             }
-            startActivity(intent)
+
         }
+
     }
 
     private fun actualizarImagen() {
