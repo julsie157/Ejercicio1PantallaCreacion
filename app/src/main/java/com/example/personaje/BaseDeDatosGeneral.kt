@@ -29,18 +29,22 @@ class BaseDeDatosGeneral(context: Context) : SQLiteOpenHelper(context, DATABASE_
         private const val COLUMN_NIVEL = "nivel"
         private const val COLUMN_SUERTE = "suerte"
 
+
         private const val TABLA_MOCHILAS = "Mochilas"
         private const val COLUMN_ID_MOCHILA = "idMochila"
         private const val COLUMN_PESO_MAXIMO = "pesoMaximo"
         private const val COLUMN_ESPACIO_OCUPADO = "espacioOcupado"
+        private const val COLUMN_ORO = "oro"
 
         private const val TABLA_ARTICULOS = "Articulos"
         private const val COLUMN_ID_ARTICULO = "idArticulo"
         private const val COLUMN_TIPO_ARTICULO = "tipoArticulo"
         const val COLUMN_PESO_ARTICULO = "peso"
-        private const val COLUMN_PRECIO = "precio"
+        const val COLUMN_PRECIO = "precio"
         const val COLUMN_DRAWABLE = "imagen"
         private const val COLUMN_ID_MOCHILA_ARTICULO = "idMochila"
+
+
     }
 
     override fun onCreate(db: SQLiteDatabase) {
@@ -61,7 +65,8 @@ class BaseDeDatosGeneral(context: Context) : SQLiteOpenHelper(context, DATABASE_
                 "$COLUMN_ID_MOCHILA INTEGER PRIMARY KEY, " +
                 "$COLUMN_PESO_MAXIMO INTEGER, " +
                 "$COLUMN_ESPACIO_OCUPADO INTEGER DEFAULT 0, " +
-                "$COLUMN_ID_PERSONAJE INTEGER, " +
+                "$COLUMN_ID_PERSONAJE INTEGCOLU," +
+                "$COLUMN_ORO INTEGER, " +
                 "FOREIGN KEY ($COLUMN_ID_PERSONAJE) REFERENCES $TABLA_PERSONAJES($COLUMN_ID_PERSONAJE))"
 
         val createTableArticulo = "CREATE TABLE $TABLA_ARTICULOS (" +
@@ -195,6 +200,7 @@ class BaseDeDatosGeneral(context: Context) : SQLiteOpenHelper(context, DATABASE_
             put(COLUMN_PESO_MAXIMO, 100) // Asegúrate de que este valor es correcto
             put(COLUMN_ESPACIO_OCUPADO, 0) // Inicialmente sin ocupar
             put(COLUMN_ID_PERSONAJE, idPersonaje)
+            put(COLUMN_ESPACIO_OCUPADO, 0)
         }
         db.insert(TABLA_MOCHILAS, null, values)
     }
@@ -271,10 +277,23 @@ class BaseDeDatosGeneral(context: Context) : SQLiteOpenHelper(context, DATABASE_
     }
 
 
+    fun actualizarOroMochila(idMochila: Int, oro: Int) {
+        val db = this.writableDatabase
+        val values = ContentValues()
+        values.put(COLUMN_ORO, oro)
+        db.update(TABLA_MOCHILAS, values, "$COLUMN_ID_MOCHILA = ?", arrayOf(idMochila.toString()))
+    }
 
-
-
-
-
+    @SuppressLint("Range")
+    fun obtenerOroMochila(idMochila: Int): Int {
+        val db = this.readableDatabase
+        val cursor = db.query(TABLA_MOCHILAS, arrayOf(COLUMN_ORO), "$COLUMN_ID_MOCHILA = ?", arrayOf(idMochila.toString()), null, null, null)
+        var oro = 0
+        if (cursor.moveToFirst()) {
+            oro = cursor.getInt(cursor.getColumnIndex(COLUMN_ORO))
+        }
+        cursor.close()
+        return oro
+    }
 
 }
