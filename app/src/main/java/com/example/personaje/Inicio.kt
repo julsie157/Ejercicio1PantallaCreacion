@@ -1,17 +1,25 @@
 package com.example.personaje
 
+import android.annotation.SuppressLint
 import android.content.Intent
+import android.media.MediaPlayer
 import android.os.Bundle
+import android.os.Handler
 import android.view.View
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.Button
 import android.widget.EditText
 import android.widget.ImageView
+import android.widget.SeekBar
 import android.widget.Spinner
 import androidx.appcompat.app.AppCompatActivity
 
 class Inicio : AppCompatActivity() {
+
+    private lateinit var mediaPlayer: MediaPlayer
+    private lateinit var playButton: Button
+    private lateinit var seekBar: SeekBar
 
     private lateinit var spinnerRaza: Spinner
     private lateinit var spinnerClase: Spinner
@@ -22,9 +30,32 @@ class Inicio : AppCompatActivity() {
 
     private val imagenes = mutableMapOf<String, Int>()
 
+    @SuppressLint("MissingInflatedId")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.layout_inicio)
+
+        mediaPlayer = MediaPlayer.create(this, R.raw.temita)
+
+        MusicPlayer.init(this)
+        playButton = findViewById<Button>(R.id.play_button)
+        seekBar = findViewById<SeekBar>(R.id.seekBar)
+
+        MusicPlayer.init(this)
+
+        updatePlayButton()
+
+        playButton.setOnClickListener {
+            if (mediaPlayer?.isPlaying == true) {
+                mediaPlayer?.pause()
+            } else {
+                mediaPlayer?.start()
+                startSeekBarUpdate()
+            }
+            updatePlayButton()
+        }
+
+
 
         spinnerRaza = findViewById(R.id.spinnerRaza)
         spinnerClase = findViewById(R.id.spinnerClase)
@@ -161,5 +192,28 @@ class Inicio : AppCompatActivity() {
             spinnerEstadoVital.adapter = adapter
         }
     }
-
+    //para musica
+    private fun startSeekBarUpdate() {
+        seekBar.max = mediaPlayer?.duration ?: 0
+        val handler = Handler()
+        handler.postDelayed(object : Runnable {
+            override fun run() {
+                if (mediaPlayer != null) {
+                    seekBar.progress = mediaPlayer!!.currentPosition
+                }
+                handler.postDelayed(this, 1000) // Update every second
+            }
+        }, 0)
+    }
+    private fun updatePlayButton() {
+        if (MusicPlayer.isPlaying()) {
+            playButton.text = "Pause"
+        } else {
+            playButton.text = "Play"
+        }
+    }
+    override fun onDestroy() {
+        super.onDestroy()
+        MusicPlayer.release()
+    }
 }

@@ -8,12 +8,32 @@ import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 
 
-class DatosPersonaje : AppCompatActivity() {
 
+class DatosPersonaje : AppCompatActivity() {
+    private lateinit var playButton: Button
     @SuppressLint("MissingInflatedId")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.layout_informacion)
+
+
+
+        MusicPlayer.init(this)
+        playButton = findViewById<Button>(R.id.play_button)
+
+        MusicPlayer.init(this)
+
+        updatePlayButton()
+
+        playButton.setOnClickListener {
+            if (MusicPlayer.isPlaying()) {
+                MusicPlayer.pause()
+            } else {
+                MusicPlayer.start()
+            }
+            updatePlayButton()
+        }
+
 
 
         val nombreTextView: TextView = findViewById(R.id.nombreTextView)
@@ -47,5 +67,34 @@ class DatosPersonaje : AppCompatActivity() {
             val intentAventura = Intent(this, PantallaDado::class.java)
             startActivity(intentAventura)
         }
+
     }
+
+    override fun onPause() {
+        super.onPause()
+        if (MusicPlayer.isPlaying()) {
+            MusicPlayer.pause()
+        }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        if (MusicPlayer.isPlaying()) {
+            MusicPlayer.start()
+        }
+    }
+
+//para musica
+    private fun updatePlayButton() {
+        if (MusicPlayer.isPlaying()) {
+            playButton.text = "Pause"
+        } else {
+            playButton.text = "Play"
+        }
+    }
+    override fun onDestroy() {
+        super.onDestroy()
+        MusicPlayer.release()
+    }
+
 }
