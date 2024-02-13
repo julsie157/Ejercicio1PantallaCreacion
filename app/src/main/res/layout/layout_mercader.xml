@@ -1,9 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    android:layout_height="match_parent">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -22,7 +21,7 @@
         <ImageView
             android:id="@+id/Mercader"
             android:layout_width="wrap_content"
-            android:layout_height="347dp"
+            android:layout_height="426dp"
             android:layout_marginTop="16dp"
             android:src="@drawable/mercader" />
 
@@ -45,8 +44,25 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Continuar" />
-
         </LinearLayout>
+
+        <!-- Modificado para incluir ScrollView y LinearLayout para artículos -->
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:visibility="gone"
+            android:id="@+id/scrollViewArticulos">
+
+            <LinearLayout
+                android:id="@+id/panelArticulos"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="16dp">
+                <!-- Aquí se agregarán dinámicamente los artículos -->
+            </LinearLayout>
+        </ScrollView>
 
         <LinearLayout
             android:id="@+id/panelComercio"
@@ -54,8 +70,8 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
             android:gravity="center"
-            android:orientation="horizontal"
-            android:visibility="gone"> <!-- Este panel está oculto inicialmente -->
+            android:visibility="gone">
+
 
             <Button
                 android:id="@+id/botonComprar"
@@ -76,33 +92,5 @@
                 android:text="Cancelar" />
         </LinearLayout>
 
-        <TextView
-            android:id="@+id/precioTextView"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Precio: $0"
-            android:visibility="gone" />
-
-        <Button
-            android:id="@+id/botonConfirmarCompra"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Confirmar Compra"
-            android:visibility="gone" />
-
-        <Button
-            android:id="@+id/botonCancelarCompra"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Cancelar Compra"
-            android:visibility="gone" />
-
-
-
     </LinearLayout>
-
-
-
-
-
 </RelativeLayout>

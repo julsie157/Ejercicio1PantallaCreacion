@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:padding="8dp">
+
+    <ImageView
+        android:id="@+id/imageArticulo"
+        android:layout_width="86dp"
+        android:layout_height="97dp"
+        android:layout_marginEnd="16dp"></ImageView>
+
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="110dp"
+        android:layout_weight="1"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/nombreArticulo"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Nombre del Artículo"
+            android:textSize="18sp" />
+
+        <TextView
+            android:id="@+id/precioArticulo"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Precio: "
+            android:textSize="16sp" />
+
+        <Button
+            android:id="@+id/botonConfirmar"
+            android:layout_width="127dp"
+            android:layout_height="36dp"
+            android:text="Confirmar" />
+    </LinearLayout>
+
+
+</LinearLayout>

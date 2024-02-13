@@ -1,7 +1,7 @@
 package com.example.personaje
 
 
-class Articulo(private var tipoArticulo: TipoArticulo, private var nombre: Nombre, private var peso: Int, private var precio: Int) {
+class Articulo(private var tipoArticulo: TipoArticulo, private var nombre: Nombre, private var peso: Int, private var precio: Int, private var imagenId: Int) {
 
     enum class TipoArticulo { ARMA, OBJETO, PROTECCION,ORO}
     enum class Nombre { BASTON, ESPADA, DAGA, MARTILLO, GARRAS, POCION, IRA, ESCUDO, ARMADURA,MONEDA }
@@ -15,6 +15,14 @@ class Articulo(private var tipoArticulo: TipoArticulo, private var nombre: Nombr
 
     fun getPrecio(): Int {
         return precio
+    }
+
+    fun getImagenId(): Int {
+        return imagenId
+    }
+
+    fun getPrecioAumentado(): Double {
+        return precio * 1.5
     }
     fun getTipoArticulo(): TipoArticulo {
         return tipoArticulo

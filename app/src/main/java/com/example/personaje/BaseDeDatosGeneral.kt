@@ -296,4 +296,26 @@ class BaseDeDatosGeneral(context: Context) : SQLiteOpenHelper(context, DATABASE_
         return oro
     }
 
+    @SuppressLint("Range")
+    fun obtenerArticulosAleatoriosConPrecioAumentado(): List<Articulo> {
+        val articulos = mutableListOf<Articulo>()
+        val db = this.readableDatabase
+        val cursor = db.rawQuery("SELECT $COLUMN_NOMBRE, $COLUMN_DRAWABLE, ($COLUMN_PRECIO * 1.5) AS precioAumentado, $COLUMN_TIPO_ARTICULO FROM $TABLA_ARTICULOS ORDER BY RANDOM() LIMIT 4", null)
+
+        if (cursor.moveToFirst()) {
+            do {
+                val tipoArticuloEnum = Articulo.TipoArticulo.valueOf(cursor.getString(cursor.getColumnIndex(COLUMN_TIPO_ARTICULO)))
+                val nombreEnum = Articulo.Nombre.valueOf(cursor.getString(cursor.getColumnIndex(COLUMN_NOMBRE)))
+                val imagenId = cursor.getInt(cursor.getColumnIndex(COLUMN_DRAWABLE))
+                val precio = cursor.getDouble(cursor.getColumnIndex("precioAumentado")).toInt()
+                val peso = cursor.getInt(cursor.getColumnIndex(COLUMN_PESO_ARTICULO))
+                articulos.add(Articulo(tipoArticuloEnum, nombreEnum, peso, precio, imagenId))
+            } while (cursor.moveToNext())
+        }
+        cursor.close()
+        return articulos
+    }
+
+
+
 }

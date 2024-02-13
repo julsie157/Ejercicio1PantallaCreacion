@@ -25,14 +25,14 @@ class PantallaDado : AppCompatActivity() {
                 else -> null
             }
             intent?.let {
-                it.putExtra("id_personaje", idPersonaje) // Pasa el ID del personaje a la siguiente actividad
+                it.putExtra("id_personaje", idPersonaje)
                 startActivity(it)
             }
         }
     }
 
     private fun randomEncounter(): String {
-        val encounters = arrayOf("Objeto")
+        val encounters = arrayOf("Objeto","Mercader")
         return encounters[Random.nextInt(encounters.size)]
     }
 }

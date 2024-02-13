@@ -26,7 +26,7 @@ class ObjetoActivity : AppCompatActivity() {
         setContentView(R.layout.layout_objeto)
 
         dbGeneral = BaseDeDatosGeneral(this)
-        idPersonaje = intent.getLongExtra("id_personaje", -1L) // Recupera el ID del personaje
+        idPersonaje = intent.getLongExtra("id_personaje", -1L)
 
         botonRecoger = findViewById(R.id.Botonrecoger)
         botonContinuar = findViewById(R.id.Botoncontobjeto)
@@ -61,12 +61,21 @@ class ObjetoActivity : AppCompatActivity() {
             if (peso <= espacioDisponible) {
                 dbGeneral.actualizarEspacioMochila(idMochila, peso)
                 mostrarToastRecogida(nombre, espacioDisponible - peso, resourceId)
+                Handler(Looper.getMainLooper()).postDelayed({
+                    finish()
+                },1400)
             } else {
-                Toast.makeText(this, "No hay suficiente espacio para recoger $nombre.", Toast.LENGTH_LONG).show()
+                Toast.makeText(this, "No hay suficiente espacio para recoger $nombre.", Toast.LENGTH_SHORT).show()
+                Handler(Looper.getMainLooper()).postDelayed({
+                    finish()
+                },1400)
             }
             cursor.close()
         } else {
             Toast.makeText(this, "No se pudo recoger un objeto.", Toast.LENGTH_SHORT).show()
+            Handler(Looper.getMainLooper()).postDelayed({
+                finish()
+            },1400)
         }
     }
 
@@ -74,7 +83,7 @@ class ObjetoActivity : AppCompatActivity() {
     private fun mostrarToastRecogida(nombre: String, nuevoEspacioDisponible: Int, resourceId: Int) {
         imagenObjeto.setImageResource(resourceId)
         val toastText = "Has recogido: $nombre. Espacio restante: $nuevoEspacioDisponible"
-        Toast.makeText(this, toastText, Toast.LENGTH_LONG).show()
+        Toast.makeText(this, toastText, Toast.LENGTH_SHORT).show()
     }
 
 
