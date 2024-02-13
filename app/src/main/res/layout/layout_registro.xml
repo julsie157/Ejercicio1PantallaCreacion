@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".RegistroActivity" >
+
+    <ImageView
+        android:id="@+id/imageViewRegister"
+        android:layout_width="325dp"
+        android:layout_height="325dp"
+        android:src="@drawable/perfil"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginTop="50dp" />
+
+
+    <Button
+        android:id="@+id/buttonConfirmar"
+        style="?attr/materialButtonOutlinedStyle"
+        android:layout_width="131dp"
+        android:layout_height="47dp"
+        android:layout_marginEnd="40dp"
+        android:layout_marginBottom="100dp"
+        android:backgroundTint="@color/design_default_color_primary_dark"
+        android:text="Confirmar"
+        android:textAllCaps="false"
+        android:textColor="#fff"
+        android:textSize="18dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:strokeColor="@color/white" />
+
+    <Button
+        android:id="@+id/botonAtrasReggistro"
+        style="?attr/materialButtonOutlinedStyle"
+        android:layout_width="131dp"
+        android:layout_height="47dp"
+        android:layout_marginBottom="100dp"
+        android:backgroundTint="@color/design_default_color_primary_dark"
+        android:text="Atrás"
+        android:textAllCaps="false"
+        android:textColor="#fff"
+        android:textSize="18dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/buttonConfirmar"
+        app:layout_constraintHorizontal_bias="0.394"
+        app:layout_constraintStart_toStartOf="parent"
+        app:strokeColor="@color/white" />
+
+    <EditText
+        android:id="@+id/editTextEmailRegister"
+        android:layout_width="325dp"
+        android:layout_height="50dp"
+        android:layout_marginTop="32dp"
+        android:backgroundTint="#fff"
+        android:drawableLeft="@drawable/sobre"
+        android:drawablePadding="8dp"
+        android:ems="10"
+        android:foregroundTint="#fff"
+        android:hint="Email"
+        android:inputType="textPersonName"
+        android:padding="8dp"
+        android:textColorHint="#37474F"
+        android:textSize="17dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/imageViewRegister" />
+
+    <EditText
+        android:id="@+id/editTextPasswordRegister"
+        android:layout_width="325dp"
+        android:layout_height="50dp"
+        android:layout_marginTop="40dp"
+        android:backgroundTint="#fff"
+        android:drawableLeft="@drawable/pass"
+        android:drawablePadding="8dp"
+        android:ems="10"
+        android:foregroundTint="#fff"
+        android:hint="Password"
+        android:inputType="textPassword"
+        android:padding="8dp"
+        android:textColorHint="#37474F"
+        android:textSize="17dp"
+        app:layout_constraintBottom_toTopOf="@+id/botonAtrasReggistro"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/editTextEmailRegister"
+        app:layout_constraintVertical_bias="0.0" />
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

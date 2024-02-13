@@ -46,9 +46,9 @@ class DatosPersonaje : AppCompatActivity() {
         inicializarUI()
         configurarBotones()
 
-        // Obtiene el ID del personaje pasado a través del Intent
 
-        val idPersonaje = intent.getLongExtra("id_personaje", -1L) // Asegúrate de que el valor predeterminado coincide
+
+        val idPersonaje = intent.getLongExtra("id_personaje", -1L)
 
         if (idPersonaje != -1L) {
             cargarDetallesPersonaje(idPersonaje)

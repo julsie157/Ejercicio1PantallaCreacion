@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "763003034440",
+    "project_id": "videojuego-198c0",
+    "storage_bucket": "videojuego-198c0.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:763003034440:android:2e8fda14f22afe53baf17d",
+        "android_client_info": {
+          "package_name": "com.example.personaje"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCfBEocQ9YOQPegIFVYrkgmPmLMRjo5DK4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

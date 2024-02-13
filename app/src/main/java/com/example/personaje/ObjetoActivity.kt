@@ -59,7 +59,7 @@ class ObjetoActivity : AppCompatActivity() {
 
             val espacioDisponible = dbGeneral.obtenerEspacioDisponibleMochila(idMochila)
             if (peso <= espacioDisponible) {
-                dbGeneral.actualizarEspacioMochila(idMochila, peso) // Aquí actualizas con el peso del objeto recogido
+                dbGeneral.actualizarEspacioMochila(idMochila, peso)
                 mostrarToastRecogida(nombre, espacioDisponible - peso, resourceId)
             } else {
                 Toast.makeText(this, "No hay suficiente espacio para recoger $nombre.", Toast.LENGTH_LONG).show()
@@ -72,7 +72,7 @@ class ObjetoActivity : AppCompatActivity() {
 
 
     private fun mostrarToastRecogida(nombre: String, nuevoEspacioDisponible: Int, resourceId: Int) {
-        imagenObjeto.setImageResource(resourceId) // Actualizar imagen del objeto recogido
+        imagenObjeto.setImageResource(resourceId)
         val toastText = "Has recogido: $nombre. Espacio restante: $nuevoEspacioDisponible"
         Toast.makeText(this, toastText, Toast.LENGTH_LONG).show()
     }

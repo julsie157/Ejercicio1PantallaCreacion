@@ -197,8 +197,8 @@ class BaseDeDatosGeneral(context: Context) : SQLiteOpenHelper(context, DATABASE_
     fun insertarMochila(idPersonaje: Int) {
         val db = this.writableDatabase
         val values = ContentValues().apply {
-            put(COLUMN_PESO_MAXIMO, 100) // Asegúrate de que este valor es correcto
-            put(COLUMN_ESPACIO_OCUPADO, 0) // Inicialmente sin ocupar
+            put(COLUMN_PESO_MAXIMO, 100)
+            put(COLUMN_ESPACIO_OCUPADO, 0)
             put(COLUMN_ID_PERSONAJE, idPersonaje)
             put(COLUMN_ESPACIO_OCUPADO, 0)
         }
@@ -229,7 +229,7 @@ class BaseDeDatosGeneral(context: Context) : SQLiteOpenHelper(context, DATABASE_
             val nivel = cursor.getInt(cursor.getColumnIndex(COLUMN_NIVEL))
             val suerte = cursor.getInt(cursor.getColumnIndex(COLUMN_SUERTE))
 
-            // Asignación directa de valores obtenidos al constructor de Personaje
+
             val personaje = Personaje(nombre, raza, clase, estadoVital).apply {
                 setSalud(salud)
                 setAtaque(ataque)
