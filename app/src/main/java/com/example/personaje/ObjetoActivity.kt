@@ -12,8 +12,6 @@ import androidx.appcompat.app.AppCompatActivity
 
 class ObjetoActivity : AppCompatActivity() {
 
-
-
     private lateinit var botonRecoger: Button
     private lateinit var botonContinuar: Button
     private lateinit var imagenObjeto: ImageView
@@ -26,7 +24,7 @@ class ObjetoActivity : AppCompatActivity() {
         setContentView(R.layout.layout_objeto)
 
         dbGeneral = BaseDeDatosGeneral(this)
-        idPersonaje = intent.getLongExtra("id_personaje", -1L)
+        idPersonaje = intent.getLongExtra("intentExtraIdPersonaje", -1L)
 
         botonRecoger = findViewById(R.id.Botonrecoger)
         botonContinuar = findViewById(R.id.Botoncontobjeto)

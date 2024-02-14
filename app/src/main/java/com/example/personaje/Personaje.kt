@@ -1,16 +1,16 @@
 package com.example.personaje
 
-import android.os.Parcel
-import android.os.Parcelable
+import java.io.Serializable
 
 
-
-class Personaje(
+class Personaje  (
+    private var email: String,
     private var nombre: String,
     private val raza: Raza,
     private var clase: Clase,
     private var estadoVital: EstadoVital
-) {
+){
+    private var id: Int = -1
     private var salud: Int = 0
     private var ataque: Int = 0
     private var experiencia: Int
@@ -18,10 +18,11 @@ class Personaje(
     private var suerte: Int
     private var defensa: Int = 0
 
+
     // Enumeración para el tipo de raza y clase
     enum class Raza { Humano, Elfo, Enano, Maldito }
     enum class Clase { Brujo, Mago, Guerrero }
-    enum class EstadoVital{Anciano, Joven, Adulto}
+    enum class EstadoVital { Anciano, Joven, Adulto }
 
     private val mochila = Mochila(10) // Ejemplo de peso máximo de la mochila
     // Atributos para el equipo del personaje
@@ -30,20 +31,42 @@ class Personaje(
 
     // Inicialización de los atributos tras la construcción del objeto Personaje
     init {
-        calcularSalud()
-        calcularAtaque()
-        calcularDefensa()
         experiencia = 0
         nivel = 1
         suerte = (0..10).random() // Asigna un valor de suerte aleatorio entre 0 y 10
+        calcularSalud()
+        calcularAtaque()
+        calcularDefensa()
+    }
+
+    fun getId(): Int {
+        return id
+    }
+
+    fun setId(nuevoId: Int) {
+        id = nuevoId
     }
 
     fun getNombre(): String {
         return nombre
     }
+
     fun setNombre(nuevoNombre: String) {
         nombre = nuevoNombre
     }
+
+    fun getEmail(): String {
+        return email
+    }
+
+    fun setEmail(nuevoEmail: String) {
+        email = nuevoEmail
+    }
+
+    fun getDefensa(): Int {
+        return defensa
+    }
+
     fun setDefensa(nuevaDefensa: Int) {
         defensa = nuevaDefensa
     }
@@ -55,39 +78,54 @@ class Personaje(
         calcularDefensa()
     }
 
+    fun getSuerte(): Int {
+        return suerte
+    }
+
     fun setSuerte(nuevaSuerte: Int) {
         suerte = nuevaSuerte
     }
+
     fun getRaza(): Raza {
         return raza
     }
+
     fun getSalud(): Int {
         return salud
     }
+
     fun setSalud(nuevaSalud: Int) {
         salud = nuevaSalud
     }
+
     fun getAtaque(): Int {
         return ataque
     }
+
     fun setAtaque(nuevoAtaque: Int) {
         ataque = nuevoAtaque
     }
+
     fun getClase(): Clase {
         return clase
     }
+
     fun setClase(nuevaClase: Clase) {
         clase = nuevaClase
     }
+
     fun getEstadoVital(): EstadoVital {
         return estadoVital
     }
+
     fun setEstadoVital(nuevoEstadoVital: EstadoVital) {
         estadoVital = nuevoEstadoVital
     }
+
     fun getExperiencia(): Int {
         return experiencia
     }
+
     fun setExperiencia(experienciaGanada: Int) {
         experiencia += experienciaGanada
         while (experiencia >= 1000) {
@@ -95,9 +133,11 @@ class Personaje(
             experiencia -= 1000 // Reducir la experiencia en 1000 al subir de nivel
         }
     }
+
     fun getNivel(): Int {
         return nivel
     }
+
     fun subirNivel() {
         if (nivel < 10) { // Limitar el nivel a 10
             nivel++
@@ -106,6 +146,7 @@ class Personaje(
             calcularDefensa()
         }
     }
+
     private fun calcularSalud() {
         salud = when (nivel) {
             1 -> 100
@@ -137,6 +178,7 @@ class Personaje(
             else -> 10 // Valor por defecto si el nivel está fuera del rango especificado
         }
     }
+
     private fun calcularDefensa() {
         defensa = when (nivel) {
             1 -> 4
@@ -152,9 +194,11 @@ class Personaje(
             else -> 4 // Valor por defecto si el nivel está fuera del rango especificado
         }
     }
+
     fun pelea(monstruo: Monstruo) {
         var vidaMonstruo = monstruo.getSalud()
-        var expGanada = monstruo.getSalud() // La experiencia ganada es igual a la salud inicial del monstruo
+        var expGanada =
+            monstruo.getSalud() // La experiencia ganada es igual a la salud inicial del monstruo
         var vidaPersonaje = salud
         var contador = false
         println("¡Un ${monstruo.getNombre()} se acerca!")
@@ -166,7 +210,7 @@ class Personaje(
             println("¿Deseas activar la habilidad del personaje? (Sí/No)")
             val respuesta = readLine()?.toLowerCase()
 
-            if ((respuesta == "si" || respuesta == "sí")&&contador==false) {
+            if ((respuesta == "si" || respuesta == "sí") && contador == false) {
                 habilidad() // Activa la habilidad del personaje
                 contador = true
             }
@@ -207,16 +251,19 @@ class Personaje(
                 calcularSalud() // Subir la salud al límite del nivel
                 println("$nombre utiliza su habilidad de Mago para restaurar su salud.")
             }
+
             Clase.Brujo -> {
                 ataque *= 2 // Duplicar el ataque
                 println("$nombre utiliza su habilidad de Brujo para duplicar su ataque.")
             }
+
             Clase.Guerrero -> {
                 suerte *= 2 // Duplicar la suerte
                 println("$nombre utiliza su habilidad de Guerrero para duplicar su suerte.")
             }
         }
     }
+
     fun entrenar(tiempoDeEntrenamiento: Int) {
         val factorExperienciaPorHora = 5
         val experienciaGanada = tiempoDeEntrenamiento * factorExperienciaPorHora
@@ -225,6 +272,7 @@ class Personaje(
 
         println("$nombre ha entrenado durante $tiempoDeEntrenamiento horas y ha ganado $experienciaGanada de experiencia.")
     }
+
     fun realizarMision(tipoMision: String, dificultad: String) {
         val probabilidadExito = when (dificultad) {
             "Fácil" -> if (nivel >= 5) 8 else 6
@@ -258,15 +306,16 @@ class Personaje(
             println("$nombre ha fracasado en la misión de $tipoMision ($dificultad) y no recibe ninguna recompensa.")
         }
     }
-    fun cifrado(mensaje : String, ROT : Int) : String{
-        val abecedario : ArrayList<Char> = "abcdefghijklmnñopqrstuvwxyz".toList() as ArrayList<Char>
+
+    fun cifrado(mensaje: String, ROT: Int): String {
+        val abecedario: ArrayList<Char> = "abcdefghijklmnñopqrstuvwxyz".toList() as ArrayList<Char>
         var stringInv = ""
         var indice = 0
 
-        for(i in mensaje.lowercase().toList() as ArrayList<Char>){
-            if(!i.isLetter() || i.isWhitespace()){
+        for (i in mensaje.lowercase().toList() as ArrayList<Char>) {
+            if (!i.isLetter() || i.isWhitespace()) {
                 stringInv += i
-            } else{
+            } else {
                 indice = abecedario.indexOf(i) + ROT
                 if (indice >= abecedario.size) {
                     indice -= abecedario.size
@@ -277,23 +326,24 @@ class Personaje(
         }
         return stringInv.filter { !it.isWhitespace() && it.isLetter() }
     }
-    fun comunicacion(mensaje:String){
-        var respuesta=""
-        when(estadoVital){
-            EstadoVital.Adulto->{
+
+    fun comunicacion(mensaje: String) {
+        var respuesta = ""
+        when (estadoVital) {
+            EstadoVital.Adulto -> {
                 if (mensaje.equals("¿Como estas?"))
-                    respuesta="En la flor de la vida, pero me empieza a doler la espalda"
+                    respuesta = "En la flor de la vida, pero me empieza a doler la espalda"
                 else
                     if ((mensaje.contains('?') || mensaje.contains('¿')) && mensaje == mensaje.uppercase())
-                        respuesta="Estoy buscando la mejor solución"
+                        respuesta = "Estoy buscando la mejor solución"
                     else
                         if (mensaje == mensaje.uppercase())
-                            respuesta="No me levantes la voz mequetrefe"
+                            respuesta = "No me levantes la voz mequetrefe"
                         else
                             if (mensaje == nombre)
-                                respuesta="¿Necesitas algo?"
+                                respuesta = "¿Necesitas algo?"
                             else
-                                if(mensaje == "Tienes algo equipado?"){
+                                if (mensaje == "Tienes algo equipado?") {
                                     if (arma != null || proteccion != null) {
                                         val equipamiento = mutableListOf<String>()
                                         if (arma != null) {
@@ -306,61 +356,61 @@ class Personaje(
                                     } else {
                                         println("Ligero como una pluma.")
                                     }
-                                }
-                                else
-                                    respuesta="No sé de qué me estás hablando"
+                                } else
+                                    respuesta = "No sé de qué me estás hablando"
             }
-            EstadoVital.Joven->{
+
+            EstadoVital.Joven -> {
                 if (mensaje.equals("¿Como estas?"))
-                    respuesta="De lujo"
+                    respuesta = "De lujo"
                 else
                     if ((mensaje.contains('?') || mensaje.contains('¿')) && mensaje == mensaje.uppercase())
-                        respuesta="Tranqui se lo que hago"
+                        respuesta = "Tranqui se lo que hago"
                     else
                         if (mensaje == mensaje.uppercase())
-                            respuesta="Eh relájate"
+                            respuesta = "Eh relájate"
                         else
                             if (mensaje == nombre)
-                                respuesta="Qué pasa?"
+                                respuesta = "Qué pasa?"
                             else
-                                if(mensaje == "Tienes algo equipado?"){
+                                if (mensaje == "Tienes algo equipado?") {
                                     if (arma != null || proteccion != null) {
                                         println("No llevo nada, agente, se lo juro.")
                                     } else {
                                         println("Regístrame si quieres.")
                                     }
-                                }
-                                else
-                                    respuesta="Yo que se"
+                                } else
+                                    respuesta = "Yo que se"
 
             }
-            EstadoVital.Anciano->{
+
+            EstadoVital.Anciano -> {
                 if (mensaje.equals("¿Como estas?"))
-                    respuesta="No me puedo mover"
+                    respuesta = "No me puedo mover"
                 else
                     if ((mensaje.contains('?') || mensaje.contains('¿')) && mensaje == mensaje.uppercase())
-                        respuesta="Que no te escucho!"
+                        respuesta = "Que no te escucho!"
                     else
                         if (mensaje == mensaje.uppercase())
-                            respuesta="Háblame más alto que no te escucho"
+                            respuesta = "Háblame más alto que no te escucho"
                         else
                             if (mensaje == nombre)
-                                respuesta="Las 5 de la tarde"
+                                respuesta = "Las 5 de la tarde"
                             else
-                                if(mensaje == "Tienes algo equipado?"){
+                                if (mensaje == "Tienes algo equipado?") {
                                     println("A ti que te importa nini!")
-                                }
-                                else
-                                    respuesta="En mis tiempos esto no pasaba"
+                                } else
+                                    respuesta = "En mis tiempos esto no pasaba"
             }
         }
-        when(raza){
-            Raza.Elfo-> println(cifrado(respuesta, 1))
-            Raza.Enano-> println(respuesta.uppercase())
-            Raza.Maldito-> println(cifrado(respuesta, 1))
+        when (raza) {
+            Raza.Elfo -> println(cifrado(respuesta, 1))
+            Raza.Enano -> println(respuesta.uppercase())
+            Raza.Maldito -> println(cifrado(respuesta, 1))
             else -> println(respuesta)
         }
     }
+
     fun equipar(articulo: Articulo) {
         when (articulo.getTipoArticulo()) {
             Articulo.TipoArticulo.ARMA -> {
@@ -374,6 +424,7 @@ class Personaje(
                     println("No se puede equipar el artículo. Tipo de arma no válido.")
                 }
             }
+
             Articulo.TipoArticulo.PROTECCION -> {
                 when (articulo.getNombre()) {
                     Articulo.Nombre.ESCUDO, Articulo.Nombre.ARMADURA -> {
@@ -383,16 +434,19 @@ class Personaje(
                         println("Has equipado la protección: $articulo")
                         mochila.getContenido().remove(articulo)
                     }
+
                     else -> {
                         println("No se puede equipar el artículo. Tipo de protección no válido.")
                     }
                 }
             }
+
             else -> {
                 println("No se puede equipar el artículo. Tipo de artículo no válido.")
             }
         }
     }
+
     fun usarObjeto(articulo: Articulo) {
         when (articulo.getTipoArticulo()) {
             Articulo.TipoArticulo.OBJETO -> {
@@ -403,29 +457,33 @@ class Personaje(
                         println("Has usado la poción y aumentado tu vida. Vida actual: $salud")
                         mochila.getContenido().remove(articulo)
                     }
+
                     Articulo.Nombre.IRA -> {
                         // Aumentar el ataque del personaje al usar un objeto de ira
                         ataque += articulo.getAumentoAtaque()
                         println("Has canalizado tu ira y aumentado tu ataque. Ataque actual: $ataque")
                         mochila.getContenido().remove(articulo)
                     }
+
                     else -> {
                         println("No se puede usar el objeto. Tipo de objeto no válido.")
                     }
                 }
             }
+
             else -> {
                 println("No se puede usar el artículo. Tipo de artículo no válido.")
             }
         }
     }
+
     fun getMochila(): Mochila {
         return this.mochila
     }
 
     override fun toString(): String {
-        return "Personaje: Nombre: $nombre, Nivel: $nivel, Salud: $salud, Ataque: $ataque, Defensa: $defensa, Suerte: $suerte, Raza: $raza, Clase: $clase, Estado Vital: $estadoVital Mochila: $mochila"
+        return "Personaje(email='$email', nombre='$nombre', raza=$raza, clase=$clase, estadoVital=$estadoVital, id=$id, salud=$salud, ataque=$ataque, experiencia=$experiencia, nivel=$nivel, suerte=$suerte, defensa=$defensa, mochila=$mochila, arma=$arma, proteccion=$proteccion)"
     }
-
 }
+
 

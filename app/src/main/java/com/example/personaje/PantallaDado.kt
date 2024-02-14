@@ -13,7 +13,7 @@ class PantallaDado : AppCompatActivity() {
         setContentView(R.layout.layout_dado)
 
         val dadoButton = findViewById<Button>(R.id.Botontirar)
-        val idPersonaje = intent.getLongExtra("id_personaje", -1L) // Recupera el ID del personaje
+        val idPersonaje = intent.getIntExtra("intentExtraIdPersonaje",-1)
 
         dadoButton.setOnClickListener {
             val encounter = randomEncounter()
@@ -25,14 +25,14 @@ class PantallaDado : AppCompatActivity() {
                 else -> null
             }
             intent?.let {
-                it.putExtra("id_personaje", idPersonaje)
+                it.putExtra("intentExtraIdPersonaje", idPersonaje)
                 startActivity(it)
             }
         }
     }
 
     private fun randomEncounter(): String {
-        val encounters = arrayOf("Objeto","Mercader")
+        val encounters = arrayOf("Objeto")
         return encounters[Random.nextInt(encounters.size)]
     }
 }

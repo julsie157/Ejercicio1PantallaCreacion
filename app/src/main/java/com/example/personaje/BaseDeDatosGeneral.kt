@@ -13,11 +13,12 @@ import android.database.sqlite.SQLiteOpenHelper
 class BaseDeDatosGeneral(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME, null, DATABASE_VERSION) {
 
     companion object {
-        private const val DATABASE_VERSION = 1
+        private const val DATABASE_VERSION = 3
         private const val DATABASE_NAME = "MiBaseGeneral.db"
 
         private const val TABLA_PERSONAJES = "Personajes"
         private const val COLUMN_ID_PERSONAJE = "idPersonaje"
+        private const val COLUMN_EMAIL = "email"
         const val COLUMN_NOMBRE = "nombre"
         private const val COLUMN_RAZA = "raza"
         private const val COLUMN_CLASE = "clase"
@@ -44,12 +45,17 @@ class BaseDeDatosGeneral(context: Context) : SQLiteOpenHelper(context, DATABASE_
         const val COLUMN_DRAWABLE = "imagen"
         private const val COLUMN_ID_MOCHILA_ARTICULO = "idMochila"
 
+        private const val TABLA_INVENTARIO = "Inventario"
+
+
 
     }
 
     override fun onCreate(db: SQLiteDatabase) {
+
         val createTablePersonaje = "CREATE TABLE $TABLA_PERSONAJES (" +
                 "$COLUMN_ID_PERSONAJE INTEGER PRIMARY KEY, " +
+                "$COLUMN_EMAIL TEXT, " +
                 "$COLUMN_NOMBRE TEXT, " +
                 "$COLUMN_RAZA TEXT, " +
                 "$COLUMN_CLASE TEXT, " +
@@ -76,12 +82,18 @@ class BaseDeDatosGeneral(context: Context) : SQLiteOpenHelper(context, DATABASE_
                 "$COLUMN_PESO_ARTICULO INTEGER, " +
                 "$COLUMN_PRECIO INTEGER, " +
                 "$COLUMN_DRAWABLE INTEGER, " +
-                "$COLUMN_ID_MOCHILA_ARTICULO INTEGER, " +
-                "FOREIGN KEY ($COLUMN_ID_MOCHILA_ARTICULO) REFERENCES $TABLA_MOCHILAS($COLUMN_ID_MOCHILA))"
+                "$COLUMN_ID_MOCHILA_ARTICULO INTEGER)"
+
+        val createTableInventario = "CREATE TABLE $TABLA_INVENTARIO (" +
+                "$COLUMN_ID_ARTICULO INTEGER, " +
+                "$COLUMN_ID_MOCHILA INTEGER, "+
+                "FOREIGN KEY ($COLUMN_ID_ARTICULO) REFERENCES $TABLA_ARTICULOS($COLUMN_ID_ARTICULO),"+
+                "FOREIGN KEY ($COLUMN_ID_MOCHILA) REFERENCES $TABLA_MOCHILAS($COLUMN_ID_MOCHILA))"
 
         db.execSQL(createTablePersonaje)
         db.execSQL(createTableMochila)
         db.execSQL(createTableArticulo)
+        db.execSQL(createTableInventario)
 
         insertarArticulos(db)
 
@@ -90,6 +102,7 @@ class BaseDeDatosGeneral(context: Context) : SQLiteOpenHelper(context, DATABASE_
         db.execSQL("DROP TABLE IF EXISTS $TABLA_PERSONAJES")
         db.execSQL("DROP TABLE IF EXISTS $TABLA_MOCHILAS")
         db.execSQL("DROP TABLE IF EXISTS $TABLA_ARTICULOS")
+        db.execSQL("DROP TABLE IF EXISTS $TABLA_INVENTARIO")
         onCreate(db)
     }
 
@@ -206,18 +219,20 @@ class BaseDeDatosGeneral(context: Context) : SQLiteOpenHelper(context, DATABASE_
     }
 
     @SuppressLint("Range")
-    fun obtenerPersonajePorId(id: Long): Personaje? {
+    fun obtenerPersonajePorEmail(email: String): Personaje? {
         val db = this.readableDatabase
         val cursor = db.query(
             TABLA_PERSONAJES,
-            arrayOf(COLUMN_ID_PERSONAJE, COLUMN_NOMBRE, COLUMN_RAZA, COLUMN_CLASE, COLUMN_ESTADO_VITAL, COLUMN_SALUD, COLUMN_ATAQUE, COLUMN_DEFENSA, COLUMN_EXPERIENCIA, COLUMN_NIVEL, COLUMN_SUERTE),
-            "$COLUMN_ID_PERSONAJE = ?",
-            arrayOf(id.toString()),
+            arrayOf(COLUMN_ID_PERSONAJE, COLUMN_EMAIL, COLUMN_NOMBRE, COLUMN_RAZA, COLUMN_CLASE, COLUMN_ESTADO_VITAL, COLUMN_SALUD, COLUMN_ATAQUE, COLUMN_DEFENSA, COLUMN_EXPERIENCIA, COLUMN_NIVEL, COLUMN_SUERTE),
+            "$COLUMN_EMAIL = ?",
+            arrayOf(email.toString()),
             null,
             null,
             null
         )
         if (cursor.moveToFirst()) {
+            val idPersonaje = cursor.getInt(cursor.getColumnIndex(COLUMN_ID_PERSONAJE))
+            val email = cursor.getString(cursor.getColumnIndex(COLUMN_EMAIL))
             val nombre = cursor.getString(cursor.getColumnIndex(COLUMN_NOMBRE))
             val raza = Personaje.Raza.valueOf(cursor.getString(cursor.getColumnIndex(COLUMN_RAZA)))
             val clase = Personaje.Clase.valueOf(cursor.getString(cursor.getColumnIndex(COLUMN_CLASE)))
@@ -230,7 +245,8 @@ class BaseDeDatosGeneral(context: Context) : SQLiteOpenHelper(context, DATABASE_
             val suerte = cursor.getInt(cursor.getColumnIndex(COLUMN_SUERTE))
 
 
-            val personaje = Personaje(nombre, raza, clase, estadoVital).apply {
+            val personaje = Personaje(email, nombre, raza, clase, estadoVital).apply {
+                setId(idPersonaje)
                 setSalud(salud)
                 setAtaque(ataque)
                 setDefensa(defensa)
@@ -247,32 +263,21 @@ class BaseDeDatosGeneral(context: Context) : SQLiteOpenHelper(context, DATABASE_
     }
 
 
-    fun insertarPersonaje(
-        nombre: String,
-        raza: String,
-        clase: String,
-        estadoVital: String,
-        salud: Int,
-        ataque: Int,
-        defensa: Int,
-        experiencia: Int,
-        nivel: Int,
-        suerte: Int
-    ): Long {
+    fun insertarPersonaje(personaje: Personaje): Long {
         val db = this.writableDatabase
         val values = ContentValues().apply {
-            put(COLUMN_NOMBRE, nombre)
-            put(COLUMN_RAZA, raza)
-            put(COLUMN_CLASE, clase)
-            put(COLUMN_ESTADO_VITAL, estadoVital)
-            put(COLUMN_SALUD, salud)
-            put(COLUMN_ATAQUE, ataque)
-            put(COLUMN_DEFENSA, defensa)
-            put(COLUMN_EXPERIENCIA, experiencia)
-            put(COLUMN_NIVEL, nivel)
-            put(COLUMN_SUERTE, suerte)
+            put(COLUMN_EMAIL, personaje.getEmail())
+            put(COLUMN_NOMBRE, personaje.getEmail())
+            put(COLUMN_RAZA, personaje.getRaza().toString())
+            put(COLUMN_CLASE, personaje.getClase().toString())
+            put(COLUMN_ESTADO_VITAL, personaje.getEstadoVital().toString())
+            put(COLUMN_SALUD, personaje.getSalud())
+            put(COLUMN_ATAQUE, personaje.getAtaque())
+            put(COLUMN_DEFENSA, personaje.getDefensa())
+            put(COLUMN_EXPERIENCIA, personaje.getExperiencia())
+            put(COLUMN_NIVEL, personaje.getNivel())
+            put(COLUMN_SUERTE, personaje.getSuerte())
         }
-
         return db.insert(TABLA_PERSONAJES, null, values)
     }
 
@@ -283,6 +288,7 @@ class BaseDeDatosGeneral(context: Context) : SQLiteOpenHelper(context, DATABASE_
         values.put(COLUMN_ORO, oro)
         db.update(TABLA_MOCHILAS, values, "$COLUMN_ID_MOCHILA = ?", arrayOf(idMochila.toString()))
     }
+
 
     @SuppressLint("Range")
     fun obtenerOroMochila(idMochila: Int): Int {

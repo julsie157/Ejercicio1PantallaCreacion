@@ -5,6 +5,7 @@ import android.content.Intent
 import android.media.MediaPlayer
 import android.os.Bundle
 import android.os.Handler
+import android.util.Log
 import android.view.View
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
@@ -84,23 +85,26 @@ class Inicio : AppCompatActivity() {
         spinnerEstadoVital.onItemSelectedListener = spinnerListener
 
         continuarButton.setOnClickListener {
+            //intent de login
+            val email = intent.getStringExtra("intentExtraEmail")
             val nombre = nombreEditText.text.toString()
             val raza = spinnerRaza.selectedItem.toString()
             val clase = spinnerClase.selectedItem.toString()
             val estadoVital = spinnerEstadoVital.selectedItem.toString()
 
 
-            val idPersonajeNuevo = dbGeneral.insertarPersonaje(nombre, raza, clase, estadoVital, 100, 10, 5, 0, 1, (1..10).random())
 
-            if(idPersonajeNuevo > 0) {
-                dbGeneral.insertarMochila(idPersonajeNuevo.toInt())
-                val intent = Intent(this, DatosPersonaje::class.java).apply {
-                    putExtra("id_personaje", idPersonajeNuevo)
-                }
-                startActivity(intent)
-            } else {
-                Toast.makeText(this, "Error al crear el personaje. Inténtalo de nuevo.", Toast.LENGTH_SHORT).show()
+
+
+            val intent = Intent(this, DatosPersonaje::class.java).apply {
+                putExtra("intentExtraEmail", email)
+                putExtra("intentExtraNombre", nombre)
+                putExtra("intentExtraRaza", raza)
+                putExtra("intentExtraClase", clase)
+                putExtra("intentExtraEstadoVital", estadoVital)
             }
+            startActivity(intent)
+
 
         }
 

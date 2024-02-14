@@ -28,7 +28,7 @@ class MercaderActivity : AppCompatActivity() {
         setContentView(R.layout.layout_mercader)
 
         dbGeneral = BaseDeDatosGeneral(this)
-        idPersonaje = intent.getLongExtra("id_personaje", -1L)
+        idPersonaje = intent.getLongExtra("intentExtraIdPersonaje", -1L)
 
         panelComercio = findViewById(R.id.panelComercio)
         panelArticulos = findViewById(R.id.panelArticulos)

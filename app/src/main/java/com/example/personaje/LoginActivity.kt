@@ -2,6 +2,7 @@ package com.example.personaje
 
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.widget.Button
 import android.widget.EditText
 import android.widget.TextView
@@ -17,6 +18,7 @@ class LoginActivity : AppCompatActivity() {
     private lateinit var loginButton: Button
     private lateinit var emailEditText: EditText
     private lateinit var passwordEditText: EditText
+    private lateinit var dbGeneral: BaseDeDatosGeneral // Asegúrate de inicializarlo
 
     // Declaración de Instancia de autenticación de Firebase
     private lateinit var auth: FirebaseAuth
@@ -24,6 +26,8 @@ class LoginActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.layout_login)
+
+        dbGeneral = BaseDeDatosGeneral(this)
 
         // Inicialización de Instancia de autenticación de Firebase
         auth = FirebaseAuth.getInstance()
@@ -42,8 +46,11 @@ class LoginActivity : AppCompatActivity() {
 
         // Evento de escucha de pulsado de botón de inicio de sesión
         loginButton.setOnClickListener {
-            val email = emailEditText.text.toString().trim()
-            val password = passwordEditText.text.toString().trim()
+            //val email = emailEditText.text.toString().trim()
+           // val password = passwordEditText.text.toString().trim()
+
+            val email = "paco@gmail.com"
+            val password = "123456A"
 
             // Comprobación campos en blanco
             if (email.isBlank() || password.isBlank()) {
@@ -55,11 +62,20 @@ class LoginActivity : AppCompatActivity() {
             auth.signInWithEmailAndPassword(email, password)
                 .addOnCompleteListener(this) { task ->
                     if (task.isSuccessful) {
+                        val personaje: Personaje? = dbGeneral.obtenerPersonajePorEmail(email)
                         showToast("Inicio de sesión exitoso!")
-                        // Redirección actividad de inicio de sesión
-                        val intent = Intent(this, Inicio::class.java)
+                        var intent = Intent(this, Inicio::class.java).apply {
+                            putExtra("intentExtraEmail",email)
+                        }
+                        if (personaje!=null){
+                            intent = Intent(this, PantallaDado::class.java).apply{
+                                putExtra("intentExtraIdPersonaje", personaje.getId())
+                            }
+                        }
+
                         startActivity(intent)
                         finish()
+
                     } else {
                         showToast("Error de autentificación: E-mail/Contraseña NO VALIDA")
                     }
