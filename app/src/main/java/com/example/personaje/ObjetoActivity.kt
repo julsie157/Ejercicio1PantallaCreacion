@@ -38,29 +38,24 @@ class ObjetoActivity : AppCompatActivity() {
             finish()
         }
     }
-
-
-    @SuppressLint("Range")
     private fun recogerObjeto() {
         val idMochila = dbGeneral.obtenerIdMochilaPorPersonaje(idPersonaje)
         if (idMochila == -1) {
             Toast.makeText(this, "Mochila no encontrada para el personaje.", Toast.LENGTH_LONG).show()
             return
         }
-        dbGeneral.obtenerEspacioDisponibleMochila(idMochila)
 
-        val cursor = dbGeneral.obtenerArticuloAleatorio()
-        if (cursor != null && cursor.moveToFirst()) {
-            val nombre = cursor.getString(cursor.getColumnIndex(BaseDeDatosGeneral.COLUMN_NOMBRE))
-            val peso = cursor.getInt(cursor.getColumnIndex(BaseDeDatosGeneral.COLUMN_PESO_ARTICULO))
-            val idImagen = cursor.getInt(cursor.getColumnIndex(BaseDeDatosGeneral.COLUMN_DRAWABLE))
+        val articulo = dbGeneral.obtenerArticuloAleatorio()
+        if (articulo != null) {
+            val nombre = articulo.getNombre().name
+            val peso = articulo.getPeso()
+            val idImagen = articulo.getImagenId()
             val resourceId = obtenerIdImagenPorNumero(idImagen)
 
             val espacioDisponible = dbGeneral.obtenerEspacioDisponibleMochila(idMochila)
             if (peso <= espacioDisponible) {
                 dbGeneral.actualizarEspacioMochila(idMochila, peso)
-                val idArticulo = cursor.getInt(cursor.getColumnIndex(BaseDeDatosGeneral.COLUMN_ID_ARTICULO))
-                dbGeneral.anadirArticuloAMochila(idMochila, idArticulo)
+                dbGeneral.anadirArticuloAMochila(idMochila, articulo.getIdArticulo())
                 mostrarToastRecogida(nombre, espacioDisponible - peso, resourceId)
                 Handler(Looper.getMainLooper()).postDelayed({
                     finish()
@@ -71,7 +66,6 @@ class ObjetoActivity : AppCompatActivity() {
                     finish()
                 },1400)
             }
-            cursor.close()
         } else {
             Toast.makeText(this, "No se pudo recoger un objeto.", Toast.LENGTH_SHORT).show()
             Handler(Looper.getMainLooper()).postDelayed({
@@ -79,6 +73,7 @@ class ObjetoActivity : AppCompatActivity() {
             },1400)
         }
     }
+
 
 
     private fun mostrarToastRecogida(nombre: String, nuevoEspacioDisponible: Int, resourceId: Int) {

@@ -7,13 +7,12 @@ import android.content.Context
 import android.database.Cursor
 import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteOpenHelper
-import android.util.Log
 
 
 class BaseDeDatosGeneral(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME, null, DATABASE_VERSION) {
 
     companion object {
-        private const val DATABASE_VERSION = 8
+        private const val DATABASE_VERSION = 9
         private const val DATABASE_NAME = "MiBaseGeneral.db"
 
         private const val TABLA_PERSONAJES = "Personajes"
@@ -107,6 +106,37 @@ class BaseDeDatosGeneral(context: Context) : SQLiteOpenHelper(context, DATABASE_
         onCreate(db)
     }
 
+    fun insertarArticulos(db: SQLiteDatabase) {
+        addArticulo(db, "MONEDA", "ORO", 0, 15, 1)
+        addArticulo(db, "ESPADA", "ARMA", 20, 20, 2)
+        addArticulo(db, "MARTILLO", "ARMA", 12, 50, 3)
+        addArticulo(db, "GARRAS", "ARMA", 18, 60, 4)
+        addArticulo(db, "BASTON", "ARMA", 25, 40, 5,)
+        addArticulo(db, "POCION", "OBJETO", 5, 5, 6)
+        addArticulo(db, "IRA", "OBJETO", 5, 5, 7)
+        addArticulo(db, "ESCUDO", "PROTECCION", 20, 10, 8)
+        addArticulo(db, "ARMADURA", "PROTECCION", 40, 10, 9)
+        addArticulo(db, "DAGA", "ARMA", 10, 25, 10)
+    }
+    fun addArticulo(
+        db: SQLiteDatabase,
+        nombre: String,
+        tipo: String,
+        peso: Int,
+        precio: Int,
+        drawable: Int
+    ) {
+        val values = ContentValues().apply {
+            put(COLUMN_NOMBRE, nombre)
+            put(COLUMN_TIPO_ARTICULO, tipo)
+            put(COLUMN_PESO_ARTICULO, peso)
+            put(COLUMN_PRECIO, precio)
+            put(COLUMN_DRAWABLE, drawable)
+        }
+        db.insert(TABLA_ARTICULOS, null, values)
+    }
+
+
     @SuppressLint("Range")
     fun obtenerPersonajePorEmail(email: String): Personaje? {
         val db = this.readableDatabase
@@ -152,6 +182,29 @@ class BaseDeDatosGeneral(context: Context) : SQLiteOpenHelper(context, DATABASE_
     }
 
     @SuppressLint("Range")
+    fun obtenerArticulosAleatoriosDelMercader(idMochila: Int): ArrayList<Articulo>{
+        val db = this.readableDatabase
+        val cursor = db.rawQuery("SELECT * FROM $TABLA_ARTICULOS ORDER BY RANDOM() LIMIT 4", null)
+        val listadoArticulo: ArrayList<Articulo> = ArrayList()
+
+        cursor.moveToFirst()
+        do {
+            val idArticulo = cursor.getInt(cursor.getColumnIndex(COLUMN_ID_ARTICULO))
+            val tipoArticulo = cursor.getString(cursor.getColumnIndex(COLUMN_TIPO_ARTICULO))
+            val nombre = cursor.getString(cursor.getColumnIndex(COLUMN_NOMBRE))
+            val peso = cursor.getInt(cursor.getColumnIndex(COLUMN_PESO_ARTICULO))
+            val precio = cursor.getInt(cursor.getColumnIndex(COLUMN_PRECIO))
+            val imagenId = cursor.getInt(cursor.getColumnIndex(COLUMN_DRAWABLE))
+
+            val articulo: Articulo = Articulo(Articulo.TipoArticulo.valueOf(tipoArticulo), Articulo.Nombre.valueOf(nombre), peso, precio, imagenId)
+            articulo.setIdArticulo(idArticulo)
+            listadoArticulo.add(articulo)
+        } while(cursor.moveToNext())
+        cursor.close()
+        return listadoArticulo
+    }
+
+    @SuppressLint("Range")
     fun obtenerArticulosPorIdMochila(idMochila: Int): ArrayList<Articulo> {
         val db = this.readableDatabase
         val cursor = db.rawQuery("SELECT $TABLA_INVENTARIO.$COLUMN_ID_INVENTARIO, $TABLA_ARTICULOS.* FROM $TABLA_ARTICULOS INNER JOIN $TABLA_INVENTARIO ON $TABLA_ARTICULOS.$COLUMN_ID_ARTICULO = $TABLA_INVENTARIO.$COLUMN_ID_ARTICULO WHERE $TABLA_INVENTARIO.$COLUMN_ID_MOCHILA = ?", arrayOf(idMochila.toString()))
@@ -175,6 +228,134 @@ class BaseDeDatosGeneral(context: Context) : SQLiteOpenHelper(context, DATABASE_
         } while(cursor.moveToNext())
         cursor.close()
         return listadoArticulo
+    }
+
+
+
+    fun obtenerArticuloAleatorio(): Articulo? {
+        val db = this.readableDatabase
+        val cursor = db.rawQuery("SELECT * FROM $TABLA_ARTICULOS ORDER BY RANDOM() LIMIT 1", null)
+        var articulo: Articulo? = null
+        if (cursor.moveToFirst()) {
+            articulo = cursorDeArticulo(cursor)
+        }
+        cursor.close()
+        return articulo
+    }
+
+    @SuppressLint("Range")
+    private fun cursorDeArticulo(cursor: Cursor): Articulo {
+        val idArticulo = cursor.getInt(cursor.getColumnIndex(COLUMN_ID_ARTICULO))
+        val tipoArticulo = Articulo.TipoArticulo.valueOf(cursor.getString(cursor.getColumnIndex(COLUMN_TIPO_ARTICULO)))
+        val nombre = Articulo.Nombre.valueOf(cursor.getString(cursor.getColumnIndex(COLUMN_NOMBRE)))
+        val peso = cursor.getInt(cursor.getColumnIndex(COLUMN_PESO_ARTICULO))
+        val precio = cursor.getInt(cursor.getColumnIndex(COLUMN_PRECIO))
+        val imagenId = cursor.getInt(cursor.getColumnIndex(COLUMN_DRAWABLE))
+        return Articulo(tipoArticulo, nombre, peso, precio, imagenId).apply { setIdArticulo(idArticulo) }
+    }
+
+
+
+    @SuppressLint("Range")
+    fun obtenerEspacioDisponibleMochila(idMochila: Int): Int {
+        val db = this.readableDatabase
+        val cursor = db.query(TABLA_MOCHILAS, arrayOf(COLUMN_PESO_MAXIMO, COLUMN_ESPACIO_OCUPADO), "$COLUMN_ID_MOCHILA = ?", arrayOf(idMochila.toString()), null, null, null)
+        if (cursor.moveToFirst()) {
+            val pesoMaximo = cursor.getInt(cursor.getColumnIndex(COLUMN_PESO_MAXIMO))
+            val espacioOcupado = cursor.getInt(cursor.getColumnIndex(COLUMN_ESPACIO_OCUPADO))
+            cursor.close()
+            return pesoMaximo - espacioOcupado
+        }
+        cursor.close()
+        return -1
+    }
+
+
+
+    @SuppressLint("Range")
+    fun obtenerEspacioOcupadoMochila(idMochila: Int): Int {
+        val db = this.readableDatabase
+        val cursor = db.query(
+            TABLA_MOCHILAS,
+            arrayOf(COLUMN_ESPACIO_OCUPADO),
+            "$COLUMN_ID_MOCHILA = ?",
+            arrayOf(idMochila.toString()),
+            null, null, null
+        )
+        var espacioOcupado = 0
+        if (cursor.moveToFirst()) {
+            espacioOcupado = cursor.getInt(cursor.getColumnIndex(COLUMN_ESPACIO_OCUPADO))
+        }
+        cursor.close()
+        return espacioOcupado
+    }
+    @SuppressLint("Range")
+    fun obtenerIdMochilaPorPersonaje(idPersonaje: Long): Int {
+        val db = this.readableDatabase
+        val cursor = db.query(
+            TABLA_MOCHILAS,
+            arrayOf(COLUMN_ID_MOCHILA),
+            "$COLUMN_ID_PERSONAJE = ?",
+            arrayOf(idPersonaje.toString()),
+            null, null, null
+        )
+        var idMochila = -1
+        if (cursor.moveToFirst()) {
+            idMochila = cursor.getInt(cursor.getColumnIndex(COLUMN_ID_MOCHILA))
+        }
+        cursor.close()
+        return idMochila
+    }
+
+    @SuppressLint("Range")
+    fun obtenerOroMochila(idMochila: Int): Int {
+        val db = this.readableDatabase
+        val cursor = db.query(TABLA_MOCHILAS, arrayOf(COLUMN_ORO), "$COLUMN_ID_MOCHILA = ?", arrayOf(idMochila.toString()), null, null, null)
+        var oro = 0
+        if (cursor.moveToFirst()) {
+            oro = cursor.getInt(cursor.getColumnIndex(COLUMN_ORO))
+        }
+        cursor.close()
+        return oro
+    }
+
+    //***************************************************************************//
+    //***************************************************************************//
+    //***************************************************************************//
+    //***************************************************************************//
+    //***************************************************************************//
+    //***************************************************************************//
+    //***************************************************************************//
+    //***************************************************************************//
+    //***************************************************************************//
+    //***************************************************************************//
+    //***************************************************************************//
+    fun anadirArticuloAMochila(idMochila: Int, idArticulo: Int): Boolean {
+        val db = this.writableDatabase
+        val values = ContentValues().apply {
+            put(COLUMN_ID_MOCHILA, idMochila)
+            put(COLUMN_ID_ARTICULO, idArticulo)
+        }
+        val resultado = db.insert(TABLA_INVENTARIO, null, values)
+        return resultado != -1L
+    }
+
+    fun actualizarEspacioMochila(idMochila: Int, pesoObjetoRecogido: Int) {
+        val db = this.writableDatabase
+        val espacioOcupadoActual = obtenerEspacioOcupadoMochila(idMochila)
+        val nuevoEspacioOcupado = espacioOcupadoActual + pesoObjetoRecogido
+        val values = ContentValues().apply {
+            put(COLUMN_ESPACIO_OCUPADO, nuevoEspacioOcupado)
+        }
+        db.update(TABLA_MOCHILAS, values, "$COLUMN_ID_MOCHILA = ?", arrayOf(idMochila.toString()))
+    }
+
+
+    fun actualizarOroMochila(idMochila: Int, oro: Int) {
+        val db = this.writableDatabase
+        val values = ContentValues()
+        values.put(COLUMN_ORO, oro)
+        db.update(TABLA_MOCHILAS, values, "$COLUMN_ID_MOCHILA = ?", arrayOf(idMochila.toString()))
     }
 
     fun insertarMochila(idPersonaje: Long) {
@@ -204,174 +385,6 @@ class BaseDeDatosGeneral(context: Context) : SQLiteOpenHelper(context, DATABASE_
             put(COLUMN_SUERTE, personaje.getSuerte())
         }
         return db.insert(TABLA_PERSONAJES, null, values)
-    }
-
-    fun insertarArticulos(db: SQLiteDatabase) {
-
-        addArticulo(db, "MONEDA", "ORO", 0, 15, 1)
-        addArticulo(db, "ESPADA", "ARMA", 20, 20, 2)
-        addArticulo(db, "MARTILLO", "ARMA", 12, 50, 3)
-        addArticulo(db, "GARRAS", "ARMA", 18, 60, 4)
-        addArticulo(db, "BASTON", "ARMA", 25, 40, 5,)
-        addArticulo(db, "POCION", "OBJETO", 5, 5, 6)
-        addArticulo(db, "IRA", "OBJETO", 5, 5, 7)
-        addArticulo(db, "ESCUDO", "PROTECCION", 20, 10, 8)
-        addArticulo(db, "ARMADURA", "PROTECCION", 40, 10, 9)
-        addArticulo(db, "DAGA", "ARMA", 10, 25, 10)
-    }
-    fun addArticulo(
-        db: SQLiteDatabase,
-        nombre: String,
-        tipo: String,
-        peso: Int,
-        precio: Int,
-        drawable: Int
-    ) {
-        val values = ContentValues().apply {
-            put(COLUMN_NOMBRE, nombre)
-            put(COLUMN_TIPO_ARTICULO, tipo)
-            put(COLUMN_PESO_ARTICULO, peso)
-            put(COLUMN_PRECIO, precio)
-            put(COLUMN_DRAWABLE, drawable)
-        }
-        db.insert(TABLA_ARTICULOS, null, values)
-    }
-
-    fun obtenerArticuloAleatorio(): Cursor? {
-        val db = this.readableDatabase
-        return db.rawQuery("SELECT * FROM $TABLA_ARTICULOS ORDER BY RANDOM() LIMIT 1", null)
-    }
-
-
-
-    @SuppressLint("Range")
-    fun obtenerEspacioDisponibleMochila(idMochila: Int): Int {
-        val db = this.readableDatabase
-        val cursor = db.query(TABLA_MOCHILAS, arrayOf(COLUMN_PESO_MAXIMO, COLUMN_ESPACIO_OCUPADO), "$COLUMN_ID_MOCHILA = ?", arrayOf(idMochila.toString()), null, null, null)
-        if (cursor.moveToFirst()) {
-            val pesoMaximo = cursor.getInt(cursor.getColumnIndex(COLUMN_PESO_MAXIMO))
-            val espacioOcupado = cursor.getInt(cursor.getColumnIndex(COLUMN_ESPACIO_OCUPADO))
-            cursor.close()
-            return pesoMaximo - espacioOcupado
-        }
-        cursor.close()
-        return -1
-    }
-
-    fun actualizarEspacioMochila(idMochila: Int, pesoObjetoRecogido: Int) {
-        val db = this.writableDatabase
-        val espacioOcupadoActual = obtenerEspacioOcupadoMochila(idMochila)
-        val nuevoEspacioOcupado = espacioOcupadoActual + pesoObjetoRecogido
-        val values = ContentValues().apply {
-            put(COLUMN_ESPACIO_OCUPADO, nuevoEspacioOcupado)
-        }
-        db.update(TABLA_MOCHILAS, values, "$COLUMN_ID_MOCHILA = ?", arrayOf(idMochila.toString()))
-    }
-
-    fun actualizarEspacioMochilaDos(idMochila: Int, pesoActualizado: Int) {
-        val db = this.writableDatabase
-        val values = ContentValues().apply {
-            put(COLUMN_ESPACIO_OCUPADO, pesoActualizado)
-        }
-        db.update(TABLA_MOCHILAS, values, "$COLUMN_ID_MOCHILA = ?", arrayOf(idMochila.toString()))
-    }
-
-    @SuppressLint("Range")
-    fun obtenerEspacioOcupadoMochila(idMochila: Int): Int {
-        val db = this.readableDatabase
-        val cursor = db.query(
-            TABLA_MOCHILAS,
-            arrayOf(COLUMN_ESPACIO_OCUPADO),
-            "$COLUMN_ID_MOCHILA = ?",
-            arrayOf(idMochila.toString()),
-            null, null, null
-        )
-        var espacioOcupado = 0
-        if (cursor.moveToFirst()) {
-            espacioOcupado = cursor.getInt(cursor.getColumnIndex(COLUMN_ESPACIO_OCUPADO))
-        }
-        cursor.close()
-        return espacioOcupado
-    }
-
-
-    @SuppressLint("Range")
-    fun obtenerIdMochilaPorPersonaje(idPersonaje: Long): Int {
-        val db = this.readableDatabase
-        val cursor = db.query(
-            TABLA_MOCHILAS,
-            arrayOf(COLUMN_ID_MOCHILA),
-            "$COLUMN_ID_PERSONAJE = ?",
-            arrayOf(idPersonaje.toString()),
-            null, null, null
-        )
-        var idMochila = -1
-        if (cursor.moveToFirst()) {
-            idMochila = cursor.getInt(cursor.getColumnIndex(COLUMN_ID_MOCHILA))
-        }
-        cursor.close()
-        return idMochila
-    }
-
-    //***************************************************************************//
-    fun anadirArticuloAMochila(idMochila: Int, idArticulo: Int): Boolean {
-        val db = this.writableDatabase
-        val values = ContentValues().apply {
-            put(COLUMN_ID_MOCHILA, idMochila)
-            put(COLUMN_ID_ARTICULO, idArticulo)
-        }
-        val resultado = db.insert(TABLA_INVENTARIO, null, values)
-        return resultado != -1L
-    }
-
-
-    // Cambiar esta Por una lista DE objetos
-    fun obtenerArticulosAleatoriosParaCompra(): Cursor? {
-        val db = this.readableDatabase
-        return db.rawQuery("SELECT * FROM $TABLA_ARTICULOS ORDER BY RANDOM() LIMIT 4", null)
-    }
-
-    @SuppressLint("Range")
-    fun obtnerArticulosAleatoriosDelMercader(idMochila: Int): ArrayList<Articulo>{
-        val db = this.readableDatabase
-        val cursor = db.rawQuery("SELECT * FROM $TABLA_ARTICULOS ORDER BY RANDOM() LIMIT 4", null)
-        val listadoArticulo: ArrayList<Articulo> = ArrayList()
-
-        cursor.moveToFirst()
-        do {
-            val idArticulo = cursor.getInt(cursor.getColumnIndex(COLUMN_ID_ARTICULO))
-            val tipoArticulo = cursor.getString(cursor.getColumnIndex(COLUMN_TIPO_ARTICULO))
-            val nombre = cursor.getString(cursor.getColumnIndex(COLUMN_NOMBRE))
-            val peso = cursor.getInt(cursor.getColumnIndex(COLUMN_PESO_ARTICULO))
-            val precio = cursor.getInt(cursor.getColumnIndex(COLUMN_PRECIO))
-            val imagenId = cursor.getInt(cursor.getColumnIndex(COLUMN_DRAWABLE))
-
-            val articulo: Articulo = Articulo(Articulo.TipoArticulo.valueOf(tipoArticulo), Articulo.Nombre.valueOf(nombre), peso, precio, imagenId)
-            articulo.setIdArticulo(idArticulo)
-            listadoArticulo.add(articulo)
-        } while(cursor.moveToNext())
-        cursor.close()
-        return listadoArticulo
-    }
-
-    fun actualizarOroMochila(idMochila: Long, oro: Int) {
-        val db = this.writableDatabase
-        val values = ContentValues()
-        values.put(COLUMN_ORO, oro)
-        db.update(TABLA_MOCHILAS, values, "$COLUMN_ID_MOCHILA = ?", arrayOf(idMochila.toString()))
-    }
-
-
-    @SuppressLint("Range")
-    fun obtenerOroMochila(idMochila: Long): Int {
-        val db = this.readableDatabase
-        val cursor = db.query(TABLA_MOCHILAS, arrayOf(COLUMN_ORO), "$COLUMN_ID_MOCHILA = ?", arrayOf(idMochila.toString()), null, null, null)
-        var oro = 0
-        if (cursor.moveToFirst()) {
-            oro = cursor.getInt(cursor.getColumnIndex(COLUMN_ORO))
-        }
-        cursor.close()
-        return oro
     }
 
 

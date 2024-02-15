@@ -1,8 +1,5 @@
 package com.example.personaje
 
-import java.io.Serializable
-
-
 class Personaje  (
     private var email: String,
     private var nombre: String,
@@ -24,7 +21,7 @@ class Personaje  (
     enum class Clase { Brujo, Mago, Guerrero }
     enum class EstadoVital { Anciano, Joven, Adulto }
 
-    private val mochila = Mochila(10) // Ejemplo de peso máximo de la mochila
+    private val mochila = Mochila(1,100,0,0,-1)// Ejemplo de peso máximo de la mochila
     // Atributos para el equipo del personaje
     private var arma: Articulo? = null
     private var proteccion: Articulo? = null
