@@ -76,6 +76,16 @@
                 android:text="Cancelar" />
         </LinearLayout>
 
+        <TextView
+            android:id="@+id/textviewOroEspacio"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="16dp"
+            android:text="Oro: 0 - Espacio Disponible: 0"
+            android:textAlignment="center"
+            android:textSize="18sp" />
+
+
         <ScrollView
             android:id="@+id/scrollViewArticulos"
             android:layout_width="match_parent"

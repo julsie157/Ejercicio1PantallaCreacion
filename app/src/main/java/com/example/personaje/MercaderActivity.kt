@@ -16,16 +16,19 @@ class MercaderActivity : AppCompatActivity() {
     private lateinit var panelComercio: LinearLayout
     private lateinit var panelArticulos: LinearLayout
     private lateinit var botonComerciar: Button
+    private lateinit var textviewOroEspacio: TextView
     private lateinit var botonComprar: Button
     private lateinit var botonVender: Button
     private lateinit var botonCancelar: Button
     private lateinit var botonContinuar: Button
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.layout_mercader)
 
         dbGeneral = BaseDeDatosGeneral(this)
+
         idPersonaje = intent.getLongExtra("intentExtraIdPersonaje", -1L)
 
         panelComercio = findViewById(R.id.panelComercio)
@@ -35,6 +38,11 @@ class MercaderActivity : AppCompatActivity() {
         botonVender = findViewById(R.id.botonVender)
         botonCancelar = findViewById(R.id.botonCancelar)
         botonContinuar = findViewById(R.id.Botoncontmercader)
+        textviewOroEspacio = findViewById(R.id.textviewOroEspacio)
+
+        val idMochila = dbGeneral.obtenerIdMochilaPorPersonaje(idPersonaje)
+
+        actualizarOroEspacio(idMochila)
 
         botonComerciar.setOnClickListener {
             mostrarPanelComercio()
@@ -84,6 +92,7 @@ class MercaderActivity : AppCompatActivity() {
 
         if (listadoArticulos.isEmpty()) {
             Toast.makeText(this, "La mochila esta vacia.", Toast.LENGTH_SHORT).show()
+            panelArticulos.visibility = View.GONE
             return
         }
         panelArticulos.visibility = View.VISIBLE
@@ -126,6 +135,7 @@ class MercaderActivity : AppCompatActivity() {
             dbGeneral.actualizarOroMochila(idMochila, oroActual - precio)
             dbGeneral.anadirArticuloAMochila(idMochila, articulo.getIdArticulo())
             dbGeneral.actualizarEspacioMochila(idMochila, peso)
+            actualizarOroEspacio(idMochila)
             Toast.makeText(this, "Artículo comprado: ${articulo.getNombre().name}", Toast.LENGTH_SHORT).show()
             mostrarArticulosParaCompra()
         } else {
@@ -138,8 +148,15 @@ class MercaderActivity : AppCompatActivity() {
         dbGeneral.actualizarOroMochila(idMochila, dbGeneral.obtenerOroMochila(idMochila) + precio)
         dbGeneral.eliminarArticuloDeMochila(idMochila, articulo.getIdInventario())
         dbGeneral.actualizarEspacioMochila(idMochila, -articulo.getPeso())
+        actualizarOroEspacio(idMochila)
         Toast.makeText(this, "Artículo vendido: ${articulo.getNombre().name}", Toast.LENGTH_SHORT).show()
         mostrarArticulosParaVenta()
+    }
+
+    private fun actualizarOroEspacio(idMochila: Int) {
+        val oroActual = dbGeneral.obtenerOroMochila(idMochila)
+        val espacioDisponible = dbGeneral.obtenerEspacioDisponibleMochila(idMochila)
+        textviewOroEspacio.text = "Oro: $oroActual - Espacio Disponible: $espacioDisponible"
     }
 
     private fun obtenerIdImagenPorNumero(numero: Int): Int {

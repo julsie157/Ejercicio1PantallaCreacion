@@ -12,7 +12,7 @@ import android.database.sqlite.SQLiteOpenHelper
 class BaseDeDatosGeneral(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME, null, DATABASE_VERSION) {
 
     companion object {
-        private const val DATABASE_VERSION = 9
+        private const val DATABASE_VERSION = 10
         private const val DATABASE_NAME = "MiBaseGeneral.db"
 
         private const val TABLA_PERSONAJES = "Personajes"
@@ -211,21 +211,28 @@ class BaseDeDatosGeneral(context: Context) : SQLiteOpenHelper(context, DATABASE_
 
         val listadoArticulo: ArrayList<Articulo> = ArrayList()
 
-        cursor.moveToFirst()
-        do {
-            val idInventario = cursor.getInt(cursor.getColumnIndex(COLUMN_ID_INVENTARIO))
-            val idArticulo = cursor.getInt(cursor.getColumnIndex(COLUMN_ID_ARTICULO))
-            val tipoArticulo = cursor.getString(cursor.getColumnIndex(COLUMN_TIPO_ARTICULO))
-            val nombre = cursor.getString(cursor.getColumnIndex(COLUMN_NOMBRE))
-            val peso = cursor.getInt(cursor.getColumnIndex(COLUMN_PESO_ARTICULO))
-            val precio = cursor.getInt(cursor.getColumnIndex(COLUMN_PRECIO))
-            val imagenId = cursor.getInt(cursor.getColumnIndex(COLUMN_DRAWABLE))
+        if (cursor.moveToFirst()) {
+            do {
+                val idInventario = cursor.getInt(cursor.getColumnIndex(COLUMN_ID_INVENTARIO))
+                val idArticulo = cursor.getInt(cursor.getColumnIndex(COLUMN_ID_ARTICULO))
+                val tipoArticulo = cursor.getString(cursor.getColumnIndex(COLUMN_TIPO_ARTICULO))
+                val nombre = cursor.getString(cursor.getColumnIndex(COLUMN_NOMBRE))
+                val peso = cursor.getInt(cursor.getColumnIndex(COLUMN_PESO_ARTICULO))
+                val precio = cursor.getInt(cursor.getColumnIndex(COLUMN_PRECIO))
+                val imagenId = cursor.getInt(cursor.getColumnIndex(COLUMN_DRAWABLE))
 
-            val articulo: Articulo = Articulo(Articulo.TipoArticulo.valueOf(tipoArticulo), Articulo.Nombre.valueOf(nombre), peso, precio, imagenId)
-            articulo.setIdArticulo(idArticulo)
-            articulo.setIdInventario(idInventario)
-            listadoArticulo.add(articulo)
-        } while(cursor.moveToNext())
+                val articulo: Articulo = Articulo(
+                    Articulo.TipoArticulo.valueOf(tipoArticulo),
+                    Articulo.Nombre.valueOf(nombre),
+                    peso,
+                    precio,
+                    imagenId
+                )
+                articulo.setIdArticulo(idArticulo)
+                articulo.setIdInventario(idInventario)
+                listadoArticulo.add(articulo)
+            } while (cursor.moveToNext())
+        }
         cursor.close()
         return listadoArticulo
     }
