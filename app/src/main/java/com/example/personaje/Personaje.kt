@@ -10,7 +10,7 @@ class Personaje  (
     private var clase: Clase,
     private var estadoVital: EstadoVital
 ){
-    private var id: Int = -1
+    private var id: Long = -1
     private var salud: Int = 0
     private var ataque: Int = 0
     private var experiencia: Int
@@ -39,11 +39,11 @@ class Personaje  (
         calcularDefensa()
     }
 
-    fun getId(): Int {
+    fun getId(): Long {
         return id
     }
 
-    fun setId(nuevoId: Int) {
+    fun setId(nuevoId: Long) {
         id = nuevoId
     }
 

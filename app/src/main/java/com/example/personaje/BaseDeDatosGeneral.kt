@@ -7,13 +7,13 @@ import android.content.Context
 import android.database.Cursor
 import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteOpenHelper
-
+import android.util.Log
 
 
 class BaseDeDatosGeneral(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME, null, DATABASE_VERSION) {
 
     companion object {
-        private const val DATABASE_VERSION = 3
+        private const val DATABASE_VERSION = 5
         private const val DATABASE_NAME = "MiBaseGeneral.db"
 
         private const val TABLA_PERSONAJES = "Personajes"
@@ -38,7 +38,7 @@ class BaseDeDatosGeneral(context: Context) : SQLiteOpenHelper(context, DATABASE_
         private const val COLUMN_ORO = "oro"
 
         private const val TABLA_ARTICULOS = "Articulos"
-        private const val COLUMN_ID_ARTICULO = "idArticulo"
+        const val COLUMN_ID_ARTICULO = "idArticulo"
         private const val COLUMN_TIPO_ARTICULO = "tipoArticulo"
         const val COLUMN_PESO_ARTICULO = "peso"
         const val COLUMN_PRECIO = "precio"
@@ -46,7 +46,7 @@ class BaseDeDatosGeneral(context: Context) : SQLiteOpenHelper(context, DATABASE_
         private const val COLUMN_ID_MOCHILA_ARTICULO = "idMochila"
 
         private const val TABLA_INVENTARIO = "Inventario"
-
+        const val COLUMN_ID_INVENTARIO = "idInventario"
 
 
     }
@@ -71,7 +71,7 @@ class BaseDeDatosGeneral(context: Context) : SQLiteOpenHelper(context, DATABASE_
                 "$COLUMN_ID_MOCHILA INTEGER PRIMARY KEY, " +
                 "$COLUMN_PESO_MAXIMO INTEGER, " +
                 "$COLUMN_ESPACIO_OCUPADO INTEGER DEFAULT 0, " +
-                "$COLUMN_ID_PERSONAJE INTEGCOLU," +
+                "$COLUMN_ID_PERSONAJE INTEGER," +
                 "$COLUMN_ORO INTEGER, " +
                 "FOREIGN KEY ($COLUMN_ID_PERSONAJE) REFERENCES $TABLA_PERSONAJES($COLUMN_ID_PERSONAJE))"
 
@@ -85,6 +85,7 @@ class BaseDeDatosGeneral(context: Context) : SQLiteOpenHelper(context, DATABASE_
                 "$COLUMN_ID_MOCHILA_ARTICULO INTEGER)"
 
         val createTableInventario = "CREATE TABLE $TABLA_INVENTARIO (" +
+                "$COLUMN_ID_INVENTARIO INTEGER PRIMARY KEY, " +
                 "$COLUMN_ID_ARTICULO INTEGER, " +
                 "$COLUMN_ID_MOCHILA INTEGER, "+
                 "FOREIGN KEY ($COLUMN_ID_ARTICULO) REFERENCES $TABLA_ARTICULOS($COLUMN_ID_ARTICULO),"+
@@ -106,6 +107,104 @@ class BaseDeDatosGeneral(context: Context) : SQLiteOpenHelper(context, DATABASE_
         onCreate(db)
     }
 
+    @SuppressLint("Range")
+    fun obtenerPersonajePorEmail(email: String): Personaje? {
+        val db = this.readableDatabase
+        val cursor = db.query(
+            TABLA_PERSONAJES,
+            arrayOf(COLUMN_ID_PERSONAJE, COLUMN_EMAIL, COLUMN_NOMBRE, COLUMN_RAZA, COLUMN_CLASE, COLUMN_ESTADO_VITAL, COLUMN_SALUD, COLUMN_ATAQUE, COLUMN_DEFENSA, COLUMN_EXPERIENCIA, COLUMN_NIVEL, COLUMN_SUERTE),
+            "$COLUMN_EMAIL = ?",
+            arrayOf(email.toString()),
+            null,
+            null,
+            null
+        )
+        if (cursor.moveToFirst()) {
+            val idPersonaje = cursor.getLong(cursor.getColumnIndex(COLUMN_ID_PERSONAJE))
+            val email = cursor.getString(cursor.getColumnIndex(COLUMN_EMAIL))
+            val nombre = cursor.getString(cursor.getColumnIndex(COLUMN_NOMBRE))
+            val raza = Personaje.Raza.valueOf(cursor.getString(cursor.getColumnIndex(COLUMN_RAZA)))
+            val clase = Personaje.Clase.valueOf(cursor.getString(cursor.getColumnIndex(COLUMN_CLASE)))
+            val estadoVital = Personaje.EstadoVital.valueOf(cursor.getString(cursor.getColumnIndex(COLUMN_ESTADO_VITAL)))
+            val salud = cursor.getInt(cursor.getColumnIndex(COLUMN_SALUD))
+            val ataque = cursor.getInt(cursor.getColumnIndex(COLUMN_ATAQUE))
+            val defensa = cursor.getInt(cursor.getColumnIndex(COLUMN_DEFENSA))
+            val experiencia = cursor.getInt(cursor.getColumnIndex(COLUMN_EXPERIENCIA))
+            val nivel = cursor.getInt(cursor.getColumnIndex(COLUMN_NIVEL))
+            val suerte = cursor.getInt(cursor.getColumnIndex(COLUMN_SUERTE))
+
+
+            val personaje = Personaje(email, nombre, raza, clase, estadoVital).apply {
+                setId(idPersonaje)
+                setSalud(salud)
+                setAtaque(ataque)
+                setDefensa(defensa)
+                setExperiencia(experiencia)
+                setNivel(nivel)
+                setSuerte(suerte)
+            }
+
+            cursor.close()
+            return personaje
+        }
+        cursor.close()
+        return null
+    }
+
+    @SuppressLint("Range")
+    fun obtenerArticulosPorIdMochila(idMochila: Int): ArrayList<Articulo> {
+        val db = this.readableDatabase
+        val cursor = db.rawQuery("SELECT $TABLA_INVENTARIO.$COLUMN_ID_INVENTARIO, $TABLA_ARTICULOS.* FROM $TABLA_ARTICULOS INNER JOIN $TABLA_INVENTARIO ON $TABLA_ARTICULOS.$COLUMN_ID_ARTICULO = $TABLA_INVENTARIO.$COLUMN_ID_ARTICULO WHERE $TABLA_INVENTARIO.$COLUMN_ID_MOCHILA = ?", arrayOf(idMochila.toString()))
+
+        val listadoArticulo: ArrayList<Articulo> = ArrayList()
+
+        cursor.moveToFirst()
+        do {
+            val idInventario = cursor.getInt(cursor.getColumnIndex(COLUMN_ID_INVENTARIO))
+            val idArticulo = cursor.getInt(cursor.getColumnIndex(COLUMN_ID_ARTICULO))
+            val tipoArticulo = cursor.getString(cursor.getColumnIndex(COLUMN_TIPO_ARTICULO))
+            val nombre = cursor.getString(cursor.getColumnIndex(COLUMN_NOMBRE))
+            val peso = cursor.getInt(cursor.getColumnIndex(COLUMN_PESO_ARTICULO))
+            val precio = cursor.getInt(cursor.getColumnIndex(COLUMN_PRECIO))
+            val imagenId = cursor.getInt(cursor.getColumnIndex(COLUMN_DRAWABLE))
+
+            val articulo: Articulo = Articulo(Articulo.TipoArticulo.valueOf(tipoArticulo), Articulo.Nombre.valueOf(nombre), peso, precio, imagenId)
+            articulo.setIdArticulo(idArticulo)
+            articulo.setIdInventario(idInventario)
+            listadoArticulo.add(articulo)
+        } while(cursor.moveToNext())
+        cursor.close()
+        return listadoArticulo
+    }
+
+    fun insertarMochila(idPersonaje: Long) {
+        val db = this.writableDatabase
+        val values = ContentValues().apply {
+            put(COLUMN_PESO_MAXIMO, 100)
+            put(COLUMN_ESPACIO_OCUPADO, 0)
+            put(COLUMN_ID_PERSONAJE, idPersonaje)
+            put(COLUMN_ORO, 0)
+        }
+        db.insert(TABLA_MOCHILAS, null, values)
+    }
+
+    fun insertarPersonaje(personaje: Personaje): Long {
+        val db = this.writableDatabase
+        val values = ContentValues().apply {
+            put(COLUMN_EMAIL, personaje.getEmail())
+            put(COLUMN_NOMBRE, personaje.getEmail())
+            put(COLUMN_RAZA, personaje.getRaza().toString())
+            put(COLUMN_CLASE, personaje.getClase().toString())
+            put(COLUMN_ESTADO_VITAL, personaje.getEstadoVital().toString())
+            put(COLUMN_SALUD, personaje.getSalud())
+            put(COLUMN_ATAQUE, personaje.getAtaque())
+            put(COLUMN_DEFENSA, personaje.getDefensa())
+            put(COLUMN_EXPERIENCIA, personaje.getExperiencia())
+            put(COLUMN_NIVEL, personaje.getNivel())
+            put(COLUMN_SUERTE, personaje.getSuerte())
+        }
+        return db.insert(TABLA_PERSONAJES, null, values)
+    }
 
     fun insertarArticulos(db: SQLiteDatabase) {
 
@@ -120,7 +219,6 @@ class BaseDeDatosGeneral(context: Context) : SQLiteOpenHelper(context, DATABASE_
         addArticulo(db, "ARMADURA", "PROTECCION", 40, 10, 9)
         addArticulo(db, "DAGA", "ARMA", 10, 25, 10)
     }
-
     fun addArticulo(
         db: SQLiteDatabase,
         nombre: String,
@@ -145,6 +243,7 @@ class BaseDeDatosGeneral(context: Context) : SQLiteOpenHelper(context, DATABASE_
     }
 
 
+
     @SuppressLint("Range")
     fun obtenerEspacioDisponibleMochila(idMochila: Int): Int {
         val db = this.readableDatabase
@@ -165,6 +264,14 @@ class BaseDeDatosGeneral(context: Context) : SQLiteOpenHelper(context, DATABASE_
         val nuevoEspacioOcupado = espacioOcupadoActual + pesoObjetoRecogido
         val values = ContentValues().apply {
             put(COLUMN_ESPACIO_OCUPADO, nuevoEspacioOcupado)
+        }
+        db.update(TABLA_MOCHILAS, values, "$COLUMN_ID_MOCHILA = ?", arrayOf(idMochila.toString()))
+    }
+
+    fun actualizarEspacioMochilaDos(idMochila: Int, pesoActualizado: Int) {
+        val db = this.writableDatabase
+        val values = ContentValues().apply {
+            put(COLUMN_ESPACIO_OCUPADO, pesoActualizado)
         }
         db.update(TABLA_MOCHILAS, values, "$COLUMN_ID_MOCHILA = ?", arrayOf(idMochila.toString()))
     }
@@ -206,83 +313,23 @@ class BaseDeDatosGeneral(context: Context) : SQLiteOpenHelper(context, DATABASE_
         return idMochila
     }
 
-
-    fun insertarMochila(idPersonaje: Int) {
+    //***************************************************************************//
+    fun anadirArticuloAMochila(idMochila: Int, idArticulo: Int): Boolean {
         val db = this.writableDatabase
         val values = ContentValues().apply {
-            put(COLUMN_PESO_MAXIMO, 100)
-            put(COLUMN_ESPACIO_OCUPADO, 0)
-            put(COLUMN_ID_PERSONAJE, idPersonaje)
-            put(COLUMN_ESPACIO_OCUPADO, 0)
+            put(COLUMN_ID_MOCHILA, idMochila)
+            put(COLUMN_ID_ARTICULO, idArticulo)
         }
-        db.insert(TABLA_MOCHILAS, null, values)
+        val resultado = db.insert(TABLA_INVENTARIO, null, values)
+        return resultado != -1L
     }
 
-    @SuppressLint("Range")
-    fun obtenerPersonajePorEmail(email: String): Personaje? {
+    fun obtenerArticulosAleatoriosParaCompra(): Cursor? {
         val db = this.readableDatabase
-        val cursor = db.query(
-            TABLA_PERSONAJES,
-            arrayOf(COLUMN_ID_PERSONAJE, COLUMN_EMAIL, COLUMN_NOMBRE, COLUMN_RAZA, COLUMN_CLASE, COLUMN_ESTADO_VITAL, COLUMN_SALUD, COLUMN_ATAQUE, COLUMN_DEFENSA, COLUMN_EXPERIENCIA, COLUMN_NIVEL, COLUMN_SUERTE),
-            "$COLUMN_EMAIL = ?",
-            arrayOf(email.toString()),
-            null,
-            null,
-            null
-        )
-        if (cursor.moveToFirst()) {
-            val idPersonaje = cursor.getInt(cursor.getColumnIndex(COLUMN_ID_PERSONAJE))
-            val email = cursor.getString(cursor.getColumnIndex(COLUMN_EMAIL))
-            val nombre = cursor.getString(cursor.getColumnIndex(COLUMN_NOMBRE))
-            val raza = Personaje.Raza.valueOf(cursor.getString(cursor.getColumnIndex(COLUMN_RAZA)))
-            val clase = Personaje.Clase.valueOf(cursor.getString(cursor.getColumnIndex(COLUMN_CLASE)))
-            val estadoVital = Personaje.EstadoVital.valueOf(cursor.getString(cursor.getColumnIndex(COLUMN_ESTADO_VITAL)))
-            val salud = cursor.getInt(cursor.getColumnIndex(COLUMN_SALUD))
-            val ataque = cursor.getInt(cursor.getColumnIndex(COLUMN_ATAQUE))
-            val defensa = cursor.getInt(cursor.getColumnIndex(COLUMN_DEFENSA))
-            val experiencia = cursor.getInt(cursor.getColumnIndex(COLUMN_EXPERIENCIA))
-            val nivel = cursor.getInt(cursor.getColumnIndex(COLUMN_NIVEL))
-            val suerte = cursor.getInt(cursor.getColumnIndex(COLUMN_SUERTE))
-
-
-            val personaje = Personaje(email, nombre, raza, clase, estadoVital).apply {
-                setId(idPersonaje)
-                setSalud(salud)
-                setAtaque(ataque)
-                setDefensa(defensa)
-                setExperiencia(experiencia)
-                setNivel(nivel)
-                setSuerte(suerte)
-            }
-
-            cursor.close()
-            return personaje
-        }
-        cursor.close()
-        return null
+        return db.rawQuery("SELECT * FROM $TABLA_ARTICULOS ORDER BY RANDOM() LIMIT 4", null)
     }
 
-
-    fun insertarPersonaje(personaje: Personaje): Long {
-        val db = this.writableDatabase
-        val values = ContentValues().apply {
-            put(COLUMN_EMAIL, personaje.getEmail())
-            put(COLUMN_NOMBRE, personaje.getEmail())
-            put(COLUMN_RAZA, personaje.getRaza().toString())
-            put(COLUMN_CLASE, personaje.getClase().toString())
-            put(COLUMN_ESTADO_VITAL, personaje.getEstadoVital().toString())
-            put(COLUMN_SALUD, personaje.getSalud())
-            put(COLUMN_ATAQUE, personaje.getAtaque())
-            put(COLUMN_DEFENSA, personaje.getDefensa())
-            put(COLUMN_EXPERIENCIA, personaje.getExperiencia())
-            put(COLUMN_NIVEL, personaje.getNivel())
-            put(COLUMN_SUERTE, personaje.getSuerte())
-        }
-        return db.insert(TABLA_PERSONAJES, null, values)
-    }
-
-
-    fun actualizarOroMochila(idMochila: Int, oro: Int) {
+    fun actualizarOroMochila(idMochila: Long, oro: Int) {
         val db = this.writableDatabase
         val values = ContentValues()
         values.put(COLUMN_ORO, oro)
@@ -291,7 +338,7 @@ class BaseDeDatosGeneral(context: Context) : SQLiteOpenHelper(context, DATABASE_
 
 
     @SuppressLint("Range")
-    fun obtenerOroMochila(idMochila: Int): Int {
+    fun obtenerOroMochila(idMochila: Long): Int {
         val db = this.readableDatabase
         val cursor = db.query(TABLA_MOCHILAS, arrayOf(COLUMN_ORO), "$COLUMN_ID_MOCHILA = ?", arrayOf(idMochila.toString()), null, null, null)
         var oro = 0
@@ -302,26 +349,10 @@ class BaseDeDatosGeneral(context: Context) : SQLiteOpenHelper(context, DATABASE_
         return oro
     }
 
-    @SuppressLint("Range")
-    fun obtenerArticulosAleatoriosConPrecioAumentado(): List<Articulo> {
-        val articulos = mutableListOf<Articulo>()
-        val db = this.readableDatabase
-        val cursor = db.rawQuery("SELECT $COLUMN_NOMBRE, $COLUMN_DRAWABLE, ($COLUMN_PRECIO * 1.5) AS precioAumentado, $COLUMN_TIPO_ARTICULO FROM $TABLA_ARTICULOS ORDER BY RANDOM() LIMIT 4", null)
-
-        if (cursor.moveToFirst()) {
-            do {
-                val tipoArticuloEnum = Articulo.TipoArticulo.valueOf(cursor.getString(cursor.getColumnIndex(COLUMN_TIPO_ARTICULO)))
-                val nombreEnum = Articulo.Nombre.valueOf(cursor.getString(cursor.getColumnIndex(COLUMN_NOMBRE)))
-                val imagenId = cursor.getInt(cursor.getColumnIndex(COLUMN_DRAWABLE))
-                val precio = cursor.getDouble(cursor.getColumnIndex("precioAumentado")).toInt()
-                val peso = cursor.getInt(cursor.getColumnIndex(COLUMN_PESO_ARTICULO))
-                articulos.add(Articulo(tipoArticuloEnum, nombreEnum, peso, precio, imagenId))
-            } while (cursor.moveToNext())
-        }
-        cursor.close()
-        return articulos
+    fun eliminarArticuloDeMochila(idMochila: Int, idInventario: Int) {
+        val db = this.writableDatabase
+        db.delete(TABLA_INVENTARIO, "$COLUMN_ID_MOCHILA = ? AND $COLUMN_ID_INVENTARIO = ?", arrayOf(idMochila.toString(), idInventario.toString()))
     }
-
 
 
 }

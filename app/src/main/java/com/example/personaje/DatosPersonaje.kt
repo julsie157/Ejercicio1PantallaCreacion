@@ -3,7 +3,6 @@ package com.example.personaje
 import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import android.widget.Button
 import android.widget.TextView
 import android.widget.Toast
@@ -80,7 +79,7 @@ class DatosPersonaje : AppCompatActivity() {
             val personajeNuevo : Personaje = Personaje(email,nombre, Personaje.Raza.valueOf(raza), Personaje.Clase.valueOf(clase), Personaje.EstadoVital.valueOf(estadoVital))
             val idPersonajeNuevo = dbGeneral.insertarPersonaje(personajeNuevo)
             if(idPersonajeNuevo > 0) {
-                dbGeneral.insertarMochila(idPersonajeNuevo.toInt())
+                dbGeneral.insertarMochila(idPersonajeNuevo)
                 val intent = Intent(this, PantallaDado::class.java).apply {
                     putExtra("intentExtraIdPersonaje", idPersonajeNuevo)
                 }

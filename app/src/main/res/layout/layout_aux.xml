@@ -9,7 +9,7 @@
         android:id="@+id/imageArticulo"
         android:layout_width="86dp"
         android:layout_height="97dp"
-        android:layout_marginEnd="16dp"></ImageView>
+        android:layout_marginEnd="16dp" />
 
     <LinearLayout
         android:layout_width="0dp"
@@ -31,12 +31,20 @@
             android:text="Precio: "
             android:textSize="16sp" />
 
-        <Button
-            android:id="@+id/botonConfirmar"
-            android:layout_width="127dp"
-            android:layout_height="36dp"
-            android:text="Confirmar" />
-    </LinearLayout>
+        <TextView
+            android:id="@+id/pesoArticulo"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Peso: "
+            android:textSize="16sp"
+            />
 
+        <Button
+            android:id="@+id/botonConfirmarAux"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Confirmar" />
+
+    </LinearLayout>
 
 </LinearLayout>

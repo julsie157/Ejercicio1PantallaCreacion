@@ -23,7 +23,6 @@ class Inicio : AppCompatActivity() {
     private lateinit var mediaPlayer: MediaPlayer
     private lateinit var playButton: Button
     private lateinit var seekBar: SeekBar
-
     private lateinit var spinnerRaza: Spinner
     private lateinit var spinnerClase: Spinner
     private lateinit var spinnerEstadoVital: Spinner
@@ -39,7 +38,6 @@ class Inicio : AppCompatActivity() {
         setContentView(R.layout.layout_inicio)
 
         dbGeneral = BaseDeDatosGeneral(this)
-
         mediaPlayer = MediaPlayer.create(this, R.raw.temita)
 
         MusicPlayer.init(this)

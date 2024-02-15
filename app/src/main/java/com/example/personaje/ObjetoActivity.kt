@@ -16,7 +16,7 @@ class ObjetoActivity : AppCompatActivity() {
     private lateinit var botonContinuar: Button
     private lateinit var imagenObjeto: ImageView
     private lateinit var dbGeneral: BaseDeDatosGeneral
-    private var idPersonaje: Long = -1
+    private var idPersonaje: Long = -1L
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -47,6 +47,7 @@ class ObjetoActivity : AppCompatActivity() {
             Toast.makeText(this, "Mochila no encontrada para el personaje.", Toast.LENGTH_LONG).show()
             return
         }
+        //dbGeneral.obtenerEspacioDisponibleMochila(idMochila)
 
         val cursor = dbGeneral.obtenerArticuloAleatorio()
         if (cursor != null && cursor.moveToFirst()) {
@@ -58,6 +59,8 @@ class ObjetoActivity : AppCompatActivity() {
             val espacioDisponible = dbGeneral.obtenerEspacioDisponibleMochila(idMochila)
             if (peso <= espacioDisponible) {
                 dbGeneral.actualizarEspacioMochila(idMochila, peso)
+                val idArticulo = cursor.getInt(cursor.getColumnIndex(BaseDeDatosGeneral.COLUMN_ID_ARTICULO))
+                dbGeneral.anadirArticuloAMochila(idMochila, idArticulo)
                 mostrarToastRecogida(nombre, espacioDisponible - peso, resourceId)
                 Handler(Looper.getMainLooper()).postDelayed({
                     finish()

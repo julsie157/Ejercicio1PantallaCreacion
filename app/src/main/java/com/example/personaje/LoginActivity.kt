@@ -65,7 +65,7 @@ class LoginActivity : AppCompatActivity() {
                         val personaje: Personaje? = dbGeneral.obtenerPersonajePorEmail(email)
                         showToast("Inicio de sesión exitoso!")
                         var intent = Intent(this, Inicio::class.java).apply {
-                            putExtra("intentExtraEmail",email)
+                            putExtra("intentExtraEmail", email)
                         }
                         if (personaje!=null){
                             intent = Intent(this, PantallaDado::class.java).apply{

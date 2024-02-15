@@ -2,6 +2,7 @@ package com.example.personaje
 
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.widget.Button
 import androidx.appcompat.app.AppCompatActivity
 import kotlin.random.Random
@@ -10,10 +11,11 @@ class PantallaDado : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
         setContentView(R.layout.layout_dado)
 
         val dadoButton = findViewById<Button>(R.id.Botontirar)
-        val idPersonaje = intent.getIntExtra("intentExtraIdPersonaje",-1)
+        val idPersonaje = intent.getLongExtra("intentExtraIdPersonaje",-1L)
 
         dadoButton.setOnClickListener {
             val encounter = randomEncounter()
@@ -32,7 +34,7 @@ class PantallaDado : AppCompatActivity() {
     }
 
     private fun randomEncounter(): String {
-        val encounters = arrayOf("Objeto")
+        val encounters = arrayOf("Mercader","Objeto")
         return encounters[Random.nextInt(encounters.size)]
     }
 }
