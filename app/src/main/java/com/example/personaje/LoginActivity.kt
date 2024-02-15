@@ -67,6 +67,7 @@ class LoginActivity : AppCompatActivity() {
                         var intent = Intent(this, Inicio::class.java).apply {
                             putExtra("intentExtraEmail", email)
                         }
+                        // && personaje.isVivo() == true
                         if (personaje!=null){
                             intent = Intent(this, PantallaDado::class.java).apply{
                                 putExtra("intentExtraIdPersonaje", personaje.getId())

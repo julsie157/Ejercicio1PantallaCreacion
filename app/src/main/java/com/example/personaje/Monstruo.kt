@@ -8,8 +8,8 @@ class Monstruo(
     private var ataque: Int = 0
 
     init {
-        calcularSalud() // Inicializar la salud según el nivel al nivel 1
-        calcularAtaque() // Inicializar el ataque según el nivel al nivel 1
+        calcularSalud()
+        calcularAtaque()
     }
 
     fun getNombre(): String {

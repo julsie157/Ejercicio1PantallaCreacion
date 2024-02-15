@@ -31,17 +31,11 @@
 
 
         <Button
-            android:id="@+id/Botonluchar"
+            android:id="@+id/BotonlucharoHuir"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Luchar" />
+            android:text="Luchar o Huir" />
 
-
-        <Button
-            android:id="@+id/Botonhuir"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Huir" />
 
     </LinearLayout>
 </LinearLayout>

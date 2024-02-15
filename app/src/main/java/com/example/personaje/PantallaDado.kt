@@ -34,7 +34,7 @@ class PantallaDado : AppCompatActivity() {
     }
 
     private fun randomEncounter(): String {
-        val encounters = arrayOf("Mercader","Objeto")
+        val encounters = arrayOf("Mercader","Objeto","Enemigo")
         return encounters[Random.nextInt(encounters.size)]
     }
 }

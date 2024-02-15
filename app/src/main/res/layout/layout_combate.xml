@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="16dp">
+
+
+    <ImageView
+        android:id="@+id/imagenMonstruo"
+        android:layout_width="132dp"
+        android:layout_height="126dp"
+        android:src="@drawable/enemigo"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true" />
+
+
+    <TextView
+        android:id="@+id/TextViewSaludMonstruo"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/imagenMonstruo"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="8dp"
+        android:text="Salud Monstruo" />
+
+
+    <ProgressBar
+        android:id="@+id/barraVidaMonstruo"
+        style="@android:style/Widget.ProgressBar.Horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/TextViewSaludMonstruo"
+        android:max="100"
+        android:progress="100" />
+
+
+    <ImageView
+        android:id="@+id/imagenJugador"
+        android:layout_width="132dp"
+        android:layout_height="126dp"
+        android:src="@drawable/gnomopocho"
+        android:layout_above="@id/botonAtacar"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="16dp" />
+
+
+    <TextView
+        android:id="@+id/TextViewSaludJugador"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@id/barraVidaJugador"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="8dp"
+        android:text="Salud Jugador" />
+
+
+    <ProgressBar
+        android:id="@+id/barraVidaJugador"
+        style="@android:style/Widget.ProgressBar.Horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_above="@id/imagenJugador"
+        android:max="100"
+        android:progress="100" />
+
+
+    <Button
+        android:id="@+id/botonAtacar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Atacar"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentStart="true" />
+
+
+    <Button
+        android:id="@+id/botonUsarObjeto"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Usar Objeto"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentEnd="true" />
+
+    <ScrollView
+        android:id="@+id/scrollViewObjetos"
+        android:layout_width="338dp"
+        android:layout_height="267dp"
+        android:layout_above="@+id/TextViewSaludJugador"
+        android:layout_below="@+id/barraVidaMonstruo"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentEnd="true"
+        android:layout_marginStart="76dp"
+        android:layout_marginTop="15dp"
+        android:layout_marginEnd="77dp"
+        android:layout_marginBottom="6dp">
+
+        <LinearLayout
+            android:id="@+id/panelObjetos"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="16dp">
+
+        </LinearLayout>
+
+
+    </ScrollView>
+
+</RelativeLayout>

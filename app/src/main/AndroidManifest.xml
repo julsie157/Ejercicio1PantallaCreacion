@@ -56,6 +56,14 @@
 
         </activity>
 
+        <activity android:name=".CombateActivity">
+
+        </activity>
+
+        <activity android:name=".LootMascotaActivity">
+
+        </activity>
+
 
 
 

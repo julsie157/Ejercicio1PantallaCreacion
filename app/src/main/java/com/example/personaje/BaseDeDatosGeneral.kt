@@ -12,7 +12,7 @@ import android.database.sqlite.SQLiteOpenHelper
 class BaseDeDatosGeneral(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME, null, DATABASE_VERSION) {
 
     companion object {
-        private const val DATABASE_VERSION = 10
+        private const val DATABASE_VERSION = 11
         private const val DATABASE_NAME = "MiBaseGeneral.db"
 
         private const val TABLA_PERSONAJES = "Personajes"
@@ -326,6 +326,46 @@ class BaseDeDatosGeneral(context: Context) : SQLiteOpenHelper(context, DATABASE_
         return oro
     }
 
+    @SuppressLint("Range")
+    fun obtenerPersonajePorId(idPersonaje: Long): Personaje? {
+        val db = this.readableDatabase
+        val cursor = db.query(
+            TABLA_PERSONAJES,
+            null, // null selects all columns
+            "$COLUMN_ID_PERSONAJE = ?",
+            arrayOf(idPersonaje.toString()),
+            null,
+            null,
+            null
+        )
+        var personaje: Personaje? = null
+        if (cursor.moveToFirst()) {
+            val email = cursor.getString(cursor.getColumnIndex(COLUMN_EMAIL))
+            val nombre = cursor.getString(cursor.getColumnIndex(COLUMN_NOMBRE))
+            val raza = Personaje.Raza.valueOf(cursor.getString(cursor.getColumnIndex(COLUMN_RAZA)))
+            val clase = Personaje.Clase.valueOf(cursor.getString(cursor.getColumnIndex(COLUMN_CLASE)))
+            val estadoVital = Personaje.EstadoVital.valueOf(cursor.getString(cursor.getColumnIndex(COLUMN_ESTADO_VITAL)))
+            val salud = cursor.getInt(cursor.getColumnIndex(COLUMN_SALUD))
+            val ataque = cursor.getInt(cursor.getColumnIndex(COLUMN_ATAQUE))
+            val defensa = cursor.getInt(cursor.getColumnIndex(COLUMN_DEFENSA))
+            val experiencia = cursor.getInt(cursor.getColumnIndex(COLUMN_EXPERIENCIA))
+            val nivel = cursor.getInt(cursor.getColumnIndex(COLUMN_NIVEL))
+            val suerte = cursor.getInt(cursor.getColumnIndex(COLUMN_SUERTE))
+
+            personaje = Personaje(email, nombre, raza, clase, estadoVital).apply {
+                setId(idPersonaje)
+                setSalud(salud)
+                setAtaque(ataque)
+                setDefensa(defensa)
+                setExperiencia(experiencia)
+                setNivel(nivel)
+                setSuerte(suerte)
+            }
+        }
+        cursor.close()
+        return personaje
+    }
+
     //***************************************************************************//
     //***************************************************************************//
     //***************************************************************************//
@@ -401,4 +441,18 @@ class BaseDeDatosGeneral(context: Context) : SQLiteOpenHelper(context, DATABASE_
     }
 
 
-}
+    fun eliminarPersonaje(idPersonaje: Long) {
+        val db = this.writableDatabase
+        db.beginTransaction()
+        db.delete(TABLA_PERSONAJES, "$COLUMN_ID_PERSONAJE = ?", arrayOf(idPersonaje.toString()))
+        val idMochila = obtenerIdMochilaPorPersonaje(idPersonaje)
+        db.delete(TABLA_MOCHILAS, "$COLUMN_ID_PERSONAJE = ?", arrayOf(idPersonaje.toString()))
+        db.delete(TABLA_INVENTARIO, "$COLUMN_ID_MOCHILA = ?", arrayOf(idMochila.toString()))
+        db.setTransactionSuccessful()
+        db.endTransaction()
+        }
+    }
+
+
+
+

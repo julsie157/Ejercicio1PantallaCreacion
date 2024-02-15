@@ -188,14 +188,14 @@ class Personaje  (
             8 -> 199
             9 -> 349
             10 -> 399
-            else -> 4 // Valor por defecto si el nivel está fuera del rango especificado
+            else -> 4
         }
     }
 
     fun pelea(monstruo: Monstruo) {
         var vidaMonstruo = monstruo.getSalud()
         var expGanada =
-            monstruo.getSalud() // La experiencia ganada es igual a la salud inicial del monstruo
+            monstruo.getSalud()
         var vidaPersonaje = salud
         var contador = false
         println("¡Un ${monstruo.getNombre()} se acerca!")
@@ -203,18 +203,18 @@ class Personaje  (
 
 
         while (vidaMonstruo > 0 && vidaPersonaje > 0) {
-            // Preguntar al usuario si desea activar la habilidad
+
             println("¿Deseas activar la habilidad del personaje? (Sí/No)")
             val respuesta = readLine()?.toLowerCase()
 
             if ((respuesta == "si" || respuesta == "sí") && contador == false) {
-                habilidad() // Activa la habilidad del personaje
+                habilidad()
                 contador = true
             }
             val evasion = suerte >= 10
             val ataqueMonstruo = if (evasion) 0 else monstruo.getAtaque()
 
-            // Aplicar la defensa del personaje
+
             val defensaPersonaje = defensa * suerte / 100
             val danoMonstruo = if (evasion) 0 else ataqueMonstruo - defensaPersonaje
 
@@ -234,8 +234,6 @@ class Personaje  (
                     println("${nombre} ha derrotado al ${monstruo.getNombre()} y gana ${expGanada} de experiencia.")
                     break
                 }
-
-                // Monstruo ataca al personaje
                 vidaPersonaje -= ataqueMonstruo
                 println("${monstruo.getNombre()} ataca a ${nombre}. Salud de ${nombre}: ${vidaPersonaje}")
             }
@@ -245,17 +243,17 @@ class Personaje  (
     fun habilidad() {
         when (clase) {
             Clase.Mago -> {
-                calcularSalud() // Subir la salud al límite del nivel
+                calcularSalud()
                 println("$nombre utiliza su habilidad de Mago para restaurar su salud.")
             }
 
             Clase.Brujo -> {
-                ataque *= 2 // Duplicar el ataque
+                ataque *= 2
                 println("$nombre utiliza su habilidad de Brujo para duplicar su ataque.")
             }
 
             Clase.Guerrero -> {
-                suerte *= 2 // Duplicar la suerte
+                suerte *= 2
                 println("$nombre utiliza su habilidad de Guerrero para duplicar su suerte.")
             }
         }
@@ -275,10 +273,10 @@ class Personaje  (
             "Fácil" -> if (nivel >= 5) 8 else 6
             "Normal" -> if (nivel >= 3) 6 else 4
             "Difícil" -> if (nivel >= 7) 4 else 2
-            else -> 0 // En caso de dificultad no reconocida
+            else -> 0
         }
 
-        val resultado = (1..10).random() // Valor aleatorio entre 1 y 10
+        val resultado = (1..10).random()
 
         if (resultado <= probabilidadExito) {
             val experienciaGanada = when (tipoMision) {
