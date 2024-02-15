@@ -47,7 +47,7 @@ class ObjetoActivity : AppCompatActivity() {
             Toast.makeText(this, "Mochila no encontrada para el personaje.", Toast.LENGTH_LONG).show()
             return
         }
-        //dbGeneral.obtenerEspacioDisponibleMochila(idMochila)
+        dbGeneral.obtenerEspacioDisponibleMochila(idMochila)
 
         val cursor = dbGeneral.obtenerArticuloAleatorio()
         if (cursor != null && cursor.moveToFirst()) {

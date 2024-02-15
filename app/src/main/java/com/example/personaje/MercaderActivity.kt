@@ -64,7 +64,6 @@ class MercaderActivity : AppCompatActivity() {
         }
 
 
-
     }
 
     @SuppressLint("Range")
@@ -75,14 +74,14 @@ class MercaderActivity : AppCompatActivity() {
         val idMochila: Int = dbGeneral.obtenerIdMochilaPorPersonaje(idPersonaje)
         val listadoArticulos: ArrayList<Articulo> = dbGeneral.obtenerArticulosPorIdMochila(idMochila)
         val oroActual: Int = dbGeneral.obtenerOroMochila(idPersonaje)
-        //val mochila
         /*
         if (listadoArticulos.isEmpty()) {
             Toast.makeText(this, "No tienes ningún artículo para vender.", Toast.LENGTH_LONG).show()
             finish() // Finaliza la actividad actual y vuelve a la anterior
-            return // Sale de la función para no continuar con el proceso de mostrar artículos
         }
+
          */
+
         panelArticulos.visibility = View.VISIBLE
 
         for (articulo in listadoArticulos) {
@@ -97,15 +96,18 @@ class MercaderActivity : AppCompatActivity() {
 
             view.findViewById<Button>(R.id.botonConfirmarAux).setOnClickListener {
                 //mochilageoro()
+
                 dbGeneral.actualizarOroMochila(idPersonaje, oroActual + articulo.getPrecio())
                 dbGeneral.eliminarArticuloDeMochila(idMochila, articulo.getIdInventario())
-               // dbGeneral.actualizarEspacioMochilaDos(idMochila, mochila.getPeso() - articulo.getPeso())
+                //dbGeneral.actualizarEspacioMochilaDos(idMochila, mochila.getPeso() - articulo.getPeso())
 
-                /*
                 val pesoActualMochila = dbGeneral.obtenerEspacioDisponibleMochila(idMochila)
                 dbGeneral.actualizarEspacioMochila(idMochila, pesoActualMochila - articulo.getPeso())
-                */
-                Toast.makeText(this@MercaderActivity, "Artículo vendido exitosamente.", Toast.LENGTH_SHORT).show()
+                Toast.makeText(
+                    this@MercaderActivity,
+                    "Artículo vendido exitosamente.",
+                    Toast.LENGTH_SHORT
+                ).show()
                 mostrarArticulosParaVenta() // Actualiza la lista de artículos en venta
             }
 
@@ -119,10 +121,49 @@ class MercaderActivity : AppCompatActivity() {
         botonComprar.visibility = View.VISIBLE
     }
 
+
+    private fun mostrarArticulosParaCompra() {
+        panelArticulos.removeAllViews()
+        val idMochila: Int = dbGeneral.obtenerIdMochilaPorPersonaje(idPersonaje)
+        val listadoArticulos: ArrayList<Articulo> = dbGeneral.obtnerArticulosAleatoriosDelMercader(idMochila)
+        val oroActual: Int = dbGeneral.obtenerOroMochila(idPersonaje)
+        panelArticulos.visibility = View.VISIBLE
+
+        for (articulo in listadoArticulos) {
+            val view = layoutInflater.inflate(R.layout.layout_aux, panelArticulos, false)
+            view.findViewById<TextView>(R.id.nombreArticulo).text = articulo.getNombre().toString()
+            view.findViewById<TextView>(R.id.precioArticulo).text =
+                "Precio " + articulo.getPrecio().toString()
+            view.findViewById<TextView>(R.id.pesoArticulo).text =
+                "Peso: " + articulo.getPeso().toString()
+            val recursoImagen = obtenerIdImagenPorNumero(articulo.getImagenId())
+            view.findViewById<ImageView>(R.id.imageArticulo).setImageResource(recursoImagen)
+            view.findViewById<Button>(R.id.botonConfirmarAux).text = "Comprar"
+            panelArticulos.addView(view)
+
+            view.findViewById<Button>(R.id.botonConfirmarAux).setOnClickListener {
+
+                dbGeneral.actualizarOroMochila(idPersonaje, oroActual - articulo.getPrecio())
+                dbGeneral.anadirArticuloAMochila(idMochila, articulo.getIdInventario())
+                val pesoActualMochila = dbGeneral.obtenerEspacioDisponibleMochila(idMochila)
+                dbGeneral.actualizarEspacioMochila(idMochila, pesoActualMochila - articulo.getPeso())
+                Toast.makeText(
+                    this@MercaderActivity,
+                    "Artículo Comprado exitosamente.",
+                    Toast.LENGTH_SHORT
+                ).show()
+                mostrarArticulosParaCompra()
+            }
+
+        }
+    }
+
+
+    /*
     @SuppressLint("Range", "MissingInflatedId")
     private fun mostrarArticulosParaCompra() {
         panelArticulos.removeAllViews()
-        val cursor = dbGeneral.obtenerArticulosAleatoriosParaCompra()
+        val cursor = dbGeneral.obtnerArticulosAleatoriosDelMercader()
         panelArticulos.visibility = View.VISIBLE
         if (cursor != null && cursor.moveToFirst()) {
             do {
@@ -164,6 +205,8 @@ class MercaderActivity : AppCompatActivity() {
     }
 
 
+     */
+
     private fun obtenerIdImagenPorNumero(numero: Int): Int {
         return when (numero) {
             1 -> R.drawable.moneda
@@ -179,7 +222,5 @@ class MercaderActivity : AppCompatActivity() {
             else -> R.drawable.cofre
         }
     }
-
-
 
 }

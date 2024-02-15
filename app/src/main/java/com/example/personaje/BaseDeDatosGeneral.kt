@@ -13,7 +13,7 @@ import android.util.Log
 class BaseDeDatosGeneral(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME, null, DATABASE_VERSION) {
 
     companion object {
-        private const val DATABASE_VERSION = 5
+        private const val DATABASE_VERSION = 8
         private const val DATABASE_NAME = "MiBaseGeneral.db"
 
         private const val TABLA_PERSONAJES = "Personajes"
@@ -324,9 +324,34 @@ class BaseDeDatosGeneral(context: Context) : SQLiteOpenHelper(context, DATABASE_
         return resultado != -1L
     }
 
+
+    // Cambiar esta Por una lista DE objetos
     fun obtenerArticulosAleatoriosParaCompra(): Cursor? {
         val db = this.readableDatabase
         return db.rawQuery("SELECT * FROM $TABLA_ARTICULOS ORDER BY RANDOM() LIMIT 4", null)
+    }
+
+    @SuppressLint("Range")
+    fun obtnerArticulosAleatoriosDelMercader(idMochila: Int): ArrayList<Articulo>{
+        val db = this.readableDatabase
+        val cursor = db.rawQuery("SELECT * FROM $TABLA_ARTICULOS ORDER BY RANDOM() LIMIT 4", null)
+        val listadoArticulo: ArrayList<Articulo> = ArrayList()
+
+        cursor.moveToFirst()
+        do {
+            val idArticulo = cursor.getInt(cursor.getColumnIndex(COLUMN_ID_ARTICULO))
+            val tipoArticulo = cursor.getString(cursor.getColumnIndex(COLUMN_TIPO_ARTICULO))
+            val nombre = cursor.getString(cursor.getColumnIndex(COLUMN_NOMBRE))
+            val peso = cursor.getInt(cursor.getColumnIndex(COLUMN_PESO_ARTICULO))
+            val precio = cursor.getInt(cursor.getColumnIndex(COLUMN_PRECIO))
+            val imagenId = cursor.getInt(cursor.getColumnIndex(COLUMN_DRAWABLE))
+
+            val articulo: Articulo = Articulo(Articulo.TipoArticulo.valueOf(tipoArticulo), Articulo.Nombre.valueOf(nombre), peso, precio, imagenId)
+            articulo.setIdArticulo(idArticulo)
+            listadoArticulo.add(articulo)
+        } while(cursor.moveToNext())
+        cursor.close()
+        return listadoArticulo
     }
 
     fun actualizarOroMochila(idMochila: Long, oro: Int) {
@@ -348,6 +373,7 @@ class BaseDeDatosGeneral(context: Context) : SQLiteOpenHelper(context, DATABASE_
         cursor.close()
         return oro
     }
+
 
     fun eliminarArticuloDeMochila(idMochila: Int, idInventario: Int) {
         val db = this.writableDatabase
