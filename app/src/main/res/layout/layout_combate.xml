@@ -30,9 +30,9 @@
         android:layout_height="wrap_content"
         android:max="100"
         android:progress="100"
-        app:layout_constraintTop_toBottomOf="@id/TextViewSaludMonstruo"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"/>
+        app:layout_constraintTop_toBottomOf="@id/TextViewSaludMonstruo" />
 
     <ImageView
         android:id="@+id/imagenJugador"
