@@ -1,98 +1,102 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:padding="16dp">
-
 
     <ImageView
         android:id="@+id/imagenMonstruo"
         android:layout_width="132dp"
         android:layout_height="126dp"
         android:src="@drawable/enemigo"
-        android:layout_alignParentTop="true"
-        android:layout_centerHorizontal="true" />
-
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"/>
 
     <TextView
         android:id="@+id/TextViewSaludMonstruo"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/imagenMonstruo"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="8dp"
-        android:text="Salud Monstruo" />
-
+        android:text="Salud Monstruo"
+        app:layout_constraintTop_toBottomOf="@+id/imagenMonstruo"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"/>
 
     <ProgressBar
         android:id="@+id/barraVidaMonstruo"
-        style="@android:style/Widget.ProgressBar.Horizontal"
-        android:layout_width="match_parent"
+        style="?android:attr/progressBarStyleHorizontal"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_below="@id/TextViewSaludMonstruo"
         android:max="100"
-        android:progress="100" />
-
+        android:progress="100"
+        app:layout_constraintTop_toBottomOf="@id/TextViewSaludMonstruo"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"/>
 
     <ImageView
         android:id="@+id/imagenJugador"
         android:layout_width="132dp"
         android:layout_height="126dp"
         android:src="@drawable/gnomopocho"
-        android:layout_above="@id/botonAtacar"
-        android:layout_centerHorizontal="true"
-        android:layout_marginBottom="16dp" />
-
+        app:layout_constraintBottom_toTopOf="@+id/botonesAccion"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"/>
 
     <TextView
         android:id="@+id/TextViewSaludJugador"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_above="@id/barraVidaJugador"
-        android:layout_centerHorizontal="true"
-        android:layout_marginBottom="8dp"
-        android:text="Salud Jugador" />
-
+        android:text="Salud Jugador"
+        app:layout_constraintBottom_toTopOf="@+id/imagenJugador"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.498"
+        app:layout_constraintStart_toStartOf="parent" />
 
     <ProgressBar
         android:id="@+id/barraVidaJugador"
-        style="@android:style/Widget.ProgressBar.Horizontal"
-        android:layout_width="match_parent"
+        style="?android:attr/progressBarStyleHorizontal"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_above="@id/imagenJugador"
         android:max="100"
-        android:progress="100" />
+        android:progress="100"
+        app:layout_constraintBottom_toTopOf="@+id/TextViewSaludJugador"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
 
-
-    <Button
-        android:id="@+id/botonAtacar"
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:id="@+id/botonesAccion"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:text="Atacar"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentStart="true" />
+        android:orientation="horizontal"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
 
+        <Button
+            android:id="@+id/botonAtacar"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Atacar"/>
 
-    <Button
-        android:id="@+id/botonUsarObjeto"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Usar Objeto"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentEnd="true" />
+        <Button
+            android:id="@+id/botonUsarObjeto"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Usar Objeto"/>
+    </LinearLayout>
 
     <ScrollView
         android:id="@+id/scrollViewObjetos"
-        android:layout_width="338dp"
-        android:layout_height="267dp"
-        android:layout_above="@+id/TextViewSaludJugador"
-        android:layout_below="@+id/barraVidaMonstruo"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentEnd="true"
-        android:layout_marginStart="76dp"
-        android:layout_marginTop="15dp"
-        android:layout_marginEnd="77dp"
-        android:layout_marginBottom="6dp">
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:visibility="gone"
+        app:layout_constraintBottom_toTopOf="@id/barraVidaJugador"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/barraVidaMonstruo">
 
         <LinearLayout
             android:id="@+id/panelObjetos"
@@ -100,10 +104,8 @@
             android:layout_height="wrap_content"
             android:orientation="vertical"
             android:padding="16dp">
-
+            <!-- Contenido dinámico -->
         </LinearLayout>
-
-
     </ScrollView>
 
-</RelativeLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

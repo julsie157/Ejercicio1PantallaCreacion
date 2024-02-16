@@ -1,6 +1,9 @@
 package com.example.personaje
 
 import android.content.Intent
+import android.graphics.Color
+import android.graphics.PorterDuff
+import android.graphics.PorterDuffColorFilter
 import android.os.Bundle
 import android.view.View
 import android.widget.Button
@@ -69,6 +72,8 @@ class CombateActivity : AppCompatActivity() {
         actualizarBarrasDeVida()
         verificarEstadoCombate()
     }
+
+    /*
     private fun UsarObjeto() {
         val idMochila = dbGeneral.obtenerIdMochilaPorPersonaje(idPersonaje)
         val inventario = dbGeneral.obtenerArticulosPorIdMochila(idMochila)
@@ -107,7 +112,74 @@ class CombateActivity : AppCompatActivity() {
         findViewById<ScrollView>(R.id.scrollViewObjetos).visibility = View.VISIBLE
     }
 
+     */
 
+    private fun UsarObjeto() {
+        val botonAtacar: Button = findViewById(R.id.botonAtacar)
+        val botonUsarObjeto: Button = findViewById(R.id.botonUsarObjeto)
+        val scrollViewObjetos: ScrollView = findViewById(R.id.scrollViewObjetos)
+        val panelObjetos: LinearLayout = findViewById(R.id.panelObjetos)
+
+        botonAtacar.visibility = View.GONE
+        botonUsarObjeto.visibility = View.GONE
+        scrollViewObjetos.visibility = View.VISIBLE
+
+        val idMochila = dbGeneral.obtenerIdMochilaPorPersonaje(idPersonaje)
+        val inventario = dbGeneral.obtenerArticulosPorIdMochila(idMochila)
+
+        if (inventario.isEmpty()) {
+            // Si no hay objetos, permitir que el monstruo ataque automáticamente y volver a mostrar los botones.
+            recibirContraataque()
+            botonAtacar.visibility = View.VISIBLE
+            botonUsarObjeto.visibility = View.VISIBLE
+            scrollViewObjetos.visibility = View.GONE
+            return
+        }
+
+        panelObjetos.removeAllViews()
+        inventario.forEach { articulo ->
+            val vistaArticulo = layoutInflater.inflate(R.layout.layout_aux, panelObjetos, false)
+            vistaArticulo.findViewById<TextView>(R.id.nombreArticulo).text = articulo.getNombre().toString()
+            vistaArticulo.findViewById<TextView>(R.id.pesoArticulo).text = "Tipo: ${articulo.getTipoArticulo().toString()}"
+            vistaArticulo.findViewById<ImageView>(R.id.imageArticulo).setImageResource(obtenerIdImagenPorNumero(articulo.getImagenId()))
+            setupVistaArticulo(vistaArticulo, articulo, idMochila)
+            panelObjetos.addView(vistaArticulo)
+        }
+    }
+
+    private fun setupVistaArticulo(vista: View, articulo: Articulo, idMochila: Int) {
+
+        vista.findViewById<Button>(R.id.botonConfirmarAux).setOnClickListener {
+            usarArticulo(articulo, idMochila)
+        }
+    }
+
+    private fun usarArticulo(articulo: Articulo, idMochila: Int) {
+        when (articulo.getTipoArticulo()) {
+            Articulo.TipoArticulo.ARMA -> {
+                personaje.setAtaque(personaje.getAtaque() + 20) // Asume que cada arma aumenta el ataque en 20
+            }
+            Articulo.TipoArticulo.OBJETO -> {
+                val nuevaSalud = (personaje.getSalud() + 25)
+                personaje.setSalud(nuevaSalud)
+            }
+            Articulo.TipoArticulo.PROTECCION -> {
+                personaje.setDefensa(personaje.getDefensa() + 20) // Asume que cada protección aumenta la defensa en 20
+            }
+            else -> {}
+        }
+
+        dbGeneral.eliminarArticuloDeMochila(idMochila, articulo.getIdInventario())
+
+        actualizarBarrasDeVida()
+        findViewById<ScrollView>(R.id.scrollViewObjetos).visibility = View.GONE
+        findViewById<Button>(R.id.botonAtacar).visibility = View.VISIBLE
+        findViewById<Button>(R.id.botonUsarObjeto).visibility = View.VISIBLE
+
+        if (monstruo.getSalud() > 0) {
+            recibirContraataque()
+        }
+    }
     private fun verificarEstadoCombate() {
         if (monstruo.getSalud() <= 0) {
             val intent = Intent(this, LootMascotaActivity::class.java)
@@ -122,10 +194,29 @@ class CombateActivity : AppCompatActivity() {
     }
 
     private fun actualizarBarrasDeVida() {
-        barraVidaMonstruo.progress = max(0, monstruo.getSalud())
-        barraVidaJugador.progress = max(0, personaje.getSalud())
+        val porcentajeVidaMonstruo = monstruo.getSalud() * 100
+        val porcentajeVidaJugador = personaje.getSalud() * 100
+
+        barraVidaMonstruo.progress = monstruo.getSalud()
+        barraVidaJugador.progress = personaje.getSalud()
+
+        // Actualiza el color de la barra de vida del monstruo
+        barraVidaMonstruo.progressDrawable.colorFilter = PorterDuffColorFilter(getColorBasedOnHealth(porcentajeVidaMonstruo), PorterDuff.Mode.SRC_IN)
+
+        // Actualiza el color de la barra de vida del jugador
+        barraVidaJugador.progressDrawable.colorFilter = PorterDuffColorFilter(getColorBasedOnHealth(porcentajeVidaJugador), PorterDuff.Mode.SRC_IN)
+
         verificarEstadoCombate()
     }
+
+    private fun getColorBasedOnHealth(healthPercentage: Int): Int {
+        return when {
+            healthPercentage > 75 -> Color.GREEN
+            healthPercentage > 30 -> Color.YELLOW
+            else -> Color.RED
+        }
+    }
+
 
     private fun crearMonstruoAleatorio(): Monstruo {
         return Monstruo("Goblin", 1)
