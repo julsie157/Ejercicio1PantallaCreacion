@@ -23,7 +23,7 @@ class CombateActivity : AppCompatActivity() {
     private lateinit var monstruo: Monstruo
     private lateinit var barraVidaMonstruo: ProgressBar
     private lateinit var barraVidaJugador: ProgressBar
-    private var idPersonaje: Long = -1L
+    private  var idPersonaje: Long = -1L
     private lateinit var dbGeneral: BaseDeDatosGeneral
 
 
@@ -202,8 +202,8 @@ class CombateActivity : AppCompatActivity() {
     private fun crearMonstruoAleatorio(): Monstruo {
         val monstruos = listOf(
             Monstruo("Goblin", 1, R.drawable.goblin),
-            Monstruo("Orco", 1, R.drawable.orco),
-            Monstruo("Troll", 1, R.drawable.troll)
+            Monstruo("Orco", 2, R.drawable.orco),
+            Monstruo("Troll", 3, R.drawable.troll)
         )
         return monstruos.random()
     }

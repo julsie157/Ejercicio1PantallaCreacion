@@ -1,6 +1,6 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="wrap_content"
     android:orientation="vertical"
     android:padding="16dp">
 
@@ -9,23 +9,23 @@
         android:layout_width="wrap_content"
         android:layout_height="200dp"
         android:layout_gravity="center_horizontal"
-        android:src="@drawable/mascota"/>
+        android:src="@drawable/mascota" />
 
     <TextView
         android:id="@+id/textoContador"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
+        android:layout_marginTop="16dp"
         android:text="Contador"
-        android:textSize="24sp"
-        android:layout_marginTop="16dp"/>
+        android:textSize="24sp" />
 
     <LinearLayout
         android:id="@+id/BotonesInteractuar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:gravity="center">
+        android:gravity="center"
+        android:orientation="horizontal">
 
         <Button
             android:id="@+id/botonSalirdeInteractuar"
@@ -51,7 +51,21 @@
         android:id="@+id/textViewCantidadComidas"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
-        android:layout_weight="1"
-        android:text="Tienes Comidas en el Inventario?? :" />
+        android:layout_weight="1" />
+
+    <TextView
+        android:id="@+id/textViewMascota"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Nivel de Felicidad :" />
+
+    <ProgressBar
+        android:id="@+id/progressBarFelicidad"
+        style="?android:attr/progressBarStyleHorizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:max="100"
+        android:progress="30"
+        android:layout_marginTop="16dp"/>
 
 </LinearLayout>

@@ -122,7 +122,6 @@ class DatosPersonaje : AppCompatActivity() {
         }
     }
 
-    //para musica
     private fun updatePlayButton() {
         if (MusicPlayer.isPlaying()) {
             playButton.text = "Pause"

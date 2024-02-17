@@ -7,18 +7,19 @@ import android.content.Context
 import android.database.Cursor
 import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteOpenHelper
+import kotlin.math.max
 
 
 class BaseDeDatosGeneral(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME, null, DATABASE_VERSION) {
 
     companion object {
-        private const val DATABASE_VERSION = 28
+        private const val DATABASE_VERSION = 36
         private const val DATABASE_NAME = "MiBaseGeneral.db"
 
         private const val TABLA_PERSONAJES = "Personajes"
         private const val COLUMN_ID_PERSONAJE = "idPersonaje"
         private const val COLUMN_EMAIL = "email"
-        const val COLUMN_NOMBRE = "nombre"
+        private const val COLUMN_NOMBRE = "nombre"
         private const val COLUMN_RAZA = "raza"
         private const val COLUMN_CLASE = "clase"
         private const val COLUMN_ESTADO_VITAL = "estadoVital"
@@ -39,15 +40,15 @@ class BaseDeDatosGeneral(context: Context) : SQLiteOpenHelper(context, DATABASE_
         private const val COLUMN_ORO = "oro"
 
         private const val TABLA_ARTICULOS = "Articulos"
-        const val COLUMN_ID_ARTICULO = "idArticulo"
+        private const val COLUMN_ID_ARTICULO = "idArticulo"
         private const val COLUMN_TIPO_ARTICULO = "tipoArticulo"
-        const val COLUMN_PESO_ARTICULO = "peso"
-        const val COLUMN_PRECIO = "precio"
-        const val COLUMN_DRAWABLE = "imagen"
+        private const val COLUMN_PESO_ARTICULO = "peso"
+        private const val COLUMN_PRECIO = "precio"
+        private const val COLUMN_DRAWABLE = "imagen"
         private const val COLUMN_ID_MOCHILA_ARTICULO = "idMochila"
 
         private const val TABLA_INVENTARIO = "Inventario"
-        const val COLUMN_ID_INVENTARIO = "idInventario"
+        private const val COLUMN_ID_INVENTARIO = "idInventario"
 
         private const val TABLA_MASCOTA = "Mascotas"
         private const val COLUMN_ID_MASCOTA = "idMascota"
@@ -411,33 +412,28 @@ class BaseDeDatosGeneral(context: Context) : SQLiteOpenHelper(context, DATABASE_
         return idMascota
     }
 
-    fun obtenerCantidadComidasPorIdMochila(idMochila: Int): Int {
+    fun tengoComida(idMochila: Int): Boolean {
         val db = this.readableDatabase
-        val cursor = db.rawQuery("SELECT COUNT(*) FROM $TABLA_ARTICULOS WHERE $COLUMN_TIPO_ARTICULO = ? AND $COLUMN_ID_MOCHILA_ARTICULO = ?", arrayOf("COMIDA", idMochila.toString()))
-        var cantidad = 0
+        val cursor = db.rawQuery("SELECT COUNT(*) FROM $TABLA_INVENTARIO JOIN $TABLA_ARTICULOS ON $TABLA_INVENTARIO.$COLUMN_ID_ARTICULO = $TABLA_ARTICULOS.$COLUMN_ID_ARTICULO WHERE $COLUMN_TIPO_ARTICULO = 'COMIDA' AND $TABLA_INVENTARIO.$COLUMN_ID_MOCHILA = ?", arrayOf(idMochila.toString()))
+        var tieneComida = false
         if (cursor.moveToFirst()) {
-            cantidad = cursor.getInt(0)
+            tieneComida = cursor.getInt(0) > 0
         }
         cursor.close()
-        return cantidad
+        return tieneComida
     }
     @SuppressLint("Range")
     fun obtenerFelicidadMascota(idMascota: Long): Int {
         val db = this.readableDatabase
-        val cursor = db.query(
-            "Mascotas",
-            arrayOf("felicidad"),
-            "idMascota = ?",
-            arrayOf(idMascota.toString()),
-            null, null, null
-        )
+        val cursor = db.query(TABLA_MASCOTA, arrayOf(COLUMN_FELICIDAD), "$COLUMN_ID_MASCOTA = ?", arrayOf(idMascota.toString()), null, null, null)
         var felicidad = 0
         if (cursor.moveToFirst()) {
-            felicidad = cursor.getInt(cursor.getColumnIndex("felicidad"))
+            felicidad = cursor.getInt(cursor.getColumnIndex(COLUMN_FELICIDAD))
         }
         cursor.close()
         return felicidad
     }
+
     fun tengoMascota(idPersonaje: Long): Boolean {
         val db = this.readableDatabase
         val cursor = db.rawQuery("SELECT * FROM Mascotas WHERE idPersonaje = ?", arrayOf(idPersonaje.toString()))
@@ -503,7 +499,7 @@ class BaseDeDatosGeneral(context: Context) : SQLiteOpenHelper(context, DATABASE_
         val db = this.writableDatabase
         val values = ContentValues().apply {
             put(COLUMN_EMAIL, personaje.getEmail())
-            put(COLUMN_NOMBRE, personaje.getEmail())
+            put(COLUMN_NOMBRE, personaje.getNombre())
             put(COLUMN_RAZA, personaje.getRaza().toString())
             put(COLUMN_CLASE, personaje.getClase().toString())
             put(COLUMN_ESTADO_VITAL, personaje.getEstadoVital().toString())
@@ -558,23 +554,23 @@ class BaseDeDatosGeneral(context: Context) : SQLiteOpenHelper(context, DATABASE_
         val db = this.writableDatabase
         db.delete(TABLA_MASCOTA, "$COLUMN_ID_MASCOTA = ?", arrayOf(idMascota.toString()))
     }
+
     @SuppressLint("Range")
     fun consumirTodaLaComidaDelInventario(idMochila: Int) {
         val db = this.writableDatabase
         db.beginTransaction()
         try {
-            val cursor = db.rawQuery("SELECT idArticulo, peso FROM Articulos WHERE tipoArticulo = 'COMIDA' AND idMochilaArticulo = ?", arrayOf(idMochila.toString()))
-            var pesoTotalComida = 0
-            while (cursor.moveToNext()) {
-                val idArticulo = cursor.getInt(cursor.getColumnIndex("idArticulo"))
-                val peso = cursor.getInt(cursor.getColumnIndex("peso"))
-                db.delete("Articulos", "idArticulo = ?", arrayOf(idArticulo.toString()))
-                pesoTotalComida += peso
+
+            val cursor = db.rawQuery("SELECT COUNT(*) FROM $TABLA_INVENTARIO JOIN $TABLA_ARTICULOS ON $TABLA_INVENTARIO.$COLUMN_ID_ARTICULO = $TABLA_ARTICULOS.$COLUMN_ID_ARTICULO WHERE $COLUMN_TIPO_ARTICULO = 'COMIDA' AND $TABLA_INVENTARIO.$COLUMN_ID_MOCHILA = ?", arrayOf(idMochila.toString()))
+            var cantidadComida = 0
+            if (cursor.moveToFirst()) {
+                cantidadComida = cursor.getInt(0)
             }
             cursor.close()
 
-            if (pesoTotalComida > 0) {
-                actualizarEspacioMochilaAlEliminarComida(idMochila, pesoTotalComida)
+            if (cantidadComida > 0) {
+                db.delete("$TABLA_INVENTARIO", "$COLUMN_ID_MOCHILA = ? AND $COLUMN_ID_ARTICULO IN (SELECT $COLUMN_ID_ARTICULO FROM $TABLA_ARTICULOS WHERE $COLUMN_TIPO_ARTICULO = 'COMIDA')", arrayOf(idMochila.toString()))
+                actualizarEspacioMochilaAlEliminarComida(idMochila, cantidadComida)
             }
 
             db.setTransactionSuccessful()
@@ -582,17 +578,15 @@ class BaseDeDatosGeneral(context: Context) : SQLiteOpenHelper(context, DATABASE_
             db.endTransaction()
         }
     }
+
     fun actualizarEspacioMochilaAlEliminarComida(idMochila: Int, pesoComida: Int) {
         val espacioOcupadoActual = obtenerEspacioOcupadoMochila(idMochila)
-        val nuevoEspacioOcupado = Math.max(0, espacioOcupadoActual - pesoComida)
+        val nuevoEspacioOcupado = maxOf(0, espacioOcupadoActual - pesoComida)
         val values = ContentValues().apply {
-            put("espacioOcupado", nuevoEspacioOcupado)
+            put(COLUMN_ESPACIO_OCUPADO, nuevoEspacioOcupado)
         }
-        writableDatabase.update("Mochilas", values, "idMochila = ?", arrayOf(idMochila.toString()))
+        writableDatabase.update(TABLA_MOCHILAS, values, "$COLUMN_ID_MOCHILA = ?", arrayOf(idMochila.toString()))
     }
-
-
-
 
 
 }

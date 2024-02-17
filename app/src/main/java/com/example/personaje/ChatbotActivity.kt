@@ -18,13 +18,17 @@ import com.google.common.collect.Lists
 import java.util.*
 
 class ChatbotActivity : AppCompatActivity(), BotReply {
+
+    private var idPersonaje: Long = -1L
+    private lateinit var dbGeneral: BaseDeDatosGeneral
+
     private var chatView: RecyclerView? = null
     private var chatAdapter: ChatAdapter? = null
     private var messageList: MutableList<Message> = ArrayList()
     private var editMessage: EditText? = null
     private var btnSend: ImageButton? = null
 
-    // DialogFlow
+
     private var sessionsClient: SessionsClient? = null
     private var sessionName: SessionName? = null
     private val uuid = UUID.randomUUID().toString()
@@ -34,10 +38,14 @@ class ChatbotActivity : AppCompatActivity(), BotReply {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.chatbot)
 
+        dbGeneral = BaseDeDatosGeneral(this)
+        idPersonaje = intent.getLongExtra("intentExtraIdPersonaje", -1L)
+
         val salirBoton = findViewById<Button>(R.id.salirboton)
 
         salirBoton.setOnClickListener {
             val intent = Intent(this, PantallaDado::class.java)
+            intent.putExtra("intentExtraIdPersonaje", idPersonaje)
             startActivity(intent)
             finish()
         }

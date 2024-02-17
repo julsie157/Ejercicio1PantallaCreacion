@@ -43,4 +43,10 @@
             android:text="Continuar" />
 
     </LinearLayout>
+
+    <TextView
+        android:id="@+id/textViewCiudad"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:text="Estas a punto de entrar en :" />
 </LinearLayout>
