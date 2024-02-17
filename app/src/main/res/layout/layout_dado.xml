@@ -65,5 +65,11 @@
         android:layout_height="wrap_content"
         android:text="Comienza la aventura, pulsa el DADO para avanzar. CUIDADO puedes encontrarte enemigos"
         android:textAlignment="center"  />
+    <Button
+        android:id="@+id/botonTTS"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="TTS"
+        android:layout_gravity="center"/>
 
 </LinearLayout>

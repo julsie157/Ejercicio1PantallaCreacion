@@ -27,6 +27,9 @@ class LoginActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.layout_login)
 
+
+
+
         dbGeneral = BaseDeDatosGeneral(this)
 
         // Inicialización de Instancia de autenticación de Firebase

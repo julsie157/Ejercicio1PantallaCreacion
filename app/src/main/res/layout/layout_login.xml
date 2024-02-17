@@ -99,4 +99,6 @@
         android:text="Registrarse"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toEndOf="@+id/textView" />
+
+
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -92,10 +92,10 @@ class DatosPersonaje : AppCompatActivity() {
 
     private fun cargarDetallesPersonaje(nombre:String, raza:String, clase:String, estadoVital:String) {
 
-            nombreTextView.text = "Nombre: ${nombre}"
-            razaTextView.text = "Raza: ${raza}"
-            claseTextView.text = "Clase: ${clase}"
-            estadoVitalTextView.text = "Estado Vital: ${estadoVital}"
+        nombreTextView.text = "Nombre: ${nombre}"
+        razaTextView.text = "Raza: ${raza}"
+        claseTextView.text = "Clase: ${clase}"
+        estadoVitalTextView.text = "Estado Vital: ${estadoVital}"
 
     }
 
@@ -113,7 +113,7 @@ class DatosPersonaje : AppCompatActivity() {
         }
     }
 
-//para musica
+    //para musica
     private fun updatePlayButton() {
         if (MusicPlayer.isPlaying()) {
             playButton.text = "Pause"
