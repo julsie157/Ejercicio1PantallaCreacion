@@ -5,7 +5,8 @@ class Personaje  (
     private var nombre: String,
     private val raza: Raza,
     private var clase: Clase,
-    private var estadoVital: EstadoVital
+    private var estadoVital: EstadoVital,
+    private var imagenId: Int = R.drawable.gnomopocho
 ){
     private var id: Long = -1
     private var salud: Int = 0
@@ -58,6 +59,14 @@ class Personaje  (
 
     fun setEmail(nuevoEmail: String) {
         email = nuevoEmail
+    }
+
+    fun getImagenId(): Int {
+        return imagenId
+    }
+
+    fun setImagenId(nuevoImagenId: Int) {
+        imagenId = nuevoImagenId
     }
 
     fun getDefensa(): Int {

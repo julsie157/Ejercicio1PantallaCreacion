@@ -14,10 +14,9 @@ import com.google.firebase.ktx.Firebase
 class RegistroActivity : AppCompatActivity() {
 
 
-    // Declaración Instancia autenticación Firebase
+
     private lateinit var auth: FirebaseAuth
 
-    // Declaración variables
     private lateinit var emailEditText: EditText
     private lateinit var passwordEditText: EditText
     private lateinit var backButton: Button
@@ -28,35 +27,34 @@ class RegistroActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.layout_registro)
 
-        // Inicialización Instancia autenticación Firebase
+
         auth = Firebase.auth
 
-        // Inicialización variables con elementos del XML
+
         backButton = findViewById(R.id.botonAtrasReggistro)
         signInButton = findViewById(R.id.buttonConfirmar)
         emailEditText = findViewById(R.id.editTextEmailRegister)
         passwordEditText = findViewById(R.id.editTextPasswordRegister)
 
 
-        // Escucha de botón cancelar
+
         backButton.setOnClickListener {
             startActivity(Intent(this, LoginActivity::class.java))
             finish()
         }
 
-        // Escucha de botón registrar
+
         signInButton.setOnClickListener {
             val email = emailEditText.text.toString().trim()
             val password = passwordEditText.text.toString().trim()
 
-            // Comprobación campos en blanco
+
             if (email.isBlank() || password.isBlank()) {
                 showToast("El mail o la contraseña no puede estar vacío.")
                 return@setOnClickListener
             }
 
-            // comprobación de existencia de usuario, en caso de no existir lo crea, en caso de existir muestra alerta
-            // si hubiese algún fallo, muestra alerta
+
             auth.createUserWithEmailAndPassword(email, password)
                 .addOnCompleteListener(this) { task ->
                     if (task.isSuccessful) {
@@ -73,7 +71,7 @@ class RegistroActivity : AppCompatActivity() {
                 }
         }
     }
-    // Función de mostrado de alertas
+
     private fun showToast(message: String) {
         Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
     }

@@ -171,6 +171,7 @@ class MercaderActivity : AppCompatActivity() {
             8 -> R.drawable.escudo
             9 -> R.drawable.armadura
             10 -> R.drawable.daga
+            11 -> R.drawable.jamon
             else -> R.drawable.cofre
         }
     }

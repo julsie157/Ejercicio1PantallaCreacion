@@ -2,7 +2,8 @@ package com.example.personaje
 
 class Monstruo(
     private var nombre: String,
-    private var nivel: Int
+    private var nivel: Int,
+    private var imagenId: Int
 ) {
     private var salud: Int = 0
     private var ataque: Int = 0
@@ -14,6 +15,9 @@ class Monstruo(
 
     fun getNombre(): String {
         return nombre
+    }
+    fun getImagenId(): Int{
+        return imagenId
     }
     fun setNombre(nuevoNombre:String) {
         nombre = nuevoNombre

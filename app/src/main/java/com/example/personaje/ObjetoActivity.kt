@@ -1,12 +1,11 @@
 package com.example.personaje
 
-import android.annotation.SuppressLint
+
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import android.widget.Button
 import android.widget.ImageView
-import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 
@@ -95,6 +94,7 @@ class ObjetoActivity : AppCompatActivity() {
             8 -> R.drawable.escudo
             9 -> R.drawable.armadura
             10 -> R.drawable.daga
+            11 -> R.drawable.jamon
             else -> R.drawable.cofre
         }
     }

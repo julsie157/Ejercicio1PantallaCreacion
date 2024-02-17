@@ -1,0 +1,63 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="16dp">
+
+    <ImageView
+        android:id="@+id/imagenMascota"
+        android:layout_width="wrap_content"
+        android:layout_height="200dp"
+        android:layout_gravity="center_horizontal"
+        android:src="@drawable/mascota"/>
+
+    <TextView
+        android:id="@+id/textoContador"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:text="Contador"
+        android:textSize="24sp"
+        android:layout_marginTop="16dp"/>
+
+    <LinearLayout
+        android:id="@+id/BotonesInteractuar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center">
+
+        <Button
+            android:id="@+id/botonSalirdeInteractuar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Salir" />
+
+        <Button
+            android:id="@+id/botonJugar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Jugar" />
+
+        <Button
+            android:id="@+id/botonDarComida"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Dar Comida" />
+    </LinearLayout>
+
+    <ScrollView
+        android:id="@+id/scrollViewComidas"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:visibility="gone">
+
+        <LinearLayout
+            android:id="@+id/panelComidas"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="16dp"></LinearLayout>
+    </ScrollView>
+
+</LinearLayout>

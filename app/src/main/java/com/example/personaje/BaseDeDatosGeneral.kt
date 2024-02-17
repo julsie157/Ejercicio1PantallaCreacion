@@ -12,7 +12,7 @@ import android.database.sqlite.SQLiteOpenHelper
 class BaseDeDatosGeneral(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME, null, DATABASE_VERSION) {
 
     companion object {
-        private const val DATABASE_VERSION = 11
+        private const val DATABASE_VERSION = 20
         private const val DATABASE_NAME = "MiBaseGeneral.db"
 
         private const val TABLA_PERSONAJES = "Personajes"
@@ -28,6 +28,8 @@ class BaseDeDatosGeneral(context: Context) : SQLiteOpenHelper(context, DATABASE_
         private const val COLUMN_EXPERIENCIA = "experiencia"
         private const val COLUMN_NIVEL = "nivel"
         private const val COLUMN_SUERTE = "suerte"
+        private const val COLUMN_IMAGEN_ID = "imagenId"
+
 
 
         private const val TABLA_MOCHILAS = "Mochilas"
@@ -47,6 +49,9 @@ class BaseDeDatosGeneral(context: Context) : SQLiteOpenHelper(context, DATABASE_
         private const val TABLA_INVENTARIO = "Inventario"
         const val COLUMN_ID_INVENTARIO = "idInventario"
 
+        private const val TABLA_MASCOTA = "Mascotas"
+        private const val COLUMN_ID_MASCOTA = "idMascota"
+        private const val COLUMN_FELICIDAD = "felicidad"
 
     }
 
@@ -64,7 +69,8 @@ class BaseDeDatosGeneral(context: Context) : SQLiteOpenHelper(context, DATABASE_
                 "$COLUMN_DEFENSA INTEGER, " +
                 "$COLUMN_EXPERIENCIA INTEGER, " +
                 "$COLUMN_NIVEL INTEGER, " +
-                "$COLUMN_SUERTE INTEGER)"
+                "$COLUMN_SUERTE INTEGER, " +
+                "$COLUMN_IMAGEN_ID INTEGER)"
 
         val createTableMochila = "CREATE TABLE $TABLA_MOCHILAS (" +
                 "$COLUMN_ID_MOCHILA INTEGER PRIMARY KEY, " +
@@ -90,10 +96,21 @@ class BaseDeDatosGeneral(context: Context) : SQLiteOpenHelper(context, DATABASE_
                 "FOREIGN KEY ($COLUMN_ID_ARTICULO) REFERENCES $TABLA_ARTICULOS($COLUMN_ID_ARTICULO),"+
                 "FOREIGN KEY ($COLUMN_ID_MOCHILA) REFERENCES $TABLA_MOCHILAS($COLUMN_ID_MOCHILA))"
 
+
+        val createTableMascota = "CREATE TABLE $TABLA_MASCOTA (" +
+                "$COLUMN_ID_MASCOTA INTEGER PRIMARY KEY, " +
+                "$COLUMN_NOMBRE TEXT, " +
+                "$COLUMN_FELICIDAD INTEGER, " +
+                "$COLUMN_ID_PERSONAJE INTEGER," +
+                "FOREIGN KEY ($COLUMN_ID_PERSONAJE) REFERENCES $TABLA_PERSONAJES ($COLUMN_ID_PERSONAJE))"
+
+
+
         db.execSQL(createTablePersonaje)
         db.execSQL(createTableMochila)
         db.execSQL(createTableArticulo)
         db.execSQL(createTableInventario)
+        db.execSQL(createTableMascota)
 
         insertarArticulos(db)
 
@@ -103,6 +120,7 @@ class BaseDeDatosGeneral(context: Context) : SQLiteOpenHelper(context, DATABASE_
         db.execSQL("DROP TABLE IF EXISTS $TABLA_MOCHILAS")
         db.execSQL("DROP TABLE IF EXISTS $TABLA_ARTICULOS")
         db.execSQL("DROP TABLE IF EXISTS $TABLA_INVENTARIO")
+        db.execSQL("DROP TABLE IF EXISTS $TABLA_MASCOTA")
         onCreate(db)
     }
 
@@ -117,6 +135,8 @@ class BaseDeDatosGeneral(context: Context) : SQLiteOpenHelper(context, DATABASE_
         addArticulo(db, "ESCUDO", "PROTECCION", 20, 10, 8)
         addArticulo(db, "ARMADURA", "PROTECCION", 40, 10, 9)
         addArticulo(db, "DAGA", "ARMA", 10, 25, 10)
+        addArticulo(db, "JAMON", "COMIDA", 1, 1, 11)
+
     }
     fun addArticulo(
         db: SQLiteDatabase,
@@ -331,7 +351,7 @@ class BaseDeDatosGeneral(context: Context) : SQLiteOpenHelper(context, DATABASE_
         val db = this.readableDatabase
         val cursor = db.query(
             TABLA_PERSONAJES,
-            null, // null selects all columns
+            null,
             "$COLUMN_ID_PERSONAJE = ?",
             arrayOf(idPersonaje.toString()),
             null,
@@ -351,6 +371,8 @@ class BaseDeDatosGeneral(context: Context) : SQLiteOpenHelper(context, DATABASE_
             val experiencia = cursor.getInt(cursor.getColumnIndex(COLUMN_EXPERIENCIA))
             val nivel = cursor.getInt(cursor.getColumnIndex(COLUMN_NIVEL))
             val suerte = cursor.getInt(cursor.getColumnIndex(COLUMN_SUERTE))
+            val imagenId = cursor.getInt(cursor.getColumnIndex(COLUMN_IMAGEN_ID))
+
 
             personaje = Personaje(email, nombre, raza, clase, estadoVital).apply {
                 setId(idPersonaje)
@@ -360,11 +382,55 @@ class BaseDeDatosGeneral(context: Context) : SQLiteOpenHelper(context, DATABASE_
                 setExperiencia(experiencia)
                 setNivel(nivel)
                 setSuerte(suerte)
+                setImagenId(imagenId)
             }
         }
         cursor.close()
         return personaje
     }
+
+    @SuppressLint("Range")
+    fun obtenerIdMascotaPorPersonaje(idPersonaje: Long): Long {
+        val db = this.readableDatabase
+        val cursor = db.query(
+            TABLA_MASCOTA,
+            arrayOf(COLUMN_ID_MASCOTA),
+            "$COLUMN_ID_PERSONAJE = ?",
+            arrayOf(idPersonaje.toString()),
+            null,
+            null,
+            null
+        )
+        var idMascota: Long = -1
+        if (cursor.moveToFirst()) {
+            idMascota = cursor.getLong(cursor.getColumnIndex(COLUMN_ID_MASCOTA))
+        }
+        cursor.close()
+        return idMascota
+    }
+
+    @SuppressLint("Range")
+    fun obtenerComidasPorIdMochila(idMochila: Int): ArrayList<Articulo> {
+        val articulosComida = ArrayList<Articulo>()
+        val db = this.readableDatabase
+        val cursor = db.rawQuery("SELECT * FROM $TABLA_ARTICULOS WHERE $COLUMN_TIPO_ARTICULO = ? AND $COLUMN_ID_MOCHILA_ARTICULO = ?", arrayOf("COMIDA", idMochila.toString()))
+
+        if (cursor.moveToFirst()) {
+            do {
+                val idArticulo = cursor.getInt(cursor.getColumnIndex(COLUMN_ID_ARTICULO))
+                val nombre = cursor.getString(cursor.getColumnIndex(COLUMN_NOMBRE))
+                val tipoArticulo = cursor.getString(cursor.getColumnIndex(COLUMN_TIPO_ARTICULO))
+                val peso = cursor.getInt(cursor.getColumnIndex(COLUMN_PESO_ARTICULO))
+                val precio = cursor.getInt(cursor.getColumnIndex(COLUMN_PRECIO))
+                val imagenId = cursor.getInt(cursor.getColumnIndex(COLUMN_DRAWABLE))
+                articulosComida.add(Articulo(Articulo.TipoArticulo.valueOf(tipoArticulo), Articulo.Nombre.valueOf(nombre), peso, precio, imagenId))
+            } while (cursor.moveToNext())
+        }
+        cursor.close()
+        return articulosComida
+    }
+
+
 
     //***************************************************************************//
     //***************************************************************************//
@@ -430,6 +496,7 @@ class BaseDeDatosGeneral(context: Context) : SQLiteOpenHelper(context, DATABASE_
             put(COLUMN_EXPERIENCIA, personaje.getExperiencia())
             put(COLUMN_NIVEL, personaje.getNivel())
             put(COLUMN_SUERTE, personaje.getSuerte())
+            put(COLUMN_IMAGEN_ID, personaje.getImagenId())
         }
         return db.insert(TABLA_PERSONAJES, null, values)
     }
@@ -451,7 +518,31 @@ class BaseDeDatosGeneral(context: Context) : SQLiteOpenHelper(context, DATABASE_
         db.setTransactionSuccessful()
         db.endTransaction()
         }
+
+    fun insertarMascota(nombre: String, felicidad: Int, idPersonaje: Long): Long {
+        val db = this.writableDatabase
+        val values = ContentValues().apply {
+            put(COLUMN_NOMBRE, nombre)
+            put(COLUMN_FELICIDAD, felicidad)
+            put(COLUMN_ID_PERSONAJE, idPersonaje)
+        }
+        return db.insert(TABLA_MASCOTA, null, values)
     }
+
+    fun actualizarFelicidadMascota(idMascota: Long, nuevaFelicidad: Int) {
+        val db = this.writableDatabase
+        val values = ContentValues().apply {
+            put(COLUMN_FELICIDAD, nuevaFelicidad)
+        }
+        db.update(TABLA_MASCOTA, values, "$COLUMN_ID_MASCOTA = ?", arrayOf(idMascota.toString()))
+    }
+
+    fun eliminarMascota(idMascota: Long) {
+        val db = this.writableDatabase
+        db.delete(TABLA_MASCOTA, "$COLUMN_ID_MASCOTA = ?", arrayOf(idMascota.toString()))
+    }
+
+}
 
 
 

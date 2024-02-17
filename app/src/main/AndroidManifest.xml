@@ -18,6 +18,10 @@
         <activity
             android:name=".LoginActivity"
             android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
 
         </activity>
 
@@ -58,18 +62,21 @@
 
         </activity>
 
-        <activity android:name=".LootMascotaActivity">
+        <activity android:name=".GuaridaActivity">
 
         </activity>
+
         <activity android:name=".ChatbotActivity"
             android:exported="true">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
         </activity>
 
+        <activity android:name=".ReclutarMascotaActivity">
 
+        </activity>
+
+        <activity android:name=".InteractuarMascotaActivity">
+
+        </activity>
 
 
     </application>

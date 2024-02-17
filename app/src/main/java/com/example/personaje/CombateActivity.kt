@@ -25,6 +25,8 @@ class CombateActivity : AppCompatActivity() {
     private lateinit var barraVidaJugador: ProgressBar
     private var idPersonaje: Long = -1L
     private lateinit var dbGeneral: BaseDeDatosGeneral
+
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.layout_combate)
@@ -32,7 +34,13 @@ class CombateActivity : AppCompatActivity() {
 
         dbGeneral = BaseDeDatosGeneral(this)
         idPersonaje = intent.getLongExtra("intentExtraIdPersonaje", -1L)
+
         monstruo = crearMonstruoAleatorio()
+        val imagenMonstruo: ImageView = findViewById(R.id.imagenMonstruo)
+        imagenMonstruo.setImageResource(monstruo.getImagenId())
+
+
+
         barraVidaMonstruo = findViewById(R.id.barraVidaMonstruo)
         barraVidaJugador = findViewById(R.id.barraVidaJugador)
         configurarCombate()
@@ -41,6 +49,19 @@ class CombateActivity : AppCompatActivity() {
     private fun configurarCombate() {
 
         personaje = dbGeneral.obtenerPersonajePorId(idPersonaje) ?: return
+
+        val textViewSaludMonstruo: TextView = findViewById(R.id.TextViewSaludMonstruo)
+        textViewSaludMonstruo.text = "Salud del ${monstruo.getNombre()}"
+
+        val textViewSaludJugador: TextView = findViewById(R.id.TextViewSaludJugador)
+        textViewSaludJugador.text = "Salud de ${personaje.getNombre()}"
+
+        val imagenJugador: ImageView = findViewById(R.id.imagenJugador)
+        imagenJugador.setImageResource(personaje.getImagenId())
+
+        val nombreImagen = personaje.getImagenId()
+        val resourceId = this.resources.getIdentifier(nombreImagen.toString(), "drawable", this.packageName)
+        imagenJugador.setImageResource(resourceId)
 
 
         barraVidaMonstruo.max = monstruo.getSalud()
@@ -73,46 +94,6 @@ class CombateActivity : AppCompatActivity() {
         verificarEstadoCombate()
     }
 
-    /*
-    private fun UsarObjeto() {
-        val idMochila = dbGeneral.obtenerIdMochilaPorPersonaje(idPersonaje)
-        val inventario = dbGeneral.obtenerArticulosPorIdMochila(idMochila)
-        val panelObjetos: LinearLayout = findViewById(R.id.panelObjetos)
-        panelObjetos.removeAllViews()
-
-
-        inventario.forEach { articulo ->
-            val vistaArticulo = layoutInflater.inflate(R.layout.layout_aux, panelObjetos, false)
-            vistaArticulo.findViewById<TextView>(R.id.nombreArticulo).text = articulo.getNombre().toString()
-            vistaArticulo.findViewById<TextView>(R.id.pesoArticulo).text = "Tipo: ${articulo.getTipoArticulo().toString()}"
-            vistaArticulo.findViewById<ImageView>(R.id.imageArticulo).setImageResource(obtenerIdImagenPorNumero(articulo.getImagenId()))
-
-
-            vistaArticulo.findViewById<Button>(R.id.botonConfirmarAux).apply {text = "Usar"
-                setOnClickListener {
-                    when (articulo.getTipoArticulo()) {
-                        Articulo.TipoArticulo.ARMA -> personaje.setAtaque(personaje.getAtaque() + 20)
-                        Articulo.TipoArticulo.OBJETO -> personaje.setSalud(personaje.getSalud() + 25)
-                        Articulo.TipoArticulo.PROTECCION -> personaje.setDefensa(personaje.getDefensa() + 20)
-                        else -> {}
-                    }
-
-                    dbGeneral.eliminarArticuloDeMochila(idMochila, articulo.getIdInventario())
-                    actualizarBarrasDeVida()
-                    findViewById<ScrollView>(R.id.scrollViewObjetos).visibility = View.GONE
-                    verificarEstadoCombate()
-
-                    if (monstruo.getSalud() > 0) {
-                        recibirContraataque()
-                    }
-                }
-            }
-            panelObjetos.addView(vistaArticulo)
-        }
-        findViewById<ScrollView>(R.id.scrollViewObjetos).visibility = View.VISIBLE
-    }
-
-     */
 
     private fun UsarObjeto() {
         val botonAtacar: Button = findViewById(R.id.botonAtacar)
@@ -128,7 +109,6 @@ class CombateActivity : AppCompatActivity() {
         val inventario = dbGeneral.obtenerArticulosPorIdMochila(idMochila)
 
         if (inventario.isEmpty()) {
-            // Si no hay objetos, permitir que el monstruo ataque automáticamente y volver a mostrar los botones.
             recibirContraataque()
             botonAtacar.visibility = View.VISIBLE
             botonUsarObjeto.visibility = View.VISIBLE
@@ -140,6 +120,7 @@ class CombateActivity : AppCompatActivity() {
         inventario.forEach { articulo ->
             val vistaArticulo = layoutInflater.inflate(R.layout.layout_aux, panelObjetos, false)
             vistaArticulo.findViewById<TextView>(R.id.nombreArticulo).text = articulo.getNombre().toString()
+            vistaArticulo.findViewById<TextView>(R.id.precioArticulo).text = null
             vistaArticulo.findViewById<TextView>(R.id.pesoArticulo).text = "Tipo: ${articulo.getTipoArticulo().toString()}"
             vistaArticulo.findViewById<ImageView>(R.id.imageArticulo).setImageResource(obtenerIdImagenPorNumero(articulo.getImagenId()))
             setupVistaArticulo(vistaArticulo, articulo, idMochila)
@@ -157,19 +138,20 @@ class CombateActivity : AppCompatActivity() {
     private fun usarArticulo(articulo: Articulo, idMochila: Int) {
         when (articulo.getTipoArticulo()) {
             Articulo.TipoArticulo.ARMA -> {
-                personaje.setAtaque(personaje.getAtaque() + 20) // Asume que cada arma aumenta el ataque en 20
+                personaje.setAtaque(personaje.getAtaque() + 20)
             }
             Articulo.TipoArticulo.OBJETO -> {
                 val nuevaSalud = (personaje.getSalud() + 25)
                 personaje.setSalud(nuevaSalud)
             }
             Articulo.TipoArticulo.PROTECCION -> {
-                personaje.setDefensa(personaje.getDefensa() + 20) // Asume que cada protección aumenta la defensa en 20
+                personaje.setDefensa(personaje.getDefensa() + 20)
             }
             else -> {}
         }
 
         dbGeneral.eliminarArticuloDeMochila(idMochila, articulo.getIdInventario())
+        dbGeneral.actualizarEspacioMochila(idMochila, -articulo.getPeso())
 
         actualizarBarrasDeVida()
         findViewById<ScrollView>(R.id.scrollViewObjetos).visibility = View.GONE
@@ -182,7 +164,7 @@ class CombateActivity : AppCompatActivity() {
     }
     private fun verificarEstadoCombate() {
         if (monstruo.getSalud() <= 0) {
-            val intent = Intent(this, LootMascotaActivity::class.java)
+            val intent = Intent(this, GuaridaActivity::class.java)
             startActivity(intent)
             finish()
         } else if (personaje.getSalud() <= 0) {
@@ -200,10 +182,8 @@ class CombateActivity : AppCompatActivity() {
         barraVidaMonstruo.progress = monstruo.getSalud()
         barraVidaJugador.progress = personaje.getSalud()
 
-        // Actualiza el color de la barra de vida del monstruo
         barraVidaMonstruo.progressDrawable.colorFilter = PorterDuffColorFilter(getColorBasedOnHealth(porcentajeVidaMonstruo), PorterDuff.Mode.SRC_IN)
 
-        // Actualiza el color de la barra de vida del jugador
         barraVidaJugador.progressDrawable.colorFilter = PorterDuffColorFilter(getColorBasedOnHealth(porcentajeVidaJugador), PorterDuff.Mode.SRC_IN)
 
         verificarEstadoCombate()
@@ -219,7 +199,12 @@ class CombateActivity : AppCompatActivity() {
 
 
     private fun crearMonstruoAleatorio(): Monstruo {
-        return Monstruo("Goblin", 1)
+        val monstruos = listOf(
+            Monstruo("Goblin", 1, R.drawable.goblin),
+            Monstruo("Orco", 1, R.drawable.orco),
+            Monstruo("Troll", 1, R.drawable.troll)
+        )
+        return monstruos.random()
     }
 
     private fun recibirContraataque() {
@@ -242,8 +227,8 @@ class CombateActivity : AppCompatActivity() {
             8 -> R.drawable.escudo
             9 -> R.drawable.armadura
             10 -> R.drawable.daga
+            11 -> R.drawable.jamon
             else -> R.drawable.cofre
         }
     }
 }
-

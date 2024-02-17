@@ -18,10 +18,10 @@
         android:id="@+id/TextViewSaludMonstruo"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Salud Monstruo"
-        app:layout_constraintTop_toBottomOf="@+id/imagenMonstruo"
+        android:hint="Salud Monstruo"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"/>
+        app:layout_constraintTop_toBottomOf="@+id/imagenMonstruo" />
 
     <ProgressBar
         android:id="@+id/barraVidaMonstruo"
@@ -47,7 +47,7 @@
         android:id="@+id/TextViewSaludJugador"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Salud Jugador"
+        android:hint="Salud Pj"
         app:layout_constraintBottom_toTopOf="@+id/imagenJugador"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.498"
@@ -104,7 +104,6 @@
             android:layout_height="wrap_content"
             android:orientation="vertical"
             android:padding="16dp">
-            <!-- Contenido dinámico -->
         </LinearLayout>
     </ScrollView>
 

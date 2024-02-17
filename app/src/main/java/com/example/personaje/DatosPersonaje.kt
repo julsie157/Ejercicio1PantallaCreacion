@@ -11,7 +11,7 @@ import androidx.appcompat.app.AppCompatActivity
 
 class DatosPersonaje : AppCompatActivity() {
 
-    private lateinit var dbGeneral: BaseDeDatosGeneral // Asegúrate de inicializarlo
+    private lateinit var dbGeneral: BaseDeDatosGeneral
     private lateinit var playButton: Button
     private lateinit var nombreTextView: TextView
     private lateinit var razaTextView: TextView
@@ -48,10 +48,12 @@ class DatosPersonaje : AppCompatActivity() {
         val raza = intent.getStringExtra("intentExtraRaza").toString()
         val clase = intent.getStringExtra("intentExtraClase").toString()
         val estadoVital = intent.getStringExtra("intentExtraEstadoVital").toString()
+        val imagenId = intent.getIntExtra("intentExtraImagenId", R.drawable.gnomopocho)
+
 
 
         inicializarUI()
-        configurarBotones(email, nombre, raza, clase, estadoVital)
+        configurarBotones(email, nombre, raza, clase, estadoVital,imagenId)
 
         cargarDetallesPersonaje(nombre, raza, clase, estadoVital)
 
@@ -67,7 +69,14 @@ class DatosPersonaje : AppCompatActivity() {
         playButton = findViewById(R.id.play_button)
     }
 
-    private fun configurarBotones(email:String, nombre:String, raza:String, clase:String, estadoVital:String) {
+    private fun configurarBotones(
+        email: String,
+        nombre: String,
+        raza: String,
+        clase: String,
+        estadoVital: String,
+        imagenId: Int
+    ) {
 
         botonVolver.setOnClickListener {
             val intentVolver = Intent(this, Inicio::class.java)
@@ -76,7 +85,7 @@ class DatosPersonaje : AppCompatActivity() {
         }
 
         botonComenzarAventura.setOnClickListener {
-            val personajeNuevo : Personaje = Personaje(email,nombre, Personaje.Raza.valueOf(raza), Personaje.Clase.valueOf(clase), Personaje.EstadoVital.valueOf(estadoVital))
+            val personajeNuevo : Personaje = Personaje(email,nombre, Personaje.Raza.valueOf(raza), Personaje.Clase.valueOf(clase), Personaje.EstadoVital.valueOf(estadoVital), imagenId)
             val idPersonajeNuevo = dbGeneral.insertarPersonaje(personajeNuevo)
             if(idPersonajeNuevo > 0) {
                 dbGeneral.insertarMochila(idPersonajeNuevo)

@@ -5,7 +5,7 @@ import android.content.Intent
 import android.media.MediaPlayer
 import android.os.Bundle
 import android.os.Handler
-import android.util.Log
+
 import android.view.View
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
@@ -14,8 +14,9 @@ import android.widget.EditText
 import android.widget.ImageView
 import android.widget.SeekBar
 import android.widget.Spinner
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+
+
 
 class Inicio : AppCompatActivity() {
 
@@ -83,13 +84,17 @@ class Inicio : AppCompatActivity() {
         spinnerEstadoVital.onItemSelectedListener = spinnerListener
 
         continuarButton.setOnClickListener {
-            //intent de login
+
             val email = intent.getStringExtra("intentExtraEmail")
             val nombre = nombreEditText.text.toString()
             val raza = spinnerRaza.selectedItem.toString()
             val clase = spinnerClase.selectedItem.toString()
             val estadoVital = spinnerEstadoVital.selectedItem.toString()
-
+            val selectedRaza = spinnerRaza.selectedItem.toString()
+            val selectedClase = spinnerClase.selectedItem.toString()
+            val selectedEstado = spinnerEstadoVital.selectedItem.toString()
+            val key = "$selectedRaza, $selectedClase, $selectedEstado"
+            val imagenId = imagenes[key] ?: R.drawable.gnomopocho
 
 
 
@@ -100,6 +105,7 @@ class Inicio : AppCompatActivity() {
                 putExtra("intentExtraRaza", raza)
                 putExtra("intentExtraClase", clase)
                 putExtra("intentExtraEstadoVital", estadoVital)
+                putExtra("intentExtraImagenId", imagenId)
             }
             startActivity(intent)
 
@@ -115,7 +121,6 @@ class Inicio : AppCompatActivity() {
 
         val key = "$selectedRaza, $selectedClase, $selectedEstado"
         val imagenId = imagenes[key]
-
         imagen.setImageResource(imagenId ?: R.drawable.gnomopocho)
     }
 
@@ -205,7 +210,7 @@ class Inicio : AppCompatActivity() {
             spinnerEstadoVital.adapter = adapter
         }
     }
-    //para musica
+
     private fun startSeekBarUpdate() {
         seekBar.max = mediaPlayer?.duration ?: 0
         val handler = Handler()

@@ -8,14 +8,16 @@ import androidx.appcompat.app.AppCompatActivity
 import kotlin.random.Random
 
 class PantallaDado : AppCompatActivity() {
-
+    private var idPersonaje: Long = -1L
+    private lateinit var dbGeneral: BaseDeDatosGeneral
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         setContentView(R.layout.layout_dado)
 
         val dadoButton = findViewById<Button>(R.id.Botontirar)
-        val idPersonaje = intent.getLongExtra("intentExtraIdPersonaje",-1L)
+        dbGeneral = BaseDeDatosGeneral(this)
+        idPersonaje = intent.getLongExtra("intentExtraIdPersonaje",-1L)
 
         dadoButton.setOnClickListener {
             val encounter = randomEncounter()
@@ -24,6 +26,8 @@ class PantallaDado : AppCompatActivity() {
                 "Ciudad" -> Intent(this, CiudadActivity::class.java)
                 "Mercader" -> Intent(this, MercaderActivity::class.java)
                 "Enemigo" -> Intent(this, EnemigoActivity::class.java)
+                "InteractuarMascota" -> Intent(this, InteractuarMascotaActivity::class.java)
+                "ChatBot"-> Intent(this, ChatbotActivity::class.java)
                 else -> null
             }
             intent?.let {
@@ -34,7 +38,7 @@ class PantallaDado : AppCompatActivity() {
     }
 
     private fun randomEncounter(): String {
-        val encounters = arrayOf("Mercader","Objeto","Enemigo")
+        val encounters = arrayOf("Mercader","Objeto","Enemigo","InteractuarMascota")
         return encounters[Random.nextInt(encounters.size)]
     }
 }
