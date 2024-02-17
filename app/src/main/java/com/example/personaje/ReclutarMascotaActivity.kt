@@ -25,6 +25,7 @@ class ReclutarMascotaActivity : AppCompatActivity() {
             dbGeneral.insertarMascota(nombreMascota,30 , idPersonaje)
 
             val intent = Intent(this, PantallaDado::class.java)
+            intent.putExtra("intentExtraIdPersonaje", idPersonaje)
             startActivity(intent)
             finish()
         }

@@ -12,7 +12,7 @@ import android.database.sqlite.SQLiteOpenHelper
 class BaseDeDatosGeneral(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME, null, DATABASE_VERSION) {
 
     companion object {
-        private const val DATABASE_VERSION = 20
+        private const val DATABASE_VERSION = 28
         private const val DATABASE_NAME = "MiBaseGeneral.db"
 
         private const val TABLA_PERSONAJES = "Personajes"
@@ -125,17 +125,17 @@ class BaseDeDatosGeneral(context: Context) : SQLiteOpenHelper(context, DATABASE_
     }
 
     fun insertarArticulos(db: SQLiteDatabase) {
-        addArticulo(db, "MONEDA", "ORO", 0, 15, 1)
-        addArticulo(db, "ESPADA", "ARMA", 20, 20, 2)
-        addArticulo(db, "MARTILLO", "ARMA", 12, 50, 3)
-        addArticulo(db, "GARRAS", "ARMA", 18, 60, 4)
-        addArticulo(db, "BASTON", "ARMA", 25, 40, 5,)
-        addArticulo(db, "POCION", "OBJETO", 5, 5, 6)
-        addArticulo(db, "IRA", "OBJETO", 5, 5, 7)
-        addArticulo(db, "ESCUDO", "PROTECCION", 20, 10, 8)
-        addArticulo(db, "ARMADURA", "PROTECCION", 40, 10, 9)
-        addArticulo(db, "DAGA", "ARMA", 10, 25, 10)
-        addArticulo(db, "JAMON", "COMIDA", 1, 1, 11)
+        addArticulo(db, "MONEDA", "ORO", 0, 15, 1,1)
+        addArticulo(db, "ESPADA", "ARMA", 20, 20, 2,1)
+        addArticulo(db, "MARTILLO", "ARMA", 12, 50, 3,1)
+        addArticulo(db, "GARRAS", "ARMA", 18, 60, 4,1)
+        addArticulo(db, "BASTON", "ARMA", 25, 40, 5,1)
+        addArticulo(db, "POCION", "OBJETO", 5, 5, 6,1)
+        addArticulo(db, "IRA", "OBJETO", 5, 5, 7,1)
+        addArticulo(db, "ESCUDO", "PROTECCION", 20, 10, 8,1)
+        addArticulo(db, "ARMADURA", "PROTECCION", 40, 10, 9,1)
+        addArticulo(db, "DAGA", "ARMA", 10, 25, 10,1)
+        addArticulo(db, "JAMON", "COMIDA", 1, 1, 11,1)
 
     }
     fun addArticulo(
@@ -144,7 +144,8 @@ class BaseDeDatosGeneral(context: Context) : SQLiteOpenHelper(context, DATABASE_
         tipo: String,
         peso: Int,
         precio: Int,
-        drawable: Int
+        drawable: Int,
+        idMochila: Int
     ) {
         val values = ContentValues().apply {
             put(COLUMN_NOMBRE, nombre)
@@ -152,6 +153,7 @@ class BaseDeDatosGeneral(context: Context) : SQLiteOpenHelper(context, DATABASE_
             put(COLUMN_PESO_ARTICULO, peso)
             put(COLUMN_PRECIO, precio)
             put(COLUMN_DRAWABLE, drawable)
+            put(COLUMN_ID_MOCHILA_ARTICULO, idMochila)
         }
         db.insert(TABLA_ARTICULOS, null, values)
     }
@@ -409,26 +411,41 @@ class BaseDeDatosGeneral(context: Context) : SQLiteOpenHelper(context, DATABASE_
         return idMascota
     }
 
-    @SuppressLint("Range")
-    fun obtenerComidasPorIdMochila(idMochila: Int): ArrayList<Articulo> {
-        val articulosComida = ArrayList<Articulo>()
+    fun obtenerCantidadComidasPorIdMochila(idMochila: Int): Int {
         val db = this.readableDatabase
-        val cursor = db.rawQuery("SELECT * FROM $TABLA_ARTICULOS WHERE $COLUMN_TIPO_ARTICULO = ? AND $COLUMN_ID_MOCHILA_ARTICULO = ?", arrayOf("COMIDA", idMochila.toString()))
-
+        val cursor = db.rawQuery("SELECT COUNT(*) FROM $TABLA_ARTICULOS WHERE $COLUMN_TIPO_ARTICULO = ? AND $COLUMN_ID_MOCHILA_ARTICULO = ?", arrayOf("COMIDA", idMochila.toString()))
+        var cantidad = 0
         if (cursor.moveToFirst()) {
-            do {
-                val idArticulo = cursor.getInt(cursor.getColumnIndex(COLUMN_ID_ARTICULO))
-                val nombre = cursor.getString(cursor.getColumnIndex(COLUMN_NOMBRE))
-                val tipoArticulo = cursor.getString(cursor.getColumnIndex(COLUMN_TIPO_ARTICULO))
-                val peso = cursor.getInt(cursor.getColumnIndex(COLUMN_PESO_ARTICULO))
-                val precio = cursor.getInt(cursor.getColumnIndex(COLUMN_PRECIO))
-                val imagenId = cursor.getInt(cursor.getColumnIndex(COLUMN_DRAWABLE))
-                articulosComida.add(Articulo(Articulo.TipoArticulo.valueOf(tipoArticulo), Articulo.Nombre.valueOf(nombre), peso, precio, imagenId))
-            } while (cursor.moveToNext())
+            cantidad = cursor.getInt(0)
         }
         cursor.close()
-        return articulosComida
+        return cantidad
     }
+    @SuppressLint("Range")
+    fun obtenerFelicidadMascota(idMascota: Long): Int {
+        val db = this.readableDatabase
+        val cursor = db.query(
+            "Mascotas",
+            arrayOf("felicidad"),
+            "idMascota = ?",
+            arrayOf(idMascota.toString()),
+            null, null, null
+        )
+        var felicidad = 0
+        if (cursor.moveToFirst()) {
+            felicidad = cursor.getInt(cursor.getColumnIndex("felicidad"))
+        }
+        cursor.close()
+        return felicidad
+    }
+    fun tengoMascota(idPersonaje: Long): Boolean {
+        val db = this.readableDatabase
+        val cursor = db.rawQuery("SELECT * FROM Mascotas WHERE idPersonaje = ?", arrayOf(idPersonaje.toString()))
+        val tieneMascota = cursor.moveToFirst()
+        cursor.close()
+        return tieneMascota
+    }
+
 
 
 
@@ -541,6 +558,42 @@ class BaseDeDatosGeneral(context: Context) : SQLiteOpenHelper(context, DATABASE_
         val db = this.writableDatabase
         db.delete(TABLA_MASCOTA, "$COLUMN_ID_MASCOTA = ?", arrayOf(idMascota.toString()))
     }
+    @SuppressLint("Range")
+    fun consumirTodaLaComidaDelInventario(idMochila: Int) {
+        val db = this.writableDatabase
+        db.beginTransaction()
+        try {
+            val cursor = db.rawQuery("SELECT idArticulo, peso FROM Articulos WHERE tipoArticulo = 'COMIDA' AND idMochilaArticulo = ?", arrayOf(idMochila.toString()))
+            var pesoTotalComida = 0
+            while (cursor.moveToNext()) {
+                val idArticulo = cursor.getInt(cursor.getColumnIndex("idArticulo"))
+                val peso = cursor.getInt(cursor.getColumnIndex("peso"))
+                db.delete("Articulos", "idArticulo = ?", arrayOf(idArticulo.toString()))
+                pesoTotalComida += peso
+            }
+            cursor.close()
+
+            if (pesoTotalComida > 0) {
+                actualizarEspacioMochilaAlEliminarComida(idMochila, pesoTotalComida)
+            }
+
+            db.setTransactionSuccessful()
+        } finally {
+            db.endTransaction()
+        }
+    }
+    fun actualizarEspacioMochilaAlEliminarComida(idMochila: Int, pesoComida: Int) {
+        val espacioOcupadoActual = obtenerEspacioOcupadoMochila(idMochila)
+        val nuevoEspacioOcupado = Math.max(0, espacioOcupadoActual - pesoComida)
+        val values = ContentValues().apply {
+            put("espacioOcupado", nuevoEspacioOcupado)
+        }
+        writableDatabase.update("Mochilas", values, "idMochila = ?", arrayOf(idMochila.toString()))
+    }
+
+
+
+
 
 }
 

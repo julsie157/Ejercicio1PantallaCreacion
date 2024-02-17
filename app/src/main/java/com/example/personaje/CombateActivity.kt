@@ -165,6 +165,7 @@ class CombateActivity : AppCompatActivity() {
     private fun verificarEstadoCombate() {
         if (monstruo.getSalud() <= 0) {
             val intent = Intent(this, GuaridaActivity::class.java)
+            intent.putExtra("intentExtraIdPersonaje", idPersonaje)
             startActivity(intent)
             finish()
         } else if (personaje.getSalud() <= 0) {

@@ -1,5 +1,6 @@
 package com.example.personaje
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import android.widget.Button
@@ -61,6 +62,9 @@ class MercaderActivity : AppCompatActivity() {
         }
 
         botonContinuar.setOnClickListener {
+            val intent = Intent(this, PantallaDado::class.java)
+            intent.putExtra("intentExtraIdPersonaje", idPersonaje)
+            startActivity(intent)
             finish()
         }
     }

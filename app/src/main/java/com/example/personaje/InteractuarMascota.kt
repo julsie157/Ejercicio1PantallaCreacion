@@ -1,12 +1,9 @@
 package com.example.personaje
 
+import android.content.Intent
 import android.os.Bundle
 import android.os.CountDownTimer
-import android.view.View
 import android.widget.Button
-import android.widget.ImageView
-import android.widget.LinearLayout
-import android.widget.ScrollView
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
@@ -15,12 +12,12 @@ class InteractuarMascotaActivity : AppCompatActivity() {
 
     private lateinit var dbGeneral: BaseDeDatosGeneral
     private var idPersonaje: Long = -1L
+    private var idMascota: Long = -1L
 
     private var contadorClics = 0
     private lateinit var botonJugar: Button
     private lateinit var textoContador: TextView
-    private lateinit var scrollViewComidas: ScrollView
-    private lateinit var panelComidas: LinearLayout
+    private lateinit var textoCantidadComidas: TextView
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -29,81 +26,68 @@ class InteractuarMascotaActivity : AppCompatActivity() {
 
         dbGeneral = BaseDeDatosGeneral(this)
         idPersonaje = intent.getLongExtra("intentExtraIdPersonaje", -1L)
-
-        val idMascota = dbGeneral.obtenerIdMascotaPorPersonaje(idPersonaje)
-
+        idMascota = dbGeneral.obtenerIdMascotaPorPersonaje(idPersonaje)
 
         if (idMascota != -1L) {
-            inicializarUI(idMascota)
+            inicializarUI()
         } else {
             Toast.makeText(this, "No tienes una mascota. Adopta una primero.", Toast.LENGTH_LONG).show()
             finish()
         }
     }
 
-    private fun inicializarUI(idMascota: Long) {
+    private fun inicializarUI() {
         val botonSalir: Button = findViewById(R.id.botonSalirdeInteractuar)
         val botonDarComida: Button = findViewById(R.id.botonDarComida)
+        val botonJugar: Button = findViewById(R.id.botonJugar)
+        val textoContador: TextView = findViewById(R.id.textoContador)
+        val textoTieneComida: TextView = findViewById(R.id.textViewCantidadComidas)
 
-        botonJugar = findViewById(R.id.botonJugar)
-        textoContador = findViewById(R.id.textoContador)
-        scrollViewComidas = findViewById(R.id.scrollViewComidas)
-        panelComidas = findViewById(R.id.panelComidas)
+        actualizarTextoTieneComida()
 
         botonSalir.setOnClickListener {
             dbGeneral.actualizarFelicidadMascota(idMascota, -10)
-            finish()
+            verificarFelicidadYFinalizar(idMascota)
         }
-
 
         botonDarComida.setOnClickListener {
-            mostrarComidas(idMascota)
+            val tieneComida = dbGeneral.obtenerCantidadComidasPorIdMochila(dbGeneral.obtenerIdMochilaPorPersonaje(idPersonaje)) > 0
+            if (tieneComida) {
+                dbGeneral.consumirTodaLaComidaDelInventario(dbGeneral.obtenerIdMochilaPorPersonaje(idPersonaje))
+                dbGeneral.actualizarFelicidadMascota(idMascota, 20)
+                Toast.makeText(this, "Has alimentado a tu mascota.", Toast.LENGTH_SHORT).show()
+            } else {
+                dbGeneral.actualizarFelicidadMascota(idMascota, -20)
+                Toast.makeText(this, "No tienes comida para tu mascota.", Toast.LENGTH_SHORT).show()
+            }
+            verificarFelicidadYFinalizar(idMascota)
         }
-
 
         botonJugar.setOnClickListener {
             iniciarJuego(idMascota)
         }
     }
 
-    private fun mostrarComidas(idMascota: Long) {
-        val idMochila = dbGeneral.obtenerIdMochilaPorPersonaje(idPersonaje)
-        val comidas = dbGeneral.obtenerComidasPorIdMochila(idMochila)
+    private fun actualizarTextoTieneComida() {
+        val tieneComida = dbGeneral.obtenerCantidadComidasPorIdMochila(dbGeneral.obtenerIdMochilaPorPersonaje(idPersonaje)) > 0
+        val textoTieneComida: TextView = findViewById(R.id.textViewCantidadComidas)
+        textoTieneComida.text = if (tieneComida) "Tienes comida en tu inventario." else "No tienes comida en tu inventario."
+    }
 
-        if (comidas.isEmpty()) {
-            dbGeneral.actualizarFelicidadMascota(idMascota, -20)
-            Toast.makeText(this, "No tienes comida para tu mascota.", Toast.LENGTH_SHORT).show()
-            finish()
-            return
+    private fun verificarFelicidadYFinalizar(idMascota: Long) {
+        val felicidadActual = dbGeneral.obtenerFelicidadMascota(idMascota)
+        if (felicidadActual <= 0) {
+            dbGeneral.eliminarMascota(idMascota)
+            Toast.makeText(this, "Tu mascota ha sido eliminada debido a la falta de felicidad.", Toast.LENGTH_LONG).show()
         }
-
-        val scrollViewComidas: ScrollView = findViewById(R.id.scrollViewComidas)
-        val panelComidas: LinearLayout = findViewById(R.id.panelComidas)
-        panelComidas.removeAllViews()
-
-        comidas.forEach { articulo ->
-            val vistaArticulo = layoutInflater.inflate(R.layout.layout_aux, panelComidas, false)
-            vistaArticulo.findViewById<TextView>(R.id.nombreArticulo).text = articulo.getNombre().toString()
-            vistaArticulo.findViewById<ImageView>(R.id.imageArticulo).setImageResource(articulo.getImagenId())
-
-            vistaArticulo.findViewById<Button>(R.id.botonConfirmarAux).setOnClickListener {
-                dbGeneral.actualizarFelicidadMascota(idMascota, 20)
-                dbGeneral.eliminarArticuloDeMochila(idMochila, articulo.getIdInventario())
-                Toast.makeText(this, "Has alimentado a tu mascota.", Toast.LENGTH_SHORT).show()
-                finish()
-            }
-
-            panelComidas.addView(vistaArticulo)
-        }
-
-        scrollViewComidas.visibility = View.VISIBLE
+        navegarAPantallaDado()
     }
 
     private fun iniciarJuego(idMascota: Long) {
         contadorClics = 0
         botonJugar.isEnabled = false
 
-        object : CountDownTimer(20000, 1000) {
+        object : CountDownTimer(10000, 1000) {
             override fun onTick(millisUntilFinished: Long) {
                 textoContador.text = "Tiempo restante: ${millisUntilFinished / 1000}"
                 botonJugar.isEnabled = true
@@ -118,12 +102,19 @@ class InteractuarMascotaActivity : AppCompatActivity() {
                 val felicidadAdicional = calcularFelicidad(contadorClics)
                 dbGeneral.actualizarFelicidadMascota(idMascota, felicidadAdicional)
                 Toast.makeText(applicationContext, "Juego terminado. Felicidad aumentada en $felicidadAdicional.", Toast.LENGTH_SHORT).show()
-                finish()
+                navegarAPantallaDado()
             }
         }.start()
     }
 
     private fun calcularFelicidad(clics: Int): Int {
         return clics
+    }
+
+    private fun navegarAPantallaDado() {
+        val intent = Intent(this, PantallaDado::class.java)
+        intent.putExtra("intentExtraIdPersonaje", idPersonaje)
+        startActivity(intent)
+        finish()
     }
 }

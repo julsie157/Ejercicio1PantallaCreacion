@@ -1,16 +1,17 @@
 package com.example.personaje
 
-
 import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Bundle
 import android.widget.Button
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 
 class GuaridaActivity : AppCompatActivity() {
 
     private var idPersonaje: Long = -1L
     private lateinit var dbGeneral: BaseDeDatosGeneral
+
     @SuppressLint("MissingInflatedId")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -21,18 +22,31 @@ class GuaridaActivity : AppCompatActivity() {
 
         val botonSalir: Button = findViewById(R.id.BotonSalirGuarida)
         botonSalir.setOnClickListener {
-
-            val intent = Intent(this, PantallaDado::class.java)
-            startActivity(intent)
-            finish()
+            volverAlDado()
         }
 
         val botonEntrar: Button = findViewById(R.id.BotonEntrarGuarida)
         botonEntrar.setOnClickListener {
+            entrarOGuardar()
+        }
+    }
 
+    private fun entrarOGuardar() {
+        if (dbGeneral.tengoMascota(idPersonaje)) {
+            Toast.makeText(this, "Ya tienes una mascota. No puedes adoptar otra.", Toast.LENGTH_LONG).show()
+            volverAlDado()
+        } else {
             val intent = Intent(this, ReclutarMascotaActivity::class.java)
             intent.putExtra("intentExtraIdPersonaje", idPersonaje)
             startActivity(intent)
         }
     }
+
+    private fun volverAlDado() {
+        val intent = Intent(this, PantallaDado::class.java)
+        intent.putExtra("intentExtraIdPersonaje", idPersonaje)
+        startActivity(intent)
+        finish()
+    }
 }
+
