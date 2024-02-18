@@ -7,7 +7,7 @@ object MusicPlayer {
 
     fun init(context: Context) {
         if (mediaPlayer == null) {
-            mediaPlayer = MediaPlayer.create(context, R.raw.temita)
+            mediaPlayer = MediaPlayer.create(context, R.raw.ventor)
         }
     }
 

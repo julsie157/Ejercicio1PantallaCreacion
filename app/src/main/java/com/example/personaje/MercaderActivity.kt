@@ -1,6 +1,7 @@
 package com.example.personaje
 
 import android.content.Intent
+import android.media.MediaPlayer
 import android.os.Bundle
 import android.view.View
 import android.widget.Button
@@ -22,11 +23,17 @@ class MercaderActivity : AppCompatActivity() {
     private lateinit var botonVender: Button
     private lateinit var botonCancelar: Button
     private lateinit var botonContinuar: Button
-
+    private lateinit var mediaPlayer: MediaPlayer
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.layout_mercader)
+
+
+        mediaPlayer = MediaPlayer.create(this, R.raw.tienda)
+        mediaPlayer.setVolume(0.1f, 0.1f)
+
+
 
         dbGeneral = BaseDeDatosGeneral(this)
 
@@ -178,6 +185,14 @@ class MercaderActivity : AppCompatActivity() {
             11 -> R.drawable.jamon
             else -> R.drawable.cofre
         }
+    }
+    override fun onStart() {
+        super.onStart()
+        mediaPlayer.start()
+    }
+    override fun onStop() {
+        super.onStop()
+        mediaPlayer.release()
     }
 }
 

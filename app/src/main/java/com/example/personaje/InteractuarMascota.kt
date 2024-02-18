@@ -1,6 +1,7 @@
 package com.example.personaje
 
 import android.content.Intent
+import android.media.MediaPlayer
 import android.os.Bundle
 import android.os.CountDownTimer
 import android.os.Handler
@@ -16,7 +17,7 @@ class InteractuarMascotaActivity : AppCompatActivity() {
     private lateinit var dbGeneral: BaseDeDatosGeneral
     private var idPersonaje: Long = -1L
     private var idMascota: Long = -1L
-
+    private lateinit var mediaPlayer: MediaPlayer
     private var contadorClics = 0
     private lateinit var botonJugar: Button
     private lateinit var botonSalir: Button
@@ -28,6 +29,10 @@ class InteractuarMascotaActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.layout_interactuarmascota)
+
+        mediaPlayer = MediaPlayer.create(this, R.raw.undertale2)
+        mediaPlayer.setVolume(0.1f, 0.1f)
+
 
         dbGeneral = BaseDeDatosGeneral(this)
         idPersonaje = intent.getLongExtra("intentExtraIdPersonaje", -1L)
@@ -156,5 +161,14 @@ class InteractuarMascotaActivity : AppCompatActivity() {
         val textoCantidadComidas: TextView = findViewById(R.id.textViewCantidadComidas)
         val tieneComida = dbGeneral.tengoComida(dbGeneral.obtenerIdMochilaPorPersonaje(idPersonaje))
         textoCantidadComidas.text = if (tieneComida) "Tienes comida en tu inventario." else "No tienes comida en tu inventario."
+    }
+
+    override fun onStart() {
+        super.onStart()
+        mediaPlayer.start()
+    }
+    override fun onStop() {
+        super.onStop()
+        mediaPlayer.release()
     }
 }
