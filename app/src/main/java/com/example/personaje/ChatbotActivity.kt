@@ -1,6 +1,7 @@
 package com.example.personaje
 
 import android.content.Intent
+import android.media.MediaPlayer
 import com.example.personaje.PantallaDado
 import android.os.Bundle
 import android.util.Log
@@ -28,6 +29,7 @@ class ChatbotActivity : AppCompatActivity(), BotReply {
     private var editMessage: EditText? = null
     private var btnSend: ImageButton? = null
 
+    private lateinit var mediaPlayer: MediaPlayer
 
     private var sessionsClient: SessionsClient? = null
     private var sessionName: SessionName? = null
@@ -37,6 +39,12 @@ class ChatbotActivity : AppCompatActivity(), BotReply {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.chatbot)
+
+
+
+        mediaPlayer = MediaPlayer.create(this, R.raw.metaton)
+        mediaPlayer.setVolume(0.1f, 0.1f)
+
 
         dbGeneral = BaseDeDatosGeneral(this)
         idPersonaje = intent.getLongExtra("intentExtraIdPersonaje", -1L)
@@ -110,5 +118,13 @@ class ChatbotActivity : AppCompatActivity(), BotReply {
         } else {
             Toast.makeText(this, "Failed to connect!", Toast.LENGTH_SHORT).show()
         }
+    }
+    override fun onStart() {
+        super.onStart()
+        mediaPlayer.start()
+    }
+    override fun onStop() {
+        super.onStop()
+        mediaPlayer.release()
     }
 }

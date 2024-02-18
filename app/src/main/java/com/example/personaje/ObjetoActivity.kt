@@ -1,6 +1,7 @@
 package com.example.personaje
 
 
+import android.media.MediaPlayer
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
@@ -16,11 +17,16 @@ class ObjetoActivity : AppCompatActivity() {
     private lateinit var imagenObjeto: ImageView
     private lateinit var dbGeneral: BaseDeDatosGeneral
     private var idPersonaje: Long = -1L
-
+    private lateinit var mediaPlayer: MediaPlayer
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.layout_objeto)
+
+
+        mediaPlayer = MediaPlayer.create(this, R.raw.goroncity)
+        mediaPlayer.setVolume(0.1f, 0.1f)
+
 
         dbGeneral = BaseDeDatosGeneral(this)
         idPersonaje = intent.getLongExtra("intentExtraIdPersonaje", -1L)
@@ -97,6 +103,14 @@ class ObjetoActivity : AppCompatActivity() {
             11 -> R.drawable.jamon
             else -> R.drawable.cofre
         }
+    }
+    override fun onStart() {
+        super.onStart()
+        mediaPlayer.start()
+    }
+    override fun onStop() {
+        super.onStop()
+        mediaPlayer.release()
     }
 }
 

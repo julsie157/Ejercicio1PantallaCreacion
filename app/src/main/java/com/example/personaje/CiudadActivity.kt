@@ -1,6 +1,7 @@
 package com.example.personaje
 
 import android.content.Intent
+import android.media.MediaPlayer
 import android.os.AsyncTask
 import android.os.Bundle
 import android.widget.Button
@@ -17,10 +18,17 @@ class CiudadActivity : AppCompatActivity() {
 
     private var idPersonaje: Long = -1L
     private lateinit var dbGeneral: BaseDeDatosGeneral
+    private lateinit var mediaPlayer: MediaPlayer
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.layout_ciudad)
+
+
+
+        mediaPlayer = MediaPlayer.create(this, R.raw.fayenza)
+        mediaPlayer.setVolume(0.1f, 0.1f)
 
         dbGeneral = BaseDeDatosGeneral(this)
         idPersonaje = intent.getLongExtra("intentExtraIdPersonaje",-1L)
@@ -82,6 +90,14 @@ class CiudadActivity : AppCompatActivity() {
                 }
             }
         }
+    }
+    override fun onStart() {
+        super.onStart()
+        mediaPlayer.start()
+    }
+    override fun onStop() {
+        super.onStop()
+        mediaPlayer.release()
     }
 }
 
