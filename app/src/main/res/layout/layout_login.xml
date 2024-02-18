@@ -4,20 +4,21 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/white"
+    android:background="@drawable/fondonegro"
     tools:context=".LoginActivity">
 
     <ImageView
         android:id="@+id/imageViewLogin"
-        android:layout_width="325dp"
-        android:layout_height="325dp"
+        android:layout_width="419dp"
+        android:layout_height="424dp"
         android:layout_marginBottom="32dp"
         app:layout_constraintBottom_toTopOf="@+id/editTextEmailLogin"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.49"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.686"
-        app:srcCompat="@drawable/perfil" />
+        app:layout_constraintVertical_bias="0.184"
+        app:srcCompat="@drawable/wowlogo" />
 
     <TextView
         android:id="@+id/textView"
@@ -27,7 +28,9 @@
         android:layout_marginBottom="24dp"
         android:text="No tienes Ya una cuenta?"
         android:textColor="@color/black"
-        android:textSize="12dp"
+        android:textSize="15dp"
+        android:backgroundTint="#AC9898"
+        android:background="@color/white"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
@@ -35,26 +38,29 @@
     <Button
         android:id="@+id/buttonLogin"
         style="?attr/materialButtonOutlinedStyle"
-        android:layout_width="128dp"
-        android:layout_height="wrap_content"
+        android:layout_width="150dp"
+        android:layout_height="70dp"
         android:layout_marginBottom="44dp"
-        android:backgroundTint="@color/design_default_color_primary_dark"
+        android:background="@color/black"
+        android:backgroundTint="#AC9898"
         android:text="Login"
         android:textAllCaps="false"
         android:textColor="#fff"
-        android:textSize="18dp"
+        android:textSize="22dp"
         app:layout_constraintBottom_toTopOf="@+id/textView"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
         app:strokeColor="@color/white" />
 
+
     <EditText
         android:id="@+id/editTextPassLogin"
-        android:layout_width="325dp"
-        android:layout_height="50dp"
-        android:layout_marginBottom="28dp"
-        android:backgroundTint="#fff"
+        android:layout_width="340dp"
+        android:layout_height="59dp"
+        android:layout_marginBottom="96dp"
+        android:background="@color/white"
+        android:backgroundTint="#AC9898"
         android:drawableLeft="@drawable/pass"
         android:drawablePadding="8dp"
         android:ems="10"
@@ -68,17 +74,18 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
 
-
     <EditText
         android:id="@+id/editTextEmailLogin"
-        android:layout_width="325dp"
-        android:layout_height="50dp"
-        android:layout_marginBottom="44dp"
-        android:backgroundTint="#fff"
+        android:layout_width="347dp"
+        android:layout_height="57dp"
+        android:layout_marginBottom="60dp"
+        android:background="@color/white"
+        android:backgroundTint="#AC9898"
         android:drawableLeft="@drawable/sobre"
         android:drawablePadding="8dp"
         android:ems="10"
         android:foregroundTint="#fff"
+
         android:hint="Email"
         android:inputType="textPersonName"
         android:padding="8dp"
@@ -94,9 +101,11 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="4dp"
         android:layout_marginBottom="24dp"
-        android:backgroundTint="#fff"
+        android:background="@color/white"
         android:foregroundTint="#fff"
         android:text="Registrarse"
+        android:textSize="15dp"
+        android:backgroundTint="#AC9898"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toEndOf="@+id/textView" />
 

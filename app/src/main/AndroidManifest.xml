@@ -77,6 +77,10 @@
         <activity android:name=".InteractuarMascotaActivity">
 
         </activity>
+        <activity android:name=".tts"
+            android:exported="true">
+
+        </activity>
 
 
     </application>
