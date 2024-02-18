@@ -13,7 +13,7 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 
-class InteractuarMascotaActivity : AppCompatActivity() {
+class InteractuarMascota : AppCompatActivity() {
     private lateinit var dbGeneral: BaseDeDatosGeneral
     private var idPersonaje: Long = -1L
     private var idMascota: Long = -1L

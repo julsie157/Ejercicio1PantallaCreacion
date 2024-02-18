@@ -47,7 +47,7 @@ class PantallaDado : AppCompatActivity() {
                 "Ciudad" -> Intent(this, CiudadActivity::class.java)
                 "Mercader" -> Intent(this, MercaderActivity::class.java)
                 "Enemigo" -> Intent(this, EnemigoActivity::class.java)
-                "InteractuarMascota" -> Intent(this, InteractuarMascotaActivity::class.java)
+                "InteractuarMascota" -> Intent(this, InteractuarMascota::class.java)
                 "ChatBot"-> Intent(this, ChatbotActivity::class.java)
                 else -> null
             }

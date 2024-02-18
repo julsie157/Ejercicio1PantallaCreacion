@@ -74,7 +74,7 @@
 
         </activity>
 
-        <activity android:name=".InteractuarMascotaActivity">
+        <activity android:name=".InteractuarMascota">
 
         </activity>
 
