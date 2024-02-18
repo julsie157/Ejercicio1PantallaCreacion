@@ -8,9 +8,9 @@
     <ImageView
         android:id="@+id/imagenMascota"
         android:layout_width="wrap_content"
-        android:layout_height="200dp"
+        android:layout_height="285dp"
         android:layout_gravity="center_horizontal"
-        android:src="@drawable/mascota"/>
+        android:src="@drawable/mascota" />
 
     <EditText
         android:id="@+id/nombreMascotaEditText"

@@ -2,7 +2,6 @@ package com.example.personaje
 
 import android.content.Intent
 import android.media.MediaPlayer
-import com.example.personaje.PantallaDado
 import android.os.Bundle
 import android.util.Log
 import android.widget.Button
@@ -19,18 +18,14 @@ import com.google.common.collect.Lists
 import java.util.*
 
 class ChatbotActivity : AppCompatActivity(), BotReply {
-
     private var idPersonaje: Long = -1L
     private lateinit var dbGeneral: BaseDeDatosGeneral
-
     private var chatView: RecyclerView? = null
     private var chatAdapter: ChatAdapter? = null
     private var messageList: MutableList<Message> = ArrayList()
     private var editMessage: EditText? = null
     private var btnSend: ImageButton? = null
-
     private lateinit var mediaPlayer: MediaPlayer
-
     private var sessionsClient: SessionsClient? = null
     private var sessionName: SessionName? = null
     private val uuid = UUID.randomUUID().toString()
@@ -39,16 +34,10 @@ class ChatbotActivity : AppCompatActivity(), BotReply {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.chatbot)
-
-
-
         mediaPlayer = MediaPlayer.create(this, R.raw.metaton)
         mediaPlayer.setVolume(0.1f, 0.1f)
-
-
         dbGeneral = BaseDeDatosGeneral(this)
         idPersonaje = intent.getLongExtra("intentExtraIdPersonaje", -1L)
-
         val salirBoton = findViewById<Button>(R.id.salirboton)
 
         salirBoton.setOnClickListener {
@@ -61,7 +50,6 @@ class ChatbotActivity : AppCompatActivity(), BotReply {
         chatView = findViewById<RecyclerView>(R.id.chatView)
         editMessage = findViewById<EditText>(R.id.editMessage)
         btnSend = findViewById<ImageButton>(R.id.btnSend)
-
         chatAdapter = ChatAdapter(messageList, this)
         chatView?.adapter = chatAdapter
 
@@ -77,7 +65,6 @@ class ChatbotActivity : AppCompatActivity(), BotReply {
                 Toast.makeText(this@ChatbotActivity, "Please enter text!", Toast.LENGTH_SHORT).show()
             }
         }
-
         setUpBot()
     }
 
@@ -98,13 +85,11 @@ class ChatbotActivity : AppCompatActivity(), BotReply {
             Log.d(TAG, "setUpBot: " + e.message)
         }
     }
-
     private fun sendMessageToBot(message: String) {
         val input = QueryInput.newBuilder()
             .setText(TextInput.newBuilder().setText(message).setLanguageCode("en-US")).build()
         SendMessageInBg(this, sessionName!!, sessionsClient!!, input).execute()
     }
-
     override fun callback(returnResponse: DetectIntentResponse?) {
         if (returnResponse != null) {
             val botReply = returnResponse.queryResult.fulfillmentText

@@ -23,20 +23,16 @@ class PantallaDado : AppCompatActivity(), OnInitListener {
     private lateinit var dado: ImageView
     private lateinit var Botontirar: Button
     private lateinit var Infotext: TextView
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         tts = TextToSpeech(this,this)
-
         setContentView(R.layout.layout_dado)
-
         dado = findViewById(R.id.dice_image)
         Infotext = findViewById(R.id.info_text)
-
-
         MusicPlayer.init(this)
         playButton = findViewById(R.id.play_button)
         Botontirar = findViewById(R.id.Botontirar)
-
         MusicPlayer.init(this)
         updatePlayButton()
 
@@ -48,8 +44,6 @@ class PantallaDado : AppCompatActivity(), OnInitListener {
             }
             updatePlayButton()
         }
-
-
 
         val dadoButton = findViewById<Button>(R.id.Botontirar)
         dbGeneral = BaseDeDatosGeneral(this)
@@ -79,7 +73,7 @@ class PantallaDado : AppCompatActivity(), OnInitListener {
     }
     override fun onInit(status: Int) {
         if (status == TextToSpeech.SUCCESS) {
-            val idioma = tts!!.setLanguage(Locale.US)
+            val idioma = tts!!.setLanguage(Locale.ITALIAN)
             if (idioma == TextToSpeech.LANG_MISSING_DATA
                 || idioma == TextToSpeech.LANG_NOT_SUPPORTED
             ) {
@@ -88,18 +82,12 @@ class PantallaDado : AppCompatActivity(), OnInitListener {
 
                 Handler(Looper.getMainLooper()).postDelayed({
                     Handler(Looper.getMainLooper()).postDelayed({
-                        speak(dado.contentDescription.toString())
+                        speak(Botontirar.text?.toString())
                     },2000)
                     Handler(Looper.getMainLooper()).postDelayed({
-                        speak(Botontirar.text.toString())
+                        speak(Infotext.text?.toString())
                     },4000)
-                    Handler(Looper.getMainLooper()).postDelayed({
-                        speak(Infotext.text.toString())
-                    },6000)
-                    Handler(Looper.getMainLooper()).postDelayed({
-                        speak(playButton.text.toString())
-                    },8000)
-                },10000)
+                },1000)
 
             }
         } else {
@@ -120,7 +108,6 @@ class PantallaDado : AppCompatActivity(), OnInitListener {
             MusicPlayer.start()
         }
     }
-
     private fun updatePlayButton() {
         if (MusicPlayer.isPlaying()) {
             playButton.text = "Mute"
@@ -131,16 +118,15 @@ class PantallaDado : AppCompatActivity(), OnInitListener {
     override fun onDestroy() {
         super.onDestroy()
         MusicPlayer.release()
-        tts.stop()
-        tts.shutdown()
+        tts!!.stop()
+        tts!!.shutdown()
     }
-
     @Suppress("DEPRECATION")
-    private fun speak(ttsText: String) {
+    private fun speak(ttsText: String?) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            tts.speak(ttsText, TextToSpeech.QUEUE_FLUSH, null, null)
+            tts!!.speak(ttsText, TextToSpeech.QUEUE_FLUSH, null, null)
         } else {
-            tts.speak(ttsText, TextToSpeech.QUEUE_FLUSH, null)
+            tts!!.speak(ttsText, TextToSpeech.QUEUE_FLUSH, null)
         }
     }
 

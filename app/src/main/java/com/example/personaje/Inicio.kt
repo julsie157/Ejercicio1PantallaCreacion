@@ -4,8 +4,6 @@ import android.annotation.SuppressLint
 import android.content.Intent
 import android.media.MediaPlayer
 import android.os.Bundle
-import android.os.Handler
-
 import android.view.View
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
@@ -17,13 +15,9 @@ import android.widget.Spinner
 import androidx.appcompat.app.AppCompatActivity
 
 
-
 class Inicio : AppCompatActivity() {
 
     private lateinit var dbGeneral: BaseDeDatosGeneral
-    private lateinit var mediaPlayer: MediaPlayer
-    private lateinit var playButton: Button
-    private lateinit var seekBar: SeekBar
     private lateinit var spinnerRaza: Spinner
     private lateinit var spinnerClase: Spinner
     private lateinit var spinnerEstadoVital: Spinner
@@ -51,7 +45,12 @@ class Inicio : AppCompatActivity() {
         llenarMapaDeImagenes()
 
         val spinnerListener = object : AdapterView.OnItemSelectedListener {
-            override fun onItemSelected(parent: AdapterView<*>, view: View?, position: Int, id: Long) {
+            override fun onItemSelected(
+                parent: AdapterView<*>,
+                view: View?,
+                position: Int,
+                id: Long
+            ) {
                 actualizarImagen()
             }
 
@@ -76,8 +75,6 @@ class Inicio : AppCompatActivity() {
             val imagenId = imagenes[key] ?: R.drawable.gnomopocho
 
 
-
-
             val intent = Intent(this, DatosPersonaje::class.java).apply {
                 putExtra("intentExtraEmail", email)
                 putExtra("intentExtraNombre", nombre)
@@ -87,10 +84,7 @@ class Inicio : AppCompatActivity() {
                 putExtra("intentExtraImagenId", imagenId)
             }
             startActivity(intent)
-
-
         }
-
     }
 
     private fun actualizarImagen() {
@@ -155,11 +149,8 @@ class Inicio : AppCompatActivity() {
         imagenes["Maldito, Guerrero, Joven"] = R.drawable.guerreromalditojoven
         imagenes["Maldito, Guerrero, Adulto"] = R.drawable.guerreromalditoadulto
         imagenes["Maldito, Guerrero, Anciano"] = R.drawable.guerreromalditoanciano
-
     }
-
     private fun setupSpinners() {
-
         ArrayAdapter.createFromResource(
             this,
             R.array.razas_array,
@@ -168,8 +159,6 @@ class Inicio : AppCompatActivity() {
             adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
             spinnerRaza.adapter = adapter
         }
-
-
         ArrayAdapter.createFromResource(
             this,
             R.array.clases_array,
@@ -178,8 +167,6 @@ class Inicio : AppCompatActivity() {
             adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
             spinnerClase.adapter = adapter
         }
-
-
         ArrayAdapter.createFromResource(
             this,
             R.array.estados_vitales_array,

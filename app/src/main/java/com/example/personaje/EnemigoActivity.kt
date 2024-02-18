@@ -3,7 +3,6 @@ package com.example.personaje
 
 
 import android.content.Intent
-import android.media.MediaPlayer
 import android.os.Bundle
 import android.widget.Button
 import androidx.appcompat.app.AppCompatActivity
@@ -11,22 +10,16 @@ import kotlin.random.Random
 
 
 class EnemigoActivity : AppCompatActivity() {
-
-
     private var idPersonaje: Long = -1L
     private lateinit var dbGeneral: BaseDeDatosGeneral
     private lateinit var playButton: Button
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.layout_enemigo)
-
         dbGeneral = BaseDeDatosGeneral(this)
         idPersonaje = intent.getLongExtra("intentExtraIdPersonaje", -1L)
-
-
         MusicPlayer.init(this)
         playButton = findViewById<Button>(R.id.play_button)
-
         MusicPlayer.init(this)
         updatePlayButton()
 
@@ -38,9 +31,6 @@ class EnemigoActivity : AppCompatActivity() {
             }
             updatePlayButton()
         }
-
-
-
 
         val lucharButton = findViewById<Button>(R.id.BotonlucharoHuir)
         lucharButton.setOnClickListener {
@@ -55,21 +45,18 @@ class EnemigoActivity : AppCompatActivity() {
             }
         }
     }
-
     override fun onPause() {
         super.onPause()
         if (MusicPlayer.isPlaying()) {
             MusicPlayer.pause()
         }
     }
-
     override fun onResume() {
         super.onResume()
         if (MusicPlayer.isPlaying()) {
             MusicPlayer.start()
         }
     }
-
     private fun updatePlayButton() {
         if (MusicPlayer.isPlaying()) {
             playButton.text = "Mute"
@@ -81,5 +68,4 @@ class EnemigoActivity : AppCompatActivity() {
         super.onDestroy()
         MusicPlayer.release()
     }
-
 }

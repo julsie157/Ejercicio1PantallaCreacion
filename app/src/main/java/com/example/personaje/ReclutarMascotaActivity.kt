@@ -14,11 +14,8 @@ class ReclutarMascotaActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.layout_reclutar)
-
-
         mediaPlayer = MediaPlayer.create(this, R.raw.undertale)
         mediaPlayer.setVolume(0.1f, 0.1f)
-
         dbGeneral = BaseDeDatosGeneral(this)
         idPersonaje = intent.getLongExtra("intentExtraIdPersonaje", -1L)
 

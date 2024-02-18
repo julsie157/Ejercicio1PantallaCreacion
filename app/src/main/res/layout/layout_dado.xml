@@ -6,44 +6,7 @@
     android:padding="16dp"
     android:background="@drawable/fondorojo">
 
-    <!-- Contenedor para las cuatro fotos superiores -->
-    <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="101dp"
-        android:gravity="center"
-        android:orientation="horizontal">
 
-
-        <ImageView
-            android:id="@+id/image1"
-            android:layout_width="0dp"
-            android:layout_height="100dp"
-            android:layout_weight="1"
-            android:src="@drawable/bosque" />
-
-        <ImageView
-            android:id="@+id/image2"
-            android:layout_width="0dp"
-            android:layout_height="100dp"
-            android:layout_weight="1"
-            android:src="@drawable/ciudad" />
-
-        <ImageView
-            android:id="@+id/image3"
-            android:layout_width="0dp"
-            android:layout_height="100dp"
-            android:layout_weight="1"
-            android:src="@drawable/playa" />
-
-        <ImageView
-            android:id="@+id/image4"
-            android:layout_width="0dp"
-            android:layout_height="100dp"
-            android:layout_weight="1"
-            android:src="@drawable/montania" />
-    </LinearLayout>
-
-    <!-- Foto del dado -->
     <ImageView
         android:id="@+id/dice_image"
         android:layout_width="269dp"
@@ -51,7 +14,7 @@
         android:layout_gravity="center"
         android:src="@drawable/dado" />
 
-    <!-- Botón -->
+
     <Button
         android:id="@+id/Botontirar"
         android:layout_width="wrap_content"
@@ -59,14 +22,15 @@
         android:text="Tirar Dado"
         android:layout_gravity="center" />
 
-    <!-- Texto de información -->
+
     <TextView
         android:id="@+id/info_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Comienza la aventura, pulsa el DADO para avanzar. CUIDADO puedes encontrarte enemigos"
         android:textAlignment="center"
-        android:textColor="@color/white"/>
+        android:textColor="@color/white"
+        android:textSize="24sp" />
     <Button
         android:id="@+id/play_button"
         android:layout_width="wrap_content"

@@ -41,7 +41,6 @@ import com.google.cloud.dialogflow.v2.SessionsClient
     }
 
     override fun onPostExecute(response: DetectIntentResponse?) {
-        //handle return response here
         botReply.callback(response)
     }
 }

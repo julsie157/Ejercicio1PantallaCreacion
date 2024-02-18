@@ -15,21 +15,14 @@ import java.net.URL
 import java.util.Random
 
 class CiudadActivity : AppCompatActivity() {
-
     private var idPersonaje: Long = -1L
     private lateinit var dbGeneral: BaseDeDatosGeneral
     private lateinit var mediaPlayer: MediaPlayer
-
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.layout_ciudad)
-
-
-
         mediaPlayer = MediaPlayer.create(this, R.raw.fayenza)
         mediaPlayer.setVolume(0.1f, 0.1f)
-
         dbGeneral = BaseDeDatosGeneral(this)
         idPersonaje = intent.getLongExtra("intentExtraIdPersonaje",-1L)
 
@@ -40,14 +33,11 @@ class CiudadActivity : AppCompatActivity() {
             startActivity(intent)
             finish()
         }
-
         FetchProvinciasTask().execute()
     }
 
     inner class FetchProvinciasTask : AsyncTask<Void, Void, String>() {
-
         private val requestUrl = "https://www.el-tiempo.net/api/json/v2/provincias"
-
         override fun doInBackground(vararg params: Void?): String? {
             try {
                 val url = URL(requestUrl)

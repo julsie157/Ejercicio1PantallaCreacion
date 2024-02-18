@@ -13,10 +13,7 @@ import com.google.firebase.ktx.Firebase
 
 class RegistroActivity : AppCompatActivity() {
 
-
-
     private lateinit var auth: FirebaseAuth
-
     private lateinit var emailEditText: EditText
     private lateinit var passwordEditText: EditText
     private lateinit var backButton: Button
@@ -26,23 +23,16 @@ class RegistroActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.layout_registro)
-
-
         auth = Firebase.auth
-
-
         backButton = findViewById(R.id.botonAtrasReggistro)
         signInButton = findViewById(R.id.buttonConfirmar)
         emailEditText = findViewById(R.id.editTextEmailRegister)
         passwordEditText = findViewById(R.id.editTextPasswordRegister)
 
-
-
         backButton.setOnClickListener {
             startActivity(Intent(this, LoginActivity::class.java))
             finish()
         }
-
 
         signInButton.setOnClickListener {
             val email = emailEditText.text.toString().trim()
@@ -53,7 +43,6 @@ class RegistroActivity : AppCompatActivity() {
                 showToast("El mail o la contraseña no puede estar vacío.")
                 return@setOnClickListener
             }
-
 
             auth.createUserWithEmailAndPassword(email, password)
                 .addOnCompleteListener(this) { task ->
@@ -71,7 +60,6 @@ class RegistroActivity : AppCompatActivity() {
                 }
         }
     }
-
     private fun showToast(message: String) {
         Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
     }

@@ -6,8 +6,8 @@ class Articulo(private var tipoArticulo: TipoArticulo, private var nombre: Nombr
     private var idArticulo: Int = -1
     private var idInventario: Int = -1
 
-    enum class TipoArticulo { ARMA, OBJETO, PROTECCION, ORO , COMIDA}
-    enum class Nombre { BASTON, ESPADA, DAGA, MARTILLO, GARRAS, POCION, IRA, ESCUDO, ARMADURA, MONEDA, JAMON }
+    enum class TipoArticulo { ARMA, OBJETO, PROTECCION, ORO , COMIDA,TRAMPA}
+    enum class Nombre { BASTON, ESPADA, DAGA, MARTILLO, GARRAS, POCION, IRA, ESCUDO, ARMADURA, MONEDA, JAMON,MIMICO }
 
     fun getIdInventario(): Int {
         return idInventario

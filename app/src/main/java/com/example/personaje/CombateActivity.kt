@@ -15,63 +15,44 @@ import android.widget.ScrollView
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import java.util.Random
 import kotlin.math.max
 
 class CombateActivity : AppCompatActivity() {
-
-
-
     private lateinit var personaje: Personaje
     private lateinit var monstruo: Monstruo
     private lateinit var barraVidaMonstruo: ProgressBar
     private lateinit var barraVidaJugador: ProgressBar
     private  var idPersonaje: Long = -1L
     private lateinit var dbGeneral: BaseDeDatosGeneral
-
     private lateinit var mediaPlayer: MediaPlayer
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.layout_combate)
-
         mediaPlayer = MediaPlayer.create(this, R.raw.genesis)
         mediaPlayer.setVolume(0.1f, 0.1f)
-
         dbGeneral = BaseDeDatosGeneral(this)
         idPersonaje = intent.getLongExtra("intentExtraIdPersonaje", -1L)
-
         monstruo = crearMonstruoAleatorio()
         val imagenMonstruo: ImageView = findViewById(R.id.imagenMonstruo)
         imagenMonstruo.setImageResource(monstruo.getImagenId())
-
-
-
         barraVidaMonstruo = findViewById(R.id.barraVidaMonstruo)
         barraVidaJugador = findViewById(R.id.barraVidaJugador)
         configurarCombate()
     }
 
     private fun configurarCombate() {
-
         personaje = dbGeneral.obtenerPersonajePorId(idPersonaje) ?: return
-
         val textViewSaludMonstruo: TextView = findViewById(R.id.TextViewSaludMonstruo)
         textViewSaludMonstruo.text = "Salud del ${monstruo.getNombre()}"
-
         val textViewSaludJugador: TextView = findViewById(R.id.TextViewSaludJugador)
         textViewSaludJugador.text = "Salud de ${personaje.getNombre()}"
-
         val imagenJugador: ImageView = findViewById(R.id.imagenJugador)
         imagenJugador.setImageResource(personaje.getImagenId())
-
         val nombreImagen = personaje.getImagenId()
         val resourceId = this.resources.getIdentifier(nombreImagen.toString(), "drawable", this.packageName)
         imagenJugador.setImageResource(resourceId)
-
-
         barraVidaMonstruo.max = monstruo.getSalud()
         barraVidaMonstruo.progress = monstruo.getSalud()
-
         barraVidaJugador.max = personaje.getSalud()
         barraVidaJugador.progress = personaje.getSalud()
 
@@ -120,11 +101,9 @@ class CombateActivity : AppCompatActivity() {
         val botonUsarObjeto: Button = findViewById(R.id.botonUsarObjeto)
         val scrollViewObjetos: ScrollView = findViewById(R.id.scrollViewObjetos)
         val panelObjetos: LinearLayout = findViewById(R.id.panelObjetos)
-
         botonAtacar.visibility = View.GONE
         botonUsarObjeto.visibility = View.GONE
         scrollViewObjetos.visibility = View.VISIBLE
-
         val idMochila = dbGeneral.obtenerIdMochilaPorPersonaje(idPersonaje)
         val inventario = dbGeneral.obtenerArticulosPorIdMochila(idMochila)
 
@@ -135,7 +114,6 @@ class CombateActivity : AppCompatActivity() {
             scrollViewObjetos.visibility = View.GONE
             return
         }
-
         panelObjetos.removeAllViews()
         inventario.forEach { articulo ->
             val vistaArticulo = layoutInflater.inflate(R.layout.layout_aux, panelObjetos, false)
@@ -149,12 +127,10 @@ class CombateActivity : AppCompatActivity() {
     }
 
     private fun setupVistaArticulo(vista: View, articulo: Articulo, idMochila: Int) {
-
         vista.findViewById<Button>(R.id.botonConfirmarAux).setOnClickListener {
             usarArticulo(articulo, idMochila)
         }
     }
-
     private fun usarArticulo(articulo: Articulo, idMochila: Int) {
         when (articulo.getTipoArticulo()) {
             Articulo.TipoArticulo.ARMA -> {
@@ -172,7 +148,6 @@ class CombateActivity : AppCompatActivity() {
 
         dbGeneral.eliminarArticuloDeMochila(idMochila, articulo.getIdInventario())
         dbGeneral.actualizarEspacioMochila(idMochila, -articulo.getPeso())
-
         actualizarBarrasDeVida()
         findViewById<ScrollView>(R.id.scrollViewObjetos).visibility = View.GONE
         findViewById<Button>(R.id.botonAtacar).visibility = View.VISIBLE
@@ -199,14 +174,10 @@ class CombateActivity : AppCompatActivity() {
     private fun actualizarBarrasDeVida() {
         val porcentajeVidaMonstruo = monstruo.getSalud() * 100
         val porcentajeVidaJugador = personaje.getSalud() * 100
-
         barraVidaMonstruo.progress = monstruo.getSalud()
         barraVidaJugador.progress = personaje.getSalud()
-
         barraVidaMonstruo.progressDrawable.colorFilter = PorterDuffColorFilter(getColorBasedOnHealth(porcentajeVidaMonstruo), PorterDuff.Mode.SRC_IN)
-
         barraVidaJugador.progressDrawable.colorFilter = PorterDuffColorFilter(getColorBasedOnHealth(porcentajeVidaJugador), PorterDuff.Mode.SRC_IN)
-
         verificarEstadoCombate()
     }
 

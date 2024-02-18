@@ -1,19 +1,15 @@
 package com.example.personaje
 
-
 import android.annotation.SuppressLint
 import android.content.ContentValues
 import android.content.Context
 import android.database.Cursor
 import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteOpenHelper
-import kotlin.math.max
-
 
 class BaseDeDatosGeneral(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME, null, DATABASE_VERSION) {
-
     companion object {
-        private const val DATABASE_VERSION = 43
+        private const val DATABASE_VERSION = 46
         private const val DATABASE_NAME = "MiBaseGeneral.db"
 
         private const val TABLA_PERSONAJES = "Personajes"
@@ -106,8 +102,6 @@ class BaseDeDatosGeneral(context: Context) : SQLiteOpenHelper(context, DATABASE_
                 "$COLUMN_ID_PERSONAJE INTEGER," +
                 "FOREIGN KEY ($COLUMN_ID_PERSONAJE) REFERENCES $TABLA_PERSONAJES ($COLUMN_ID_PERSONAJE))"
 
-
-
         db.execSQL(createTablePersonaje)
         db.execSQL(createTableMochila)
         db.execSQL(createTableArticulo)
@@ -115,7 +109,6 @@ class BaseDeDatosGeneral(context: Context) : SQLiteOpenHelper(context, DATABASE_
         db.execSQL(createTableMascota)
 
         insertarArticulos(db)
-
     }
     override fun onUpgrade(db: SQLiteDatabase, oldVersion: Int, newVersion: Int) {
         db.execSQL("DROP TABLE IF EXISTS $TABLA_PERSONAJES")
@@ -125,7 +118,6 @@ class BaseDeDatosGeneral(context: Context) : SQLiteOpenHelper(context, DATABASE_
         db.execSQL("DROP TABLE IF EXISTS $TABLA_MASCOTA")
         onCreate(db)
     }
-
     fun insertarArticulos(db: SQLiteDatabase) {
         addArticulo(db, "MONEDA", "ORO", 0, 15, 1,1)
         addArticulo(db, "ESPADA", "ARMA", 20, 20, 2,1)
@@ -138,7 +130,7 @@ class BaseDeDatosGeneral(context: Context) : SQLiteOpenHelper(context, DATABASE_
         addArticulo(db, "ARMADURA", "PROTECCION", 40, 10, 9,1)
         addArticulo(db, "DAGA", "ARMA", 10, 25, 10,1)
         addArticulo(db, "JAMON", "COMIDA", 1, 1, 11,1)
-
+        addArticulo(db, "MIMICO", "TRAMPA", 0, 0, 12,1)
     }
     fun addArticulo(
         db: SQLiteDatabase,
@@ -159,8 +151,6 @@ class BaseDeDatosGeneral(context: Context) : SQLiteOpenHelper(context, DATABASE_
         }
         db.insert(TABLA_ARTICULOS, null, values)
     }
-
-
     @SuppressLint("Range")
     fun obtenerPersonajePorEmail(email: String): Personaje? {
         val db = this.readableDatabase
@@ -208,7 +198,7 @@ class BaseDeDatosGeneral(context: Context) : SQLiteOpenHelper(context, DATABASE_
     @SuppressLint("Range")
     fun obtenerArticulosAleatoriosDelMercader(idMochila: Int): ArrayList<Articulo>{
         val db = this.readableDatabase
-        val cursor = db.rawQuery("SELECT * FROM $TABLA_ARTICULOS ORDER BY RANDOM() LIMIT 4", null)
+        val cursor = db.rawQuery("SELECT * FROM $TABLA_ARTICULOS WHERE ${COLUMN_NOMBRE}!= 'MIMICO' ORDER BY RANDOM() LIMIT 4", null)
         val listadoArticulo: ArrayList<Articulo> = ArrayList()
 
         cursor.moveToFirst()
@@ -260,9 +250,6 @@ class BaseDeDatosGeneral(context: Context) : SQLiteOpenHelper(context, DATABASE_
         cursor.close()
         return listadoArticulo
     }
-
-
-
     fun obtenerArticuloAleatorio(): Articulo? {
         val db = this.readableDatabase
         val cursor = db.rawQuery("SELECT * FROM $TABLA_ARTICULOS ORDER BY RANDOM() LIMIT 1", null)
@@ -273,7 +260,6 @@ class BaseDeDatosGeneral(context: Context) : SQLiteOpenHelper(context, DATABASE_
         cursor.close()
         return articulo
     }
-
     @SuppressLint("Range")
     private fun cursorDeArticulo(cursor: Cursor): Articulo {
         val idArticulo = cursor.getInt(cursor.getColumnIndex(COLUMN_ID_ARTICULO))
@@ -284,9 +270,6 @@ class BaseDeDatosGeneral(context: Context) : SQLiteOpenHelper(context, DATABASE_
         val imagenId = cursor.getInt(cursor.getColumnIndex(COLUMN_DRAWABLE))
         return Articulo(tipoArticulo, nombre, peso, precio, imagenId).apply { setIdArticulo(idArticulo) }
     }
-
-
-
     @SuppressLint("Range")
     fun obtenerEspacioDisponibleMochila(idMochila: Int): Int {
         val db = this.readableDatabase
@@ -300,9 +283,6 @@ class BaseDeDatosGeneral(context: Context) : SQLiteOpenHelper(context, DATABASE_
         cursor.close()
         return -1
     }
-
-
-
     @SuppressLint("Range")
     fun obtenerEspacioOcupadoMochila(idMochila: Int): Int {
         val db = this.readableDatabase
@@ -337,7 +317,6 @@ class BaseDeDatosGeneral(context: Context) : SQLiteOpenHelper(context, DATABASE_
         cursor.close()
         return idMochila
     }
-
     @SuppressLint("Range")
     fun obtenerOroMochila(idMochila: Int): Int {
         val db = this.readableDatabase
@@ -349,7 +328,6 @@ class BaseDeDatosGeneral(context: Context) : SQLiteOpenHelper(context, DATABASE_
         cursor.close()
         return oro
     }
-
     @SuppressLint("Range")
     fun obtenerPersonajePorId(idPersonaje: Long): Personaje? {
         val db = this.readableDatabase
@@ -377,7 +355,6 @@ class BaseDeDatosGeneral(context: Context) : SQLiteOpenHelper(context, DATABASE_
             val suerte = cursor.getInt(cursor.getColumnIndex(COLUMN_SUERTE))
             val imagenId = cursor.getInt(cursor.getColumnIndex(COLUMN_IMAGEN_ID))
 
-
             personaje = Personaje(email, nombre, raza, clase, estadoVital).apply {
                 setId(idPersonaje)
                 setSalud(salud)
@@ -392,7 +369,6 @@ class BaseDeDatosGeneral(context: Context) : SQLiteOpenHelper(context, DATABASE_
         cursor.close()
         return personaje
     }
-
     @SuppressLint("Range")
     fun obtenerIdMascotaPorPersonaje(idPersonaje: Long): Long {
         val db = this.readableDatabase
@@ -412,7 +388,6 @@ class BaseDeDatosGeneral(context: Context) : SQLiteOpenHelper(context, DATABASE_
         cursor.close()
         return idMascota
     }
-
     @SuppressLint("Range")
     fun obtenerNivelMascotaPorPersonaje(idPersonaje: Long): Int {
         val db = this.readableDatabase
@@ -432,7 +407,6 @@ class BaseDeDatosGeneral(context: Context) : SQLiteOpenHelper(context, DATABASE_
         cursor.close()
         return nivelMascota
     }
-
     @SuppressLint("Range")
     fun obtenerNombreMascotaPorId(idMascota: Long): String? {
         val db = this.readableDatabase
@@ -452,8 +426,6 @@ class BaseDeDatosGeneral(context: Context) : SQLiteOpenHelper(context, DATABASE_
         cursor.close()
         return nombreMascota
     }
-
-
     fun tengoComida(idMochila: Int): Boolean {
         val db = this.readableDatabase
         val cursor = db.rawQuery("SELECT COUNT(*) FROM $TABLA_INVENTARIO JOIN $TABLA_ARTICULOS ON $TABLA_INVENTARIO.$COLUMN_ID_ARTICULO = $TABLA_ARTICULOS.$COLUMN_ID_ARTICULO WHERE $COLUMN_TIPO_ARTICULO = 'COMIDA' AND $TABLA_INVENTARIO.$COLUMN_ID_MOCHILA = ?", arrayOf(idMochila.toString()))
@@ -483,18 +455,6 @@ class BaseDeDatosGeneral(context: Context) : SQLiteOpenHelper(context, DATABASE_
         cursor.close()
         return tieneMascota
     }
-
-
-
-
-
-
-    //***************************************************************************//
-    //***************************************************************************//
-    //***************************************************************************//
-    //***************************************************************************//
-    //***************************************************************************//
-    //***************************************************************************//
     //***************************************************************************//
     //***************************************************************************//
     //***************************************************************************//
@@ -519,15 +479,12 @@ class BaseDeDatosGeneral(context: Context) : SQLiteOpenHelper(context, DATABASE_
         }
         db.update(TABLA_MOCHILAS, values, "$COLUMN_ID_MOCHILA = ?", arrayOf(idMochila.toString()))
     }
-
-
     fun actualizarOroMochila(idMochila: Int, oro: Int) {
         val db = this.writableDatabase
         val values = ContentValues()
         values.put(COLUMN_ORO, oro)
         db.update(TABLA_MOCHILAS, values, "$COLUMN_ID_MOCHILA = ?", arrayOf(idMochila.toString()))
     }
-
     fun insertarMochila(idPersonaje: Long) {
         val db = this.writableDatabase
         val values = ContentValues().apply {
@@ -538,7 +495,6 @@ class BaseDeDatosGeneral(context: Context) : SQLiteOpenHelper(context, DATABASE_
         }
         db.insert(TABLA_MOCHILAS, null, values)
     }
-
     fun insertarPersonaje(personaje: Personaje): Long {
         val db = this.writableDatabase
         val values = ContentValues().apply {
@@ -557,14 +513,10 @@ class BaseDeDatosGeneral(context: Context) : SQLiteOpenHelper(context, DATABASE_
         }
         return db.insert(TABLA_PERSONAJES, null, values)
     }
-
-
     fun eliminarArticuloDeMochila(idMochila: Int, idInventario: Int) {
         val db = this.writableDatabase
         db.delete(TABLA_INVENTARIO, "$COLUMN_ID_MOCHILA = ? AND $COLUMN_ID_INVENTARIO = ?", arrayOf(idMochila.toString(), idInventario.toString()))
     }
-
-
     fun eliminarPersonaje(idPersonaje: Long) {
         val db = this.writableDatabase
         db.beginTransaction()
@@ -576,7 +528,6 @@ class BaseDeDatosGeneral(context: Context) : SQLiteOpenHelper(context, DATABASE_
         db.setTransactionSuccessful()
         db.endTransaction()
     }
-
     fun insertarMascota(nombre: String, felicidad: Int, idPersonaje: Long): Long {
         val db = this.writableDatabase
         val values = ContentValues().apply {
@@ -587,7 +538,6 @@ class BaseDeDatosGeneral(context: Context) : SQLiteOpenHelper(context, DATABASE_
         }
         return db.insert(TABLA_MASCOTA, null, values)
     }
-
     fun actualizarFelicidadMascota(idMascota: Long, nuevaFelicidad: Int) {
         val db = this.writableDatabase
 
@@ -628,7 +578,6 @@ class BaseDeDatosGeneral(context: Context) : SQLiteOpenHelper(context, DATABASE_
             db.endTransaction()
         }
     }
-
     fun actualizarEspacioMochilaAlEliminarComida(idMochila: Int, pesoComida: Int) {
         val espacioOcupadoActual = obtenerEspacioOcupadoMochila(idMochila)
         val nuevoEspacioOcupado = maxOf(0, espacioOcupadoActual - pesoComida)
@@ -637,8 +586,6 @@ class BaseDeDatosGeneral(context: Context) : SQLiteOpenHelper(context, DATABASE_
         }
         writableDatabase.update(TABLA_MOCHILAS, values, "$COLUMN_ID_MOCHILA = ?", arrayOf(idMochila.toString()))
     }
-
-
 }
 
 

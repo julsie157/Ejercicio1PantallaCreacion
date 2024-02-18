@@ -24,21 +24,13 @@ class MercaderActivity : AppCompatActivity() {
     private lateinit var botonCancelar: Button
     private lateinit var botonContinuar: Button
     private lateinit var mediaPlayer: MediaPlayer
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.layout_mercader)
-
-
         mediaPlayer = MediaPlayer.create(this, R.raw.tienda)
         mediaPlayer.setVolume(0.1f, 0.1f)
-
-
-
         dbGeneral = BaseDeDatosGeneral(this)
-
         idPersonaje = intent.getLongExtra("intentExtraIdPersonaje", -1L)
-
         panelComercio = findViewById(R.id.panelComercio)
         panelArticulos = findViewById(R.id.panelArticulos)
         botonComerciar = findViewById(R.id.Botoncomerciar)
@@ -95,7 +87,6 @@ class MercaderActivity : AppCompatActivity() {
             panelArticulos.addView(view)
         }
     }
-
     private fun mostrarArticulosParaVenta() {
         panelArticulos.removeAllViews()
         val idMochila = dbGeneral.obtenerIdMochilaPorPersonaje(idPersonaje)
@@ -114,19 +105,16 @@ class MercaderActivity : AppCompatActivity() {
             panelArticulos.addView(view)
         }
     }
-
     private fun setupArticuloView(view: View, articulo: Articulo, oroActual: Int, idMochila: Int, esCompra: Boolean) {
         val nombreArticulo = view.findViewById<TextView>(R.id.nombreArticulo)
         val precioArticulo = view.findViewById<TextView>(R.id.precioArticulo)
         val pesoArticulo = view.findViewById<TextView>(R.id.pesoArticulo)
         val imagenArticulo = view.findViewById<ImageView>(R.id.imageArticulo)
         val botonAccion = view.findViewById<Button>(R.id.botonConfirmarAux)
-
         nombreArticulo.text = articulo.getNombre().name
         precioArticulo.text = "Precio: ${articulo.getPrecio()}"
         pesoArticulo.text = "Peso: ${articulo.getPeso()}"
         imagenArticulo.setImageResource(obtenerIdImagenPorNumero(articulo.getImagenId()))
-
         botonAccion.text = if (esCompra) "Comprar" else "Vender"
 
         botonAccion.setOnClickListener {
@@ -137,7 +125,6 @@ class MercaderActivity : AppCompatActivity() {
             }
         }
     }
-
     private fun comprarArticulo(articulo: Articulo, idMochila: Int, oroActual: Int) {
         val precio = articulo.getPrecio()
         val peso = articulo.getPeso()
@@ -153,7 +140,6 @@ class MercaderActivity : AppCompatActivity() {
             Toast.makeText(this, "No puedes comprar este artículo.", Toast.LENGTH_SHORT).show()
         }
     }
-
     private fun venderArticulo(articulo: Articulo, idMochila: Int) {
         val precio = articulo.getPrecio()
         dbGeneral.actualizarOroMochila(idMochila, dbGeneral.obtenerOroMochila(idMochila) + precio)
@@ -163,13 +149,11 @@ class MercaderActivity : AppCompatActivity() {
         Toast.makeText(this, "Artículo vendido: ${articulo.getNombre().name}", Toast.LENGTH_SHORT).show()
         mostrarArticulosParaVenta()
     }
-
     private fun actualizarOroEspacio(idMochila: Int) {
         val oroActual = dbGeneral.obtenerOroMochila(idMochila)
         val espacioDisponible = dbGeneral.obtenerEspacioDisponibleMochila(idMochila)
         textviewOroEspacio.text = "Oro: $oroActual - Espacio Disponible: $espacioDisponible"
     }
-
     private fun obtenerIdImagenPorNumero(numero: Int): Int {
         return when (numero) {
             1 -> R.drawable.moneda

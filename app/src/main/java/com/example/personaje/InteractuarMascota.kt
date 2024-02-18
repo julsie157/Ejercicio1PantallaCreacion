@@ -40,7 +40,8 @@ class InteractuarMascota : AppCompatActivity() {
         idMascota = dbGeneral.obtenerIdMascotaPorPersonaje(idPersonaje)
 
         if (idMascota == -1L) {
-            Toast.makeText(this, "No tienes una mascota. Adopta una primero.", Toast.LENGTH_LONG).show()
+            Toast.makeText(this, "No tienes una mascota. Adopta una primero.", Toast.LENGTH_LONG)
+                .show()
             finish()
             return
         }
@@ -63,11 +64,17 @@ class InteractuarMascota : AppCompatActivity() {
         textNombre.text = "Interactúa con tu mascota: $nombreMascota"
 
 
-        var nombreImagen : String = "mascota"
-        if (dbGeneral.obtenerNivelMascotaPorPersonaje(idPersonaje) == 2 ){
-           nombreImagen = "mascotaevo"
+        var nombreImagen: String = "mascota"
+        if (dbGeneral.obtenerNivelMascotaPorPersonaje(idPersonaje) == 2) {
+            nombreImagen = "mascotaevo"
         }
-        imageView.setImageResource(this.resources.getIdentifier(nombreImagen, "drawable", this.packageName))
+        imageView.setImageResource(
+            this.resources.getIdentifier(
+                nombreImagen,
+                "drawable",
+                this.packageName
+            )
+        )
 
 
         botonSalir.setOnClickListener {
@@ -91,7 +98,11 @@ class InteractuarMascota : AppCompatActivity() {
     private fun manejarAlimentacionMascota() {
         val tieneComida = dbGeneral.tengoComida(dbGeneral.obtenerIdMochilaPorPersonaje(idPersonaje))
         if (tieneComida) {
-            dbGeneral.consumirTodaLaComidaDelInventario(dbGeneral.obtenerIdMochilaPorPersonaje(idPersonaje))
+            dbGeneral.consumirTodaLaComidaDelInventario(
+                dbGeneral.obtenerIdMochilaPorPersonaje(
+                    idPersonaje
+                )
+            )
             actualizarFelicidadYVerificar(20)
             Toast.makeText(this, "Has alimentado a tu mascota.", Toast.LENGTH_SHORT).show()
 
@@ -123,13 +134,15 @@ class InteractuarMascota : AppCompatActivity() {
                 botonJugar.text = "Jugar"
                 val felicidadAdicional = calcularFelicidad(contadorClics)
                 actualizarFelicidadYVerificar(felicidadAdicional)
-                Toast.makeText(applicationContext, "Juego terminado. Felicidad aumentada en $felicidadAdicional.", Toast.LENGTH_SHORT).show()
+                Toast.makeText(
+                    applicationContext,
+                    "Juego terminado. Felicidad aumentada en $felicidadAdicional.",
+                    Toast.LENGTH_SHORT
+                ).show()
             }
         }.start()
     }
-
     private fun calcularFelicidad(clics: Int): Int = clics
-
     private fun actualizarFelicidadYVerificar(cambio: Int) {
         val felicidadActual = dbGeneral.obtenerFelicidadMascota(idMascota)
         val nuevaFelicidad = felicidadActual + cambio
@@ -142,13 +155,19 @@ class InteractuarMascota : AppCompatActivity() {
             Toast.makeText(this, "Se te ha muerto la mascota", Toast.LENGTH_SHORT).show()
             Handler(Looper.getMainLooper()).postDelayed({
             }, 1400)
-        }else{
-            if (nuevaFelicidad >= 100){
+        } else {
+            if (nuevaFelicidad >= 100) {
                 imageView = findViewById(R.id.imagenMascotaInterac)
-                imageView.setImageResource(this.resources.getIdentifier("mascotaevo", "drawable", this.packageName))
+                imageView.setImageResource(
+                    this.resources.getIdentifier(
+                        "mascotaevo",
+                        "drawable",
+                        this.packageName
+                    )
+                )
                 navegarAPantallaDado()
                 Toast.makeText(this, "Tu mascota ha subido de nivel", Toast.LENGTH_SHORT).show()
-            }else{
+            } else {
                 navegarAPantallaDado()
             }
         }
@@ -169,13 +188,15 @@ class InteractuarMascota : AppCompatActivity() {
     private fun actualizarTextoTieneComida() {
         val textoCantidadComidas: TextView = findViewById(R.id.textViewCantidadComidas)
         val tieneComida = dbGeneral.tengoComida(dbGeneral.obtenerIdMochilaPorPersonaje(idPersonaje))
-        textoCantidadComidas.text = if (tieneComida) "Tienes comida en tu inventario." else "No tienes comida en tu inventario."
+        textoCantidadComidas.text =
+            if (tieneComida) "Tienes comida en tu inventario." else "No tienes comida en tu inventario."
     }
 
     override fun onStart() {
         super.onStart()
         mediaPlayer.start()
     }
+
     override fun onStop() {
         super.onStop()
         mediaPlayer.release()

@@ -10,7 +10,6 @@ import androidx.appcompat.app.AppCompatActivity
 
 
 class DatosPersonaje : AppCompatActivity() {
-
     private lateinit var dbGeneral: BaseDeDatosGeneral
     private lateinit var playButton: Button
     private lateinit var nombreTextView: TextView
@@ -19,8 +18,6 @@ class DatosPersonaje : AppCompatActivity() {
     private lateinit var estadoVitalTextView: TextView
     private lateinit var botonVolver: Button
     private lateinit var botonComenzarAventura: Button
-
-
 
     @SuppressLint("MissingInflatedId")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -49,14 +46,9 @@ class DatosPersonaje : AppCompatActivity() {
         val clase = intent.getStringExtra("intentExtraClase").toString()
         val estadoVital = intent.getStringExtra("intentExtraEstadoVital").toString()
         val imagenId = intent.getIntExtra("intentExtraImagenId", R.drawable.gnomopocho)
-
-
-
         inicializarUI()
         configurarBotones(email, nombre, raza, clase, estadoVital,imagenId)
-
         cargarDetallesPersonaje(nombre, raza, clase, estadoVital)
-
     }
 
     private fun inicializarUI() {
@@ -105,7 +97,6 @@ class DatosPersonaje : AppCompatActivity() {
         razaTextView.text = "Raza: ${raza}"
         claseTextView.text = "Clase: ${clase}"
         estadoVitalTextView.text = "Estado Vital: ${estadoVital}"
-
     }
 
     override fun onPause() {
@@ -121,7 +112,6 @@ class DatosPersonaje : AppCompatActivity() {
             MusicPlayer.start()
         }
     }
-
     private fun updatePlayButton() {
         if (MusicPlayer.isPlaying()) {
             playButton.text = "Mute"
@@ -133,5 +123,4 @@ class DatosPersonaje : AppCompatActivity() {
         super.onDestroy()
         MusicPlayer.release()
     }
-
 }

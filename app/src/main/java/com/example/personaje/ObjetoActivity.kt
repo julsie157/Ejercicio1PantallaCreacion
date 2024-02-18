@@ -1,6 +1,7 @@
 package com.example.personaje
 
 
+import android.content.Intent
 import android.media.MediaPlayer
 import android.os.Bundle
 import android.os.Handler
@@ -22,15 +23,10 @@ class ObjetoActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.layout_objeto)
-
-
         mediaPlayer = MediaPlayer.create(this, R.raw.goroncity)
         mediaPlayer.setVolume(0.1f, 0.1f)
-
-
         dbGeneral = BaseDeDatosGeneral(this)
         idPersonaje = intent.getLongExtra("intentExtraIdPersonaje", -1L)
-
         botonRecoger = findViewById(R.id.Botonrecoger)
         botonContinuar = findViewById(R.id.Botoncontobjeto)
         imagenObjeto = findViewById(R.id.Objeto)
@@ -51,7 +47,8 @@ class ObjetoActivity : AppCompatActivity() {
         }
 
         val articulo = dbGeneral.obtenerArticuloAleatorio()
-        if (articulo != null) {
+
+        if (articulo != null && articulo.getNombre().toString() != "MIMICO") {
             val nombre = articulo.getNombre().name
             val peso = articulo.getPeso()
             val idImagen = articulo.getImagenId()
@@ -71,23 +68,33 @@ class ObjetoActivity : AppCompatActivity() {
                     finish()
                 },1400)
             }
-        } else {
+        } else if (articulo!= null && articulo.getNombre().toString() == "MIMICO") {
+            Toast.makeText(this, "Te ha matado el MIMICO", Toast.LENGTH_SHORT).show()
+            imagenObjeto.setImageResource(
+                this.resources.getIdentifier(
+                    "mimico",
+                    "drawable",
+                    this.packageName
+                )
+            )
+            Handler(Looper.getMainLooper()).postDelayed({
+                dbGeneral.eliminarPersonaje(idPersonaje)
+                val intent = Intent(this, Inicio::class.java)
+                startActivity(intent)
+                finish()
+            },1400)
+        }else {
             Toast.makeText(this, "No se pudo recoger un objeto.", Toast.LENGTH_SHORT).show()
             Handler(Looper.getMainLooper()).postDelayed({
                 finish()
             },1400)
         }
     }
-
-
-
     private fun mostrarToastRecogida(nombre: String, nuevoEspacioDisponible: Int, resourceId: Int) {
         imagenObjeto.setImageResource(resourceId)
         val toastText = "Has recogido: $nombre. Espacio restante: $nuevoEspacioDisponible"
         Toast.makeText(this, toastText, Toast.LENGTH_SHORT).show()
     }
-
-
     private fun obtenerIdImagenPorNumero(numero: Int): Int {
         return when (numero) {
             1 -> R.drawable.moneda
@@ -101,6 +108,7 @@ class ObjetoActivity : AppCompatActivity() {
             9 -> R.drawable.armadura
             10 -> R.drawable.daga
             11 -> R.drawable.jamon
+            12 -> R.drawable.mimico
             else -> R.drawable.cofre
         }
     }
