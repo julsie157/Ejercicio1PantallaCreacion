@@ -6,16 +6,17 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     tools:context=".Inicio"
-    android:background="@color/black">
+    android:background="@drawable/fondorojo">
 
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/toolbarenemigo"
         android:layout_width="match_parent"
         android:layout_height="38dp"
-        android:background="?attr/colorPrimary"
+        android:background="#A8160C"
+        app:titleTextColor="@color/black"
         android:minHeight="?attr/actionBarSize"
         android:theme="?attr/actionBarTheme"
-        app:title="Creacion de Personaje" />
+        app:title="              Creacion de Personaje" />
 
     <ImageView
         android:id="@+id/Imagen"

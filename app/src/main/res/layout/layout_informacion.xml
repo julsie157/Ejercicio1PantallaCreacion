@@ -5,46 +5,60 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context=".DatosPersonaje" >
+    tools:context=".DatosPersonaje"
+    android:background="@drawable/fondorojo">
 
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/toolbarenemigo"
         android:layout_width="match_parent"
-        android:layout_height="30dp"
-        android:background="?attr/colorPrimary"
+        android:layout_height="34dp"
+        android:background="#A8160C"
+        app:titleTextColor="@color/black"
         android:minHeight="?attr/actionBarSize"
-        android:theme="?attr/actionBarTheme" />
+        android:theme="?attr/actionBarTheme"
+        app:title="             Información Personaje"/>
 
 
     <TextView
         android:id="@+id/textView"
         android:layout_width="match_parent"
-        android:layout_height="453dp"
-        android:text="Esta es la Info de tu personaje" />
+        android:layout_height="165dp"
+        android:text="Esta es la Información de tu personaje"
+        android:textAlignment="center"
+        android:textSize="40dp"
+        android:textColor="@color/white"/>
 
     <TextView
         android:id="@+id/nombreTextView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        tools:text="Nombre: " />
+        tools:text="Nombre: "
+        android:textSize="27dp"
+        android:textColor="@color/white"/>
 
     <TextView
         android:id="@+id/razaTextView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        tools:text="Raza: " />
+        tools:text="Raza: "
+        android:textSize="27dp"
+        android:textColor="@color/white"/>
 
     <TextView
         android:id="@+id/estadoVitalTextView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        tools:text="Estado Vital: " />
+        tools:text="Estado Vital: "
+        android:textSize="27dp"
+        android:textColor="@color/white"/>
 
     <TextView
         android:id="@+id/claseTextView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Clase:" />
+        android:text="Clase:"
+        android:textSize="27dp"
+        android:textColor="@color/white"/>
 
     <LinearLayout
         android:layout_width="match_parent"
