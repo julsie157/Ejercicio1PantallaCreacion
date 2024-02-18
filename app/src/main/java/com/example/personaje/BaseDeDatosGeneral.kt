@@ -9,7 +9,7 @@ import android.database.sqlite.SQLiteOpenHelper
 
 class BaseDeDatosGeneral(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME, null, DATABASE_VERSION) {
     companion object {
-        private const val DATABASE_VERSION = 46
+        private const val DATABASE_VERSION = 55
         private const val DATABASE_NAME = "MiBaseGeneral.db"
 
         private const val TABLA_PERSONAJES = "Personajes"

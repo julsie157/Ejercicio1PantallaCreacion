@@ -6,6 +6,7 @@ import android.graphics.PorterDuff
 import android.graphics.PorterDuffColorFilter
 import android.media.MediaPlayer
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.widget.Button
 import android.widget.ImageView
@@ -68,13 +69,12 @@ class CombateActivity : AppCompatActivity() {
     }
 
     private fun AtacarAMonstruo() {
-        val numeroAleatorio = Math.random() * (3 - 1) + 1
-
-        if (numeroAleatorio.toInt() == 1){
+        val numeroAleatorio : Int = (Math.random() * (4 - 1) + 1).toInt()
+        if (numeroAleatorio == 1){
             val nivelMascota = dbGeneral.obtenerNivelMascotaPorPersonaje(idPersonaje)
             if (nivelMascota == 2){
-                val numeroAleatorioDos = Math.random() * (2 - 1) + 1
-                if (numeroAleatorioDos.toInt() == 1){
+                val numeroAleatorioDos : Int = (Math.random() * (3 - 1) + 1).toInt()
+                if (numeroAleatorioDos == 1) {
                     monstruo.setSalud(max(0, monstruo.getSalud() - 15))
                     Toast.makeText(this, "Tu mascota ha atacado", Toast.LENGTH_SHORT).show()
                 }else{
@@ -193,8 +193,8 @@ class CombateActivity : AppCompatActivity() {
     private fun crearMonstruoAleatorio(): Monstruo {
         val monstruos = listOf(
             Monstruo("Goblin", 1, R.drawable.goblin),
-            Monstruo("Orco", 2, R.drawable.orco),
-            Monstruo("Troll", 3, R.drawable.troll)
+            Monstruo("Orco", 1, R.drawable.orco),
+            Monstruo("Troll", 1, R.drawable.troll)
         )
         return monstruos.random()
     }

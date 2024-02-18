@@ -31,10 +31,8 @@ class LoginActivity : AppCompatActivity() {
         }
 
         loginButton.setOnClickListener {
-            //val email = emailEditText.text.toString().trim()
-            // val password = passwordEditText.text.toString().trim()
-            val email = "paco@gmail.com"
-            val password = "123456A"
+            val email = emailEditText.text.toString().trim()
+            val password = passwordEditText.text.toString().trim()
 
             if (email.isBlank() || password.isBlank()) {
                 showToast("El mail o la contraseña no pueden estar vacíos.")
@@ -63,7 +61,6 @@ class LoginActivity : AppCompatActivity() {
                         showToast("Error de autentificación: E-mail/Contraseña NO VALIDA")
                     }
                 }
-
         }
     }
 

@@ -56,7 +56,7 @@ class PantallaDado : AppCompatActivity(), OnInitListener {
                 "Ciudad" -> Intent(this, CiudadActivity::class.java)
                 "Mercader" -> Intent(this, MercaderActivity::class.java)
                 "Enemigo" -> Intent(this, EnemigoActivity::class.java)
-                "InteractuarMascota" -> Intent(this, InteractuarMascota::class.java)
+                "Interactuar" -> Intent(this, InteractuarMascota::class.java)
                 "ChatBot"-> Intent(this, ChatbotActivity::class.java)
                 else -> null
             }
@@ -68,7 +68,7 @@ class PantallaDado : AppCompatActivity(), OnInitListener {
     }
 
     private fun randomEncounter(): String {
-        val encounters = arrayOf("Objeto","Ciudad","Mercader","Enemigo","InteractuarMascota","ChatBot")
+        val encounters = arrayOf("Objeto", "Ciudad", "Mercader", "Enemigo", "Interactuar", "ChatBot",)
         return encounters[Random.nextInt(encounters.size)]
     }
     override fun onInit(status: Int) {
