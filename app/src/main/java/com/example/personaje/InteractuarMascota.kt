@@ -25,6 +25,7 @@ class InteractuarMascotaActivity : AppCompatActivity() {
     private lateinit var textoContador: TextView
     private lateinit var progressBarFelicidad: ProgressBar
     private lateinit var imageView: ImageView
+    private lateinit var textNombre: TextView
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -55,8 +56,14 @@ class InteractuarMascotaActivity : AppCompatActivity() {
         textoContador = findViewById(R.id.textoContador)
         progressBarFelicidad = findViewById(R.id.progressBarFelicidad)
         imageView = findViewById(R.id.imagenMascotaInterac)
-        var nombreImagen : String = "mascota"
+        textNombre = findViewById(R.id.textViewNombreInteractuar)
 
+        val nombreMascota = dbGeneral.obtenerNombreMascotaPorId(idMascota)
+        textNombre = findViewById(R.id.textViewNombreInteractuar)
+        textNombre.text = "Interactúa con tu mascota: $nombreMascota"
+
+
+        var nombreImagen : String = "mascota"
         if (dbGeneral.obtenerNivelMascotaPorPersonaje(idPersonaje) == 2 ){
            nombreImagen = "mascotaevo"
         }
@@ -139,9 +146,11 @@ class InteractuarMascotaActivity : AppCompatActivity() {
             if (nuevaFelicidad >= 100){
                 imageView = findViewById(R.id.imagenMascotaInterac)
                 imageView.setImageResource(this.resources.getIdentifier("mascotaevo", "drawable", this.packageName))
+                navegarAPantallaDado()
                 Toast.makeText(this, "Tu mascota ha subido de nivel", Toast.LENGTH_SHORT).show()
+            }else{
+                navegarAPantallaDado()
             }
-            navegarAPantallaDado()
         }
     }
 

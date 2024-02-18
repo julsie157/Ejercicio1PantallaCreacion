@@ -13,7 +13,7 @@ import kotlin.math.max
 class BaseDeDatosGeneral(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME, null, DATABASE_VERSION) {
 
     companion object {
-        private const val DATABASE_VERSION = 37
+        private const val DATABASE_VERSION = 38
         private const val DATABASE_NAME = "MiBaseGeneral.db"
 
         private const val TABLA_PERSONAJES = "Personajes"
@@ -432,6 +432,27 @@ class BaseDeDatosGeneral(context: Context) : SQLiteOpenHelper(context, DATABASE_
         cursor.close()
         return nivelMascota
     }
+
+    @SuppressLint("Range")
+    fun obtenerNombreMascotaPorId(idMascota: Long): String? {
+        val db = this.readableDatabase
+        var nombreMascota: String? = null
+        val cursor = db.query(
+            TABLA_MASCOTA,
+            arrayOf(COLUMN_NOMBRE),
+            "$COLUMN_ID_MASCOTA = ?",
+            arrayOf(idMascota.toString()),
+            null,
+            null,
+            null
+        )
+        if (cursor.moveToFirst()) {
+            nombreMascota = cursor.getString(cursor.getColumnIndex(COLUMN_NOMBRE))
+        }
+        cursor.close()
+        return nombreMascota
+    }
+
 
     fun tengoComida(idMochila: Int): Boolean {
         val db = this.readableDatabase
