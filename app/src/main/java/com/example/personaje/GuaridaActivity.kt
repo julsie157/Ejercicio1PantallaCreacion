@@ -2,6 +2,7 @@ package com.example.personaje
 
 import android.annotation.SuppressLint
 import android.content.Intent
+import android.media.MediaPlayer
 import android.os.Bundle
 import android.widget.Button
 import android.widget.Toast
@@ -11,11 +12,15 @@ class GuaridaActivity : AppCompatActivity() {
 
     private var idPersonaje: Long = -1L
     private lateinit var dbGeneral: BaseDeDatosGeneral
+    private lateinit var mediaPlayer: MediaPlayer
 
     @SuppressLint("MissingInflatedId")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.layout_guarida)
+
+        mediaPlayer = MediaPlayer.create(this, R.raw.mascota)
+        mediaPlayer.setVolume(0.1f, 0.1f)
 
         dbGeneral = BaseDeDatosGeneral(this)
         idPersonaje = intent.getLongExtra("intentExtraIdPersonaje", -1L)
@@ -47,6 +52,14 @@ class GuaridaActivity : AppCompatActivity() {
         intent.putExtra("intentExtraIdPersonaje", idPersonaje)
         startActivity(intent)
         finish()
+    }
+    override fun onStart() {
+        super.onStart()
+        mediaPlayer.start()
+    }
+    override fun onStop() {
+        super.onStop()
+        mediaPlayer.release()
     }
 }
 

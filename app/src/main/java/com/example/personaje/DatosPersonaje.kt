@@ -124,9 +124,9 @@ class DatosPersonaje : AppCompatActivity() {
 
     private fun updatePlayButton() {
         if (MusicPlayer.isPlaying()) {
-            playButton.text = "Pause"
+            playButton.text = "Mute"
         } else {
-            playButton.text = "Play"
+            playButton.text = "Sound"
         }
     }
     override fun onDestroy() {

@@ -39,8 +39,9 @@ class Inicio : AppCompatActivity() {
         setContentView(R.layout.layout_inicio)
 
         dbGeneral = BaseDeDatosGeneral(this)
-        mediaPlayer = MediaPlayer.create(this, R.raw.temita)
 
+        //para musica
+        mediaPlayer = MediaPlayer.create(this, R.raw.temita)
         MusicPlayer.init(this)
         playButton = findViewById<Button>(R.id.play_button)
         seekBar = findViewById<SeekBar>(R.id.seekBar)
@@ -219,15 +220,15 @@ class Inicio : AppCompatActivity() {
                 if (mediaPlayer != null) {
                     seekBar.progress = mediaPlayer!!.currentPosition
                 }
-                handler.postDelayed(this, 1000) // Update every second
+                handler.postDelayed(this, 1000)
             }
         }, 0)
     }
     private fun updatePlayButton() {
         if (MusicPlayer.isPlaying()) {
-            playButton.text = "Pause"
+            playButton.text = "Mute"
         } else {
-            playButton.text = "Play"
+            playButton.text = "Sound"
         }
     }
     override fun onDestroy() {

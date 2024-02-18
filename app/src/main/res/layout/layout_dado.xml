@@ -3,7 +3,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:padding="16dp">
+    android:padding="16dp"
+    android:background="@drawable/fondorojo">
 
     <!-- Contenedor para las cuatro fotos superiores -->
     <LinearLayout
@@ -64,12 +65,16 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Comienza la aventura, pulsa el DADO para avanzar. CUIDADO puedes encontrarte enemigos"
-        android:textAlignment="center"  />
+        android:textAlignment="center"
+        android:textColor="@color/white"/>
     <Button
-        android:id="@+id/botonTTS"
+        android:id="@+id/play_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="TTS"
-        android:layout_gravity="center"/>
+        android:layout_gravity="center"
+        android:layout_marginTop="20dp"
+        android:text="Music" />
+
+
 
 </LinearLayout>

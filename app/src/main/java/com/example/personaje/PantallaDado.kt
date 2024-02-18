@@ -10,10 +10,31 @@ import kotlin.random.Random
 class PantallaDado : AppCompatActivity() {
     private var idPersonaje: Long = -1L
     private lateinit var dbGeneral: BaseDeDatosGeneral
+    private lateinit var playButton: Button
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         setContentView(R.layout.layout_dado)
+
+
+
+        MusicPlayer.init(this)
+        playButton = findViewById<Button>(R.id.play_button)
+
+        MusicPlayer.init(this)
+        updatePlayButton()
+
+        playButton.setOnClickListener {
+            if (MusicPlayer.isPlaying()) {
+                MusicPlayer.pause()
+            } else {
+                MusicPlayer.start()
+            }
+            updatePlayButton()
+        }
+
+
 
         val dadoButton = findViewById<Button>(R.id.Botontirar)
         dbGeneral = BaseDeDatosGeneral(this)
@@ -40,6 +61,33 @@ class PantallaDado : AppCompatActivity() {
     private fun randomEncounter(): String {
         val encounters = arrayOf("Objeto","Ciudad","Mercader","Enemigo","InteractuarMascota","ChatBot")
         return encounters[Random.nextInt(encounters.size)]
+    }
+
+
+    override fun onPause() {
+        super.onPause()
+        if (MusicPlayer.isPlaying()) {
+            MusicPlayer.pause()
+        }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        if (MusicPlayer.isPlaying()) {
+            MusicPlayer.start()
+        }
+    }
+
+    private fun updatePlayButton() {
+        if (MusicPlayer.isPlaying()) {
+            playButton.text = "Mute"
+        } else {
+            playButton.text = "Sound"
+        }
+    }
+    override fun onDestroy() {
+        super.onDestroy()
+        MusicPlayer.release()
     }
 }
 
