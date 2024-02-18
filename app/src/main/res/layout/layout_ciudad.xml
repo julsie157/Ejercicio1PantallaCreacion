@@ -3,13 +3,14 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:background="@drawable/fondochuli">
 
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/toolbarciudad"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
-        android:background="?attr/colorPrimary"
+        android:background="#B3976F"
         android:elevation="4dp"
         android:theme="@style/ThemeOverlay.AppCompat.ActionBar"
         app:title="Ciudad" />
@@ -41,7 +42,9 @@
     <TextView
         android:id="@+id/textViewProvincia"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Provincia" />
+        android:layout_height="259dp"
+        android:text="Provincia"
+        android:textColor="@color/white"
+        android:textSize="70dp" />
 
 </LinearLayout>

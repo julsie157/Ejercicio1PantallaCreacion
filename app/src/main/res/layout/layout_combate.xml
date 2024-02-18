@@ -3,7 +3,8 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:padding="16dp">
+    android:padding="16dp"
+    android:background="@drawable/fondorojo">
 
     <ImageView
         android:id="@+id/imagenMonstruo"
@@ -19,6 +20,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:hint="Salud Monstruo"
+        android:textColor="@color/white"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/imagenMonstruo" />
@@ -48,6 +50,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:hint="Salud Pj"
+        android:textColor="@color/white"
         app:layout_constraintBottom_toTopOf="@+id/imagenJugador"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.498"
