@@ -3,7 +3,8 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@drawable/fondoblanco">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -14,7 +15,7 @@
             android:id="@+id/toolbarmercader"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
-            android:background="?attr/colorPrimary"
+            android:background="#C3950C"
             android:elevation="4dp"
             android:theme="@style/ThemeOverlay.AppCompat.ActionBar"
             app:title="Mercader" />
@@ -83,7 +84,8 @@
             android:padding="16dp"
             android:text="Oro: 0 - Espacio Disponible: 0"
             android:textAlignment="center"
-            android:textSize="18sp" />
+            android:textSize="20sp"
+            android:textColor="@color/black"/>
 
 
         <ScrollView

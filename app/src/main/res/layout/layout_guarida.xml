@@ -3,13 +3,14 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:background="@drawable/fondobosque">
 
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/toolbarloot"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
-        android:background="?attr/colorPrimary"
+        android:background="#410DCA"
         android:elevation="4dp"
         android:theme="@style/ThemeOverlay.AppCompat.ActionBar"
         app:title="Guarida Monstruo" />
@@ -50,5 +51,6 @@
         android:layout_height="wrap_content"
         android:layout_weight="1"
         android:text="Escuchas unos sonidos extraños al derrotar a la critaura que decides hacer???"
+        android:textColor="@color/white"
         android:textAlignment="center" />
 </LinearLayout>

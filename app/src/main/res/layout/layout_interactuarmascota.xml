@@ -2,7 +2,8 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
-    android:padding="16dp">
+    android:padding="16dp"
+    android:background="@drawable/fondomascota2">
 
     <TextView
         android:id="@+id/textViewNombreInteractuar"
@@ -33,7 +34,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center"
-        android:orientation="horizontal">
+        android:orientation="horizontal"
+        >
 
         <Button
             android:id="@+id/botonSalirdeInteractuar"
@@ -74,6 +76,13 @@
         android:layout_height="wrap_content"
         android:max="100"
         android:progress="30"
-        android:layout_marginTop="16dp"/>
+        android:layout_marginTop="16dp"
+        />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="324dp"
+        android:orientation="vertical"></LinearLayout>
 
 </LinearLayout>
+
