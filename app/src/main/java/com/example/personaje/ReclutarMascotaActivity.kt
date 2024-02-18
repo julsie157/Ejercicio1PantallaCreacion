@@ -16,7 +16,7 @@ class ReclutarMascotaActivity : AppCompatActivity() {
         setContentView(R.layout.layout_reclutar)
 
 
-        mediaPlayer = MediaPlayer.create(this, R.raw.gechis)
+        mediaPlayer = MediaPlayer.create(this, R.raw.undertale)
         mediaPlayer.setVolume(0.1f, 0.1f)
 
         dbGeneral = BaseDeDatosGeneral(this)

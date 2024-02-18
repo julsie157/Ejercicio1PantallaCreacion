@@ -32,7 +32,7 @@ class CombateActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.layout_combate)
 
-        mediaPlayer = MediaPlayer.create(this, R.raw.gechis)
+        mediaPlayer = MediaPlayer.create(this, R.raw.genesis)
         mediaPlayer.setVolume(0.1f, 0.1f)
 
         dbGeneral = BaseDeDatosGeneral(this)
