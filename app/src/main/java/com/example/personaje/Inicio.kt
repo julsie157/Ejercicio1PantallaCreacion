@@ -40,28 +40,6 @@ class Inicio : AppCompatActivity() {
 
         dbGeneral = BaseDeDatosGeneral(this)
 
-        //para musica
-        mediaPlayer = MediaPlayer.create(this, R.raw.ventor)
-        MusicPlayer.init(this)
-        playButton = findViewById<Button>(R.id.play_button)
-        seekBar = findViewById<SeekBar>(R.id.seekBar)
-
-        MusicPlayer.init(this)
-
-        updatePlayButton()
-
-        playButton.setOnClickListener {
-            if (mediaPlayer?.isPlaying == true) {
-                mediaPlayer?.pause()
-            } else {
-                mediaPlayer?.start()
-                startSeekBarUpdate()
-            }
-            updatePlayButton()
-        }
-
-
-
         spinnerRaza = findViewById(R.id.spinnerRaza)
         spinnerClase = findViewById(R.id.spinnerClase)
         spinnerEstadoVital = findViewById(R.id.spinnerEstadoVital)
@@ -210,29 +188,5 @@ class Inicio : AppCompatActivity() {
             adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
             spinnerEstadoVital.adapter = adapter
         }
-    }
-
-    private fun startSeekBarUpdate() {
-        seekBar.max = mediaPlayer?.duration ?: 0
-        val handler = Handler()
-        handler.postDelayed(object : Runnable {
-            override fun run() {
-                if (mediaPlayer != null) {
-                    seekBar.progress = mediaPlayer!!.currentPosition
-                }
-                handler.postDelayed(this, 1000)
-            }
-        }, 0)
-    }
-    private fun updatePlayButton() {
-        if (MusicPlayer.isPlaying()) {
-            playButton.text = "Mute"
-        } else {
-            playButton.text = "Sound"
-        }
-    }
-    override fun onDestroy() {
-        super.onDestroy()
-        MusicPlayer.release()
     }
 }

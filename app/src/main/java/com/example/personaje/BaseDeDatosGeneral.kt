@@ -13,7 +13,7 @@ import kotlin.math.max
 class BaseDeDatosGeneral(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME, null, DATABASE_VERSION) {
 
     companion object {
-        private const val DATABASE_VERSION = 38
+        private const val DATABASE_VERSION = 39
         private const val DATABASE_NAME = "MiBaseGeneral.db"
 
         private const val TABLA_PERSONAJES = "Personajes"
