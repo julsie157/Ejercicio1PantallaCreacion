@@ -3,6 +3,7 @@ package com.example.personaje
 
 
 import android.content.Intent
+import android.media.MediaPlayer
 import android.os.Bundle
 import android.widget.Button
 import androidx.appcompat.app.AppCompatActivity
@@ -10,6 +11,7 @@ import kotlin.random.Random
 
 
 class EnemigoActivity : AppCompatActivity() {
+
 
     private var idPersonaje: Long = -1L
     private lateinit var dbGeneral: BaseDeDatosGeneral

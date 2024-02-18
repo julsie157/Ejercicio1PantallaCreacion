@@ -41,7 +41,7 @@ class Inicio : AppCompatActivity() {
         dbGeneral = BaseDeDatosGeneral(this)
 
         //para musica
-        mediaPlayer = MediaPlayer.create(this, R.raw.temita)
+        mediaPlayer = MediaPlayer.create(this, R.raw.ventor)
         MusicPlayer.init(this)
         playButton = findViewById<Button>(R.id.play_button)
         seekBar = findViewById<SeekBar>(R.id.seekBar)
