@@ -62,6 +62,7 @@ class PantallaDado : AppCompatActivity(), OnInitListener {
             }
             intent?.let {
                 it.putExtra("intentExtraIdPersonaje", idPersonaje)
+                tts.stop()
                 startActivity(it)
             }
         }

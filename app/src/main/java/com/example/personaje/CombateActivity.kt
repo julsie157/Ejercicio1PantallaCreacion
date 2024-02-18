@@ -193,8 +193,8 @@ class CombateActivity : AppCompatActivity() {
     private fun crearMonstruoAleatorio(): Monstruo {
         val monstruos = listOf(
             Monstruo("Goblin", 1, R.drawable.goblin),
-            Monstruo("Orco", 1, R.drawable.orco),
-            Monstruo("Troll", 1, R.drawable.troll)
+            Monstruo("Orco", 2, R.drawable.orco),
+            Monstruo("Troll", 3, R.drawable.troll)
         )
         return monstruos.random()
     }
