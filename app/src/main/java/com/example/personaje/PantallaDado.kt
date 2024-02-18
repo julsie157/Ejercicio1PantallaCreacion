@@ -1,26 +1,41 @@
 package com.example.personaje
 
 import android.content.Intent
+import android.os.Build
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.util.Log
 import android.widget.Button
 import androidx.appcompat.app.AppCompatActivity
 import kotlin.random.Random
+import android.speech.tts.TextToSpeech
+import android.speech.tts.TextToSpeech.OnInitListener
+import android.widget.ImageView
+import android.widget.TextView
+import java.util.Locale
 
-class PantallaDado : AppCompatActivity() {
+class PantallaDado : AppCompatActivity(), OnInitListener {
     private var idPersonaje: Long = -1L
     private lateinit var dbGeneral: BaseDeDatosGeneral
     private lateinit var playButton: Button
-
+    private lateinit var tts: TextToSpeech
+    private lateinit var dado: ImageView
+    private lateinit var Botontirar: Button
+    private lateinit var Infotext: TextView
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        tts = TextToSpeech(this,this)
 
         setContentView(R.layout.layout_dado)
 
+        dado = findViewById(R.id.dice_image)
+        Infotext = findViewById(R.id.info_text)
 
 
         MusicPlayer.init(this)
-        playButton = findViewById<Button>(R.id.play_button)
+        playButton = findViewById(R.id.play_button)
+        Botontirar = findViewById(R.id.Botontirar)
 
         MusicPlayer.init(this)
         updatePlayButton()
@@ -62,7 +77,35 @@ class PantallaDado : AppCompatActivity() {
         val encounters = arrayOf("Objeto","Ciudad","Mercader","Enemigo","InteractuarMascota","ChatBot")
         return encounters[Random.nextInt(encounters.size)]
     }
+    override fun onInit(status: Int) {
+        if (status == TextToSpeech.SUCCESS) {
+            val idioma = tts!!.setLanguage(Locale.US)
+            if (idioma == TextToSpeech.LANG_MISSING_DATA
+                || idioma == TextToSpeech.LANG_NOT_SUPPORTED
+            ) {
+                Log.e("TTS Error", "Lenguaje no admitido")
+            } else {
 
+                Handler(Looper.getMainLooper()).postDelayed({
+                    Handler(Looper.getMainLooper()).postDelayed({
+                        speak(dado.contentDescription.toString())
+                    },2000)
+                    Handler(Looper.getMainLooper()).postDelayed({
+                        speak(Botontirar.text.toString())
+                    },4000)
+                    Handler(Looper.getMainLooper()).postDelayed({
+                        speak(Infotext.text.toString())
+                    },6000)
+                    Handler(Looper.getMainLooper()).postDelayed({
+                        speak(playButton.text.toString())
+                    },8000)
+                },10000)
+
+            }
+        } else {
+            Log.e("TTS Error","Error al cargar")
+        }
+    }
 
     override fun onPause() {
         super.onPause()
@@ -88,8 +131,18 @@ class PantallaDado : AppCompatActivity() {
     override fun onDestroy() {
         super.onDestroy()
         MusicPlayer.release()
+        tts.stop()
+        tts.shutdown()
     }
 
+    @Suppress("DEPRECATION")
+    private fun speak(ttsText: String) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            tts.speak(ttsText, TextToSpeech.QUEUE_FLUSH, null, null)
+        } else {
+            tts.speak(ttsText, TextToSpeech.QUEUE_FLUSH, null)
+        }
+    }
 
 }
 
