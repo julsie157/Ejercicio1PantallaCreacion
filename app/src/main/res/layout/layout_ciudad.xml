@@ -30,23 +30,18 @@
 
 
         <Button
-            android:id="@+id/Botonentrar"
+            android:id="@+id/BotonVolverCiudad"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Entrar" />
-
-
-        <Button
-            android:id="@+id/Botoncontciudad"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Continuar" />
+            android:text="Volver"
+        />
 
     </LinearLayout>
 
     <TextView
-        android:id="@+id/textViewCiudad"
+        android:id="@+id/textViewProvincia"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="Estas a punto de entrar en :" />
+        android:layout_height="wrap_content"
+        android:text="Provincia" />
+
 </LinearLayout>
