@@ -13,7 +13,9 @@ import android.widget.LinearLayout
 import android.widget.ProgressBar
 import android.widget.ScrollView
 import android.widget.TextView
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import java.util.Random
 import kotlin.math.max
 
 class CombateActivity : AppCompatActivity() {
@@ -85,6 +87,21 @@ class CombateActivity : AppCompatActivity() {
     }
 
     private fun AtacarAMonstruo() {
+        val numeroAleatorio = Math.random() * (3 - 1) + 1
+
+        if (numeroAleatorio.toInt() == 1){
+            val nivelMascota = dbGeneral.obtenerNivelMascotaPorPersonaje(idPersonaje)
+            if (nivelMascota == 2){
+                val numeroAleatorioDos = Math.random() * (2 - 1) + 1
+                if (numeroAleatorioDos.toInt() == 1){
+                    monstruo.setSalud(max(0, monstruo.getSalud() - 15))
+                    Toast.makeText(this, "Tu mascota ha atacado", Toast.LENGTH_SHORT).show()
+                }else{
+                    personaje.setSalud(max(0, personaje.getSalud() + 20))
+                    Toast.makeText(this, "Tu mascota te ha curado", Toast.LENGTH_SHORT).show()
+                }
+            }
+        }
         val danoAlMonstruo = max(0, personaje.getAtaque() + (personaje.getAtaque() / 10) * 5)
         monstruo.setSalud(max(0, monstruo.getSalud() - danoAlMonstruo))
 

@@ -6,6 +6,7 @@ import android.os.CountDownTimer
 import android.os.Handler
 import android.os.Looper
 import android.widget.Button
+import android.widget.ImageView
 import android.widget.ProgressBar
 import android.widget.TextView
 import android.widget.Toast
@@ -22,6 +23,7 @@ class InteractuarMascotaActivity : AppCompatActivity() {
     private lateinit var botonDarComida: Button
     private lateinit var textoContador: TextView
     private lateinit var progressBarFelicidad: ProgressBar
+    private lateinit var imageView: ImageView
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -47,6 +49,14 @@ class InteractuarMascotaActivity : AppCompatActivity() {
         botonJugar = findViewById(R.id.botonJugar)
         textoContador = findViewById(R.id.textoContador)
         progressBarFelicidad = findViewById(R.id.progressBarFelicidad)
+        imageView = findViewById(R.id.imagenMascotaInterac)
+        var nombreImagen : String = "mascota"
+
+        if (dbGeneral.obtenerNivelMascotaPorPersonaje(idPersonaje) == 2 ){
+           nombreImagen = "mascotaevo"
+        }
+        imageView.setImageResource(this.resources.getIdentifier(nombreImagen, "drawable", this.packageName))
+
 
         botonSalir.setOnClickListener {
             actualizarFelicidadYVerificar(-10)
@@ -81,12 +91,14 @@ class InteractuarMascotaActivity : AppCompatActivity() {
 
     private fun iniciarJuego() {
         contadorClics = 0
-        botonJugar.isEnabled = false
+        //botonJugar.isEnabled = false
+        botonDarComida.isEnabled = false
+        botonSalir.isEnabled = false
 
         object : CountDownTimer(5000, 1000) {
             override fun onTick(millisUntilFinished: Long) {
                 textoContador.text = "Tiempo restante: ${millisUntilFinished / 1000}"
-                botonJugar.isEnabled = true
+                //botonJugar.isEnabled = true
                 botonJugar.text = "Dame clicks!"
                 botonJugar.setOnClickListener {
                     contadorClics++
@@ -95,7 +107,7 @@ class InteractuarMascotaActivity : AppCompatActivity() {
 
             override fun onFinish() {
                 textoContador.text = ""
-                botonJugar.isEnabled = true
+                botonJugar.isEnabled = false
                 botonJugar.text = "Jugar"
                 val felicidadAdicional = calcularFelicidad(contadorClics)
                 actualizarFelicidadYVerificar(felicidadAdicional)
@@ -119,6 +131,11 @@ class InteractuarMascotaActivity : AppCompatActivity() {
             Handler(Looper.getMainLooper()).postDelayed({
             }, 1400)
         }else{
+            if (nuevaFelicidad >= 100){
+                imageView = findViewById(R.id.imagenMascotaInterac)
+                imageView.setImageResource(this.resources.getIdentifier("mascotaevo", "drawable", this.packageName))
+                Toast.makeText(this, "Tu mascota ha subido de nivel", Toast.LENGTH_SHORT).show()
+            }
             navegarAPantallaDado()
         }
     }

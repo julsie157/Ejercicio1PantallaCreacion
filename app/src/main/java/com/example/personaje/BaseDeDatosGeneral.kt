@@ -13,7 +13,7 @@ import kotlin.math.max
 class BaseDeDatosGeneral(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME, null, DATABASE_VERSION) {
 
     companion object {
-        private const val DATABASE_VERSION = 36
+        private const val DATABASE_VERSION = 37
         private const val DATABASE_NAME = "MiBaseGeneral.db"
 
         private const val TABLA_PERSONAJES = "Personajes"
@@ -102,6 +102,7 @@ class BaseDeDatosGeneral(context: Context) : SQLiteOpenHelper(context, DATABASE_
                 "$COLUMN_ID_MASCOTA INTEGER PRIMARY KEY, " +
                 "$COLUMN_NOMBRE TEXT, " +
                 "$COLUMN_FELICIDAD INTEGER, " +
+                "$COLUMN_NIVEL INTEGER, "+
                 "$COLUMN_ID_PERSONAJE INTEGER," +
                 "FOREIGN KEY ($COLUMN_ID_PERSONAJE) REFERENCES $TABLA_PERSONAJES ($COLUMN_ID_PERSONAJE))"
 
@@ -412,6 +413,26 @@ class BaseDeDatosGeneral(context: Context) : SQLiteOpenHelper(context, DATABASE_
         return idMascota
     }
 
+    @SuppressLint("Range")
+    fun obtenerNivelMascotaPorPersonaje(idPersonaje: Long): Int {
+        val db = this.readableDatabase
+        val cursor = db.query(
+            TABLA_MASCOTA,
+            arrayOf(COLUMN_NIVEL),
+            "$COLUMN_ID_PERSONAJE = ?",
+            arrayOf(idPersonaje.toString()),
+            null,
+            null,
+            null
+        )
+        var nivelMascota: Int = -1
+        if (cursor.moveToFirst()) {
+            nivelMascota = cursor.getInt(cursor.getColumnIndex(COLUMN_NIVEL))
+        }
+        cursor.close()
+        return nivelMascota
+    }
+
     fun tengoComida(idMochila: Int): Boolean {
         val db = this.readableDatabase
         val cursor = db.rawQuery("SELECT COUNT(*) FROM $TABLA_INVENTARIO JOIN $TABLA_ARTICULOS ON $TABLA_INVENTARIO.$COLUMN_ID_ARTICULO = $TABLA_ARTICULOS.$COLUMN_ID_ARTICULO WHERE $COLUMN_TIPO_ARTICULO = 'COMIDA' AND $TABLA_INVENTARIO.$COLUMN_ID_MOCHILA = ?", arrayOf(idMochila.toString()))
@@ -441,6 +462,8 @@ class BaseDeDatosGeneral(context: Context) : SQLiteOpenHelper(context, DATABASE_
         cursor.close()
         return tieneMascota
     }
+
+
 
 
 
@@ -528,9 +551,10 @@ class BaseDeDatosGeneral(context: Context) : SQLiteOpenHelper(context, DATABASE_
         val idMochila = obtenerIdMochilaPorPersonaje(idPersonaje)
         db.delete(TABLA_MOCHILAS, "$COLUMN_ID_PERSONAJE = ?", arrayOf(idPersonaje.toString()))
         db.delete(TABLA_INVENTARIO, "$COLUMN_ID_MOCHILA = ?", arrayOf(idMochila.toString()))
+        db.delete(TABLA_MASCOTA, "$COLUMN_ID_PERSONAJE = ?", arrayOf(idPersonaje.toString()))
         db.setTransactionSuccessful()
         db.endTransaction()
-        }
+    }
 
     fun insertarMascota(nombre: String, felicidad: Int, idPersonaje: Long): Long {
         val db = this.writableDatabase
@@ -538,14 +562,21 @@ class BaseDeDatosGeneral(context: Context) : SQLiteOpenHelper(context, DATABASE_
             put(COLUMN_NOMBRE, nombre)
             put(COLUMN_FELICIDAD, felicidad)
             put(COLUMN_ID_PERSONAJE, idPersonaje)
+            put(COLUMN_NIVEL,1)
         }
         return db.insert(TABLA_MASCOTA, null, values)
     }
 
     fun actualizarFelicidadMascota(idMascota: Long, nuevaFelicidad: Int) {
         val db = this.writableDatabase
+
         val values = ContentValues().apply {
-            put(COLUMN_FELICIDAD, nuevaFelicidad)
+            if (nuevaFelicidad >= 100){
+                put(COLUMN_FELICIDAD, 25)
+                put(COLUMN_NIVEL,2)
+            }else{
+                put(COLUMN_FELICIDAD, nuevaFelicidad)
+            }
         }
         db.update(TABLA_MASCOTA, values, "$COLUMN_ID_MASCOTA = ?", arrayOf(idMascota.toString()))
     }
@@ -567,12 +598,10 @@ class BaseDeDatosGeneral(context: Context) : SQLiteOpenHelper(context, DATABASE_
                 cantidadComida = cursor.getInt(0)
             }
             cursor.close()
-
             if (cantidadComida > 0) {
                 db.delete("$TABLA_INVENTARIO", "$COLUMN_ID_MOCHILA = ? AND $COLUMN_ID_ARTICULO IN (SELECT $COLUMN_ID_ARTICULO FROM $TABLA_ARTICULOS WHERE $COLUMN_TIPO_ARTICULO = 'COMIDA')", arrayOf(idMochila.toString()))
                 actualizarEspacioMochilaAlEliminarComida(idMochila, cantidadComida)
             }
-
             db.setTransactionSuccessful()
         } finally {
             db.endTransaction()
